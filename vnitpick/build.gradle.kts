@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "za.co.wethinkcode"
-version = "1.0"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
@@ -41,7 +41,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "vnitpick"
-            packageVersion = "1.0.0"
+            packageVersion = "1.2.0"
         }
     }
 }

@@ -3,10 +3,11 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose").version("1.6.0")
+    id("dev.hydraulic.conveyor") version "1.6"
 }
 
 group = "za.co.wethinkcode"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -16,6 +17,10 @@ repositories {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -31,7 +36,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "za.co.wethinkcode.gui.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

@@ -1,4 +1,4 @@
-package za.co.wethinkcode.gui
+package za.co.wethinkcode.vnitpick
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.Button

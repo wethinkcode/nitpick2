@@ -36,11 +36,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "za.co.wethinkcode.gui.MainKt"
+        mainClass = "za.co.wethinkcode.vnitpick.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "gui"
+            packageName = "vnitpick"
             packageVersion = "1.0.0"
         }
     }

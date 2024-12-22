@@ -1,0 +1,14 @@
+.gradle
+.idea
+**/build
+gui/build/
+
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store

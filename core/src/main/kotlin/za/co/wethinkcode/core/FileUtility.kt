@@ -146,12 +146,13 @@ class FileUtility {
                         val configuration: Config = localRepo.getConfig()
                         val remote: String = configuration.getString("remote", "origin", "url")
                         val exercise: Path = localRepo.getWorkTree().toPath()
-                        val relative = exercise.relativize(lmsRoot.root)
+                        val relative = exercise.relativize(lmsRoot)
                         val head: Ref = localRepo.getRefDatabase().findRef("HEAD")
                         val hash: String = head.getObjectId().getName()
                         return LmsRepo(remote, relative.toString(), hash)
                     }
             } catch (cause: Exception) {
+                cause.printStackTrace()
                 throw GitRootNotFound(lmsRoot, outputter!!)
             }
         }

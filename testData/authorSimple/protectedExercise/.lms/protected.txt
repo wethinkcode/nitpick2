@@ -1,0 +1,2 @@
+never_touch_me.txt
+**/*.nope

@@ -1,6 +1,5 @@
 package za.co.wethinkcode.core
 
-import za.co.wethinkcode.core.Outputter
 import za.co.wethinkcode.core.FileUtility.Companion.requireGitRoot
 import za.co.wethinkcode.core.FileUtility.Companion.delete
 import java.io.IOException

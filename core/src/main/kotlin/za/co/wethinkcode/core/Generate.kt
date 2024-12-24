@@ -2,7 +2,7 @@ package za.co.wethinkcode.core
 
 import java.nio.file.Path
 
-class Generate internal constructor(
+class Generate(
     authorString: String?,
     private val destinationString: String,
     private val outputter: Outputter

@@ -1,5 +1,9 @@
 package za.co.wethinkcode.core
 
+import za.co.wethinkcode.core.exceptions.ExerciseNoLms
+import za.co.wethinkcode.core.exceptions.ExerciseNotFound
+import za.co.wethinkcode.core.exceptions.NoDslFileFound
+import za.co.wethinkcode.core.exceptions.WipeSecurityException
 import java.io.IOException
 import java.io.PrintWriter
 import java.nio.file.Files

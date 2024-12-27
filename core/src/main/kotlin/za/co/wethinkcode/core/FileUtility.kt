@@ -1,6 +1,7 @@
 package za.co.wethinkcode.core
 
 import org.eclipse.jgit.lib.*
+import za.co.wethinkcode.core.exceptions.GitRootNotFound
 import java.io.IOException
 import java.io.PrintWriter
 import java.math.BigInteger

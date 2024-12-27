@@ -3,6 +3,9 @@ package za.co.wethinkcode.core
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import za.co.wethinkcode.core.exceptions.ExerciseNoLms
+import za.co.wethinkcode.core.exceptions.ExerciseNotFound
+import za.co.wethinkcode.core.exceptions.NoDslFileFound
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files

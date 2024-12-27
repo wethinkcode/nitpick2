@@ -2,6 +2,7 @@ package za.co.wethinkcode.core
 
 import za.co.wethinkcode.core.FileUtility.Companion.requireGitRoot
 import za.co.wethinkcode.core.FileUtility.Companion.delete
+import za.co.wethinkcode.core.exceptions.EndException
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path

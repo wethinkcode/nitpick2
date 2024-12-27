@@ -1,5 +1,6 @@
 package za.co.wethinkcode.core
 
+import za.co.wethinkcode.core.exceptions.EndException
 import java.nio.file.Path
 
 class LmsPick(

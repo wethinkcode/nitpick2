@@ -2,6 +2,9 @@ package za.co.wethinkcode.core
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import za.co.wethinkcode.core.exceptions.DslUnknownCommand
+import za.co.wethinkcode.core.exceptions.NoValidDslCommandFound
+import za.co.wethinkcode.core.exceptions.PickDslNotRead
 import java.nio.file.Path
 
 internal class PickParserTest {

@@ -1,5 +1,8 @@
-package za.co.wethinkcode.core
+package za.co.wethinkcode.core.exceptions
 
+import za.co.wethinkcode.core.Message
+import za.co.wethinkcode.core.MessageType
+import za.co.wethinkcode.core.Outputter
 import java.nio.file.Path
 
 class NoDslFileFound(path: Path, outputter: Outputter) : EndException(makeAndOutputText(path, outputter)) {

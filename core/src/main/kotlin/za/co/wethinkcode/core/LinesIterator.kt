@@ -1,5 +1,8 @@
 package za.co.wethinkcode.core
 
+import za.co.wethinkcode.core.exceptions.NoNextLine
+import za.co.wethinkcode.core.exceptions.NoPreviousLine
+
 class LinesIterator(private val source: List<String>) {
     private var next = 0
 

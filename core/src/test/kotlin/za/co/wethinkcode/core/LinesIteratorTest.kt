@@ -2,6 +2,8 @@ package za.co.wethinkcode.core
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import za.co.wethinkcode.core.exceptions.NoNextLine
+import za.co.wethinkcode.core.exceptions.NoPreviousLine
 import java.util.*
 
 class LinesIteratorTest {

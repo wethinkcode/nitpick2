@@ -1,7 +1,7 @@
 package za.co.wethinkcode.nitpick
 
 import za.co.wethinkcode.core.CollectingOutputter
-import za.co.wethinkcode.core.EndException
+import za.co.wethinkcode.core.exceptions.EndException
 
 
 object Main {

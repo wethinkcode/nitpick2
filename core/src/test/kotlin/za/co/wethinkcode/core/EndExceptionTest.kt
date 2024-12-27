@@ -2,6 +2,7 @@ package za.co.wethinkcode.core
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import za.co.wethinkcode.core.exceptions.EndException
 
 class EndExceptionTest {
     var outputter: CollectingOutputter = CollectingOutputter()

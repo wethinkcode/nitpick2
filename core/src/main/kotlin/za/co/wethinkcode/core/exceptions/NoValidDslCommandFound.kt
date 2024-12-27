@@ -1,4 +1,8 @@
-package za.co.wethinkcode.core
+package za.co.wethinkcode.core.exceptions
+
+import za.co.wethinkcode.core.Message
+import za.co.wethinkcode.core.MessageType
+import za.co.wethinkcode.core.Outputter
 
 class NoValidDslCommandFound(outputter: Outputter) : EndException(makeAndOutputText(outputter)) {
     companion object {

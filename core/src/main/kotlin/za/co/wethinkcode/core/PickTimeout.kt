@@ -1,5 +1,7 @@
 package za.co.wethinkcode.core
 
+import za.co.wethinkcode.core.exceptions.EndException
+
 class PickTimeout(line: String, outputter: Outputter) : EndException(makeAndOutputText(line, outputter)) {
     companion object {
         private fun makeAndOutputText(line: String, outputter: Outputter): String {

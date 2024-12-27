@@ -30,6 +30,9 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation(project(":core"))
+    implementation("org.pushing-pixels:aurora-window:1.3.0")
+    implementation("org.pushing-pixels:aurora-component:1.3.0")
+    implementation("org.pushing-pixels:aurora-theming:1.3.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     testImplementation("org.assertj:assertj-core:3.24.2")
 }

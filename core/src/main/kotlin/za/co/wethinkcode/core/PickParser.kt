@@ -1,5 +1,8 @@
 package za.co.wethinkcode.core
 
+import za.co.wethinkcode.core.exceptions.DslUnknownCommand
+import za.co.wethinkcode.core.exceptions.NoValidDslCommandFound
+import za.co.wethinkcode.core.exceptions.PickDslNotRead
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path

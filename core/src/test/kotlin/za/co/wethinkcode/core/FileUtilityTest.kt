@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import za.co.wethinkcode.core.FileUtility.Companion.fileExists
 import za.co.wethinkcode.core.FileUtility.Companion.folderExists
+import za.co.wethinkcode.core.exceptions.GitRootNotFound
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.attribute.PosixFilePermission

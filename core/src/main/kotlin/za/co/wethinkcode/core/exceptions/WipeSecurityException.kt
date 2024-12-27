@@ -1,5 +1,6 @@
-package za.co.wethinkcode.core
+package za.co.wethinkcode.core.exceptions
 
+import za.co.wethinkcode.core.Outputter
 import java.nio.file.Path
 
 class WipeSecurityException(outputter: Outputter?, root: Path, cause: Throwable?) : EndException(

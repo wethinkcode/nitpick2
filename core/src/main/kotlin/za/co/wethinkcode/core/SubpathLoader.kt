@@ -1,5 +1,6 @@
 package za.co.wethinkcode.core
 
+import za.co.wethinkcode.core.exceptions.EndException
 import java.io.IOException
 import java.nio.file.FileVisitResult
 import java.nio.file.Files

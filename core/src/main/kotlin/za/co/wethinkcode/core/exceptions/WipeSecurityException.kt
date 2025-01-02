@@ -1,10 +1,10 @@
 package za.co.wethinkcode.core.exceptions
 
-import za.co.wethinkcode.core.Outputter
+import za.co.wethinkcode.core.Reporter
 import java.nio.file.Path
 
-class WipeSecurityException(outputter: Outputter?, root: Path, cause: Throwable?) : EndException(
-    outputter!!, text(root), cause
+class WipeSecurityException(reporter: Reporter?, root: Path, cause: Throwable?) : EndException(
+    reporter!!, text(root), cause
 ) {
     companion object {
         private fun text(root: Path): String {

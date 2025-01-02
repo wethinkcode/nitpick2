@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class BashInterpreterTest {
-    var outputter: CollectingOutputter = CollectingOutputter()
+    var outputter: CollectingReporter = CollectingReporter()
     var interpreter: BashInterpreter = BashInterpreter(outputter)
 
     var EMPTY_LINES: List<String> = emptyList()

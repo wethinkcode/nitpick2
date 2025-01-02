@@ -11,7 +11,7 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 
 class EdgePickTest {
-    var outputter: CollectingOutputter = CollectingOutputter()
+    var outputter: CollectingReporter = CollectingReporter()
     var folder: TestFolder = TestFolder(outputter)
 
     @Test

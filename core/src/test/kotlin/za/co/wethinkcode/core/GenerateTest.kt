@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Path
 
 class GenerateTest {
-    var outputter: CollectingOutputter = CollectingOutputter()
+    var outputter: CollectingReporter = CollectingReporter()
 
     @Test
     fun generatesCorrectDestinationPath() {

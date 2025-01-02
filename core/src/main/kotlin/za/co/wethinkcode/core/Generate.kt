@@ -5,13 +5,13 @@ import java.nio.file.Path
 class Generate(
     authorString: String?,
     private val destinationString: String,
-    private val outputter: Outputter
+    private val reporter: Reporter
 ) : Runnable {
     val lms: Exercise
 
     init {
         val sourcePath = Path.of(authorString).toAbsolutePath().normalize()
-        this.lms = Exercise(sourcePath, outputter)
+        this.lms = Exercise(sourcePath, reporter)
     }
 
 
@@ -19,16 +19,16 @@ class Generate(
         lms.validate()
         val path = makeDestinationPath()
         println("Making at [$path].")
-        val destination = Exercise(path, outputter)
+        val destination = Exercise(path, reporter)
         destination.makeFromLms(lms)
         println("Running pick...")
-        val pick = EdgePick(destination.root.toString(), false, outputter)
+        val pick = EdgePick(destination.root.toString(), false, reporter)
         pick.run()
     }
 
     fun makeDestinationPath(): Path {
         if (destinationString == NO_DESTINATION_GIVEN) {
-            val projectPath: Path = FileUtility.requireGitRoot(lms.root, outputter)
+            val projectPath: Path = FileUtility.requireGitRoot(lms.root, reporter)
             val buildPath: Path = projectPath.resolve("target")
             val exercisesPath: Path = buildPath.resolve("exercises")
             val lastLmsName = lms.root.getName(lms.root.nameCount - 1)

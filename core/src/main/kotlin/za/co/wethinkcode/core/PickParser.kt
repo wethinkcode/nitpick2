@@ -8,7 +8,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
-class PickParser(private val pickSource: Path, private val targetFolder: Path, private val outputter: Outputter) {
+class PickParser(private val pickSource: Path, private val targetFolder: Path, private val reporter: Reporter) {
     fun parse(): PickRunnable {
         val pickPath = pickSource.resolve(DSL_LEAF)
         return parse(pickPath)
@@ -18,7 +18,7 @@ class PickParser(private val pickSource: Path, private val targetFolder: Path, p
         try {
             return parse(Files.readAllLines(path))
         } catch (wrapped: IOException) {
-            throw PickDslNotRead(path!!, outputter)
+            throw PickDslNotRead(path!!, reporter)
         }
     }
 
@@ -28,9 +28,9 @@ class PickParser(private val pickSource: Path, private val targetFolder: Path, p
             if (line.startsWith(DSL_COMMENT)) continue
             if (line.isBlank()) continue
             if (line.startsWith(DSL_BASH)) return parseBash(line)
-            throw DslUnknownCommand(line, outputter)
+            throw DslUnknownCommand(line, reporter)
         }
-        throw NoValidDslCommandFound(outputter)
+        throw NoValidDslCommandFound(reporter)
     }
 
     fun parseBash(line: String): PickRunnable {
@@ -39,7 +39,7 @@ class PickParser(private val pickSource: Path, private val targetFolder: Path, p
         val newFirst = ArrayList<String>()
         newFirst.add(bashPath())
         newFirst.addAll(skipFirst)
-        return BashRunner(newFirst, pickSource, outputter)
+        return BashRunner(newFirst, pickSource, reporter)
     }
 
     companion object {

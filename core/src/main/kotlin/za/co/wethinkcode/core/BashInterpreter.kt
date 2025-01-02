@@ -1,6 +1,6 @@
 package za.co.wethinkcode.core
 
-class BashInterpreter(private val outputter: Outputter) {
+class BashInterpreter(private val reporter: Reporter) {
     fun interpret(result: BashResult) {
         when (result.code) {
             127 -> outputMissingShell(result)
@@ -46,13 +46,13 @@ class BashInterpreter(private val outputter: Outputter) {
     }
 
     private fun outputBlock(messageType: MessageType, block: List<String>) {
-        outputter.add(
+        reporter.add(
             Message(messageType, java.lang.String.join("\n", block))
         )
     }
 
     private fun outputFailedShell(result: BashResult) {
-        outputter.add(
+        reporter.add(
             Message(
                 MessageType.Exception, """
      The external bash operation returned a non-zero error code.
@@ -68,7 +68,7 @@ class BashInterpreter(private val outputter: Outputter) {
     }
 
     private fun outputMissingShell(result: BashResult) {
-        outputter.add(
+        reporter.add(
             Message(
                 MessageType.Exception, """
      The external bash file could not be found.

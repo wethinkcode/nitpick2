@@ -6,17 +6,17 @@ import java.nio.file.Path
 class EdgePick(
     submissionString: String,
     private val overwrite: Boolean,
-    private val outputter: Outputter
+    private val reporter: Reporter
 ) : Runnable {
     val submission: Exercise
 
     init {
         val submissionPath = Path.of(submissionString).toAbsolutePath().normalize()
-        submission = Exercise(submissionPath, outputter)
+        submission = Exercise(submissionPath, reporter)
     }
 
     override fun run() {
-        EndException.runCommandSafely(outputter, { unsafeRun() }, submission.root)
+        EndException.runCommandSafely(reporter, { unsafeRun() }, submission.root)
     }
 
     fun unsafeRun() {
@@ -28,7 +28,7 @@ class EdgePick(
 
     fun processAlteredFiles() {
         if (!FileUtility.folderExists(submission.vault)) return
-        val filesToCheck: List<Subpath> = SubpathLoader.fetch(submission.vault, { subpath -> true }, outputter)
+        val filesToCheck: List<Subpath> = SubpathLoader.fetch(submission.vault, { subpath -> true }, reporter)
         val alteredFiles = submission.alteredFiles(submission.vault, filesToCheck)
         val filenames = processAlteredFiles(alteredFiles)
         outputAlteredFiles(filenames)
@@ -44,7 +44,7 @@ class EdgePick(
                 
                 """.trimIndent()
             if (overwrite) start = "The following files have been overwritten with the starting code.\n"
-            outputter.add(
+            reporter.add(
                 Message(
                     type,
                     start + java.lang.String.join("\n", filenames)

@@ -1,14 +1,14 @@
 package za.co.wethinkcode.core
 
-import za.co.wethinkcode.core.FileUtility.Companion.requireGitRoot
 import za.co.wethinkcode.core.FileUtility.Companion.delete
+import za.co.wethinkcode.core.FileUtility.Companion.requireGitRoot
 import za.co.wethinkcode.core.exceptions.EndException
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 
-class TestFolder(val root: Path, val outputter: Outputter) {
-    constructor(outputter: Outputter) : this(gitRootTestingTemp(outputter), outputter)
+class TestFolder(val root: Path, val reporter: Reporter) {
+    constructor(reporter: Reporter) : this(gitRootTestingTemp(reporter), reporter)
 
     @Throws(IOException::class)
     fun addGitFolder() {
@@ -23,15 +23,15 @@ class TestFolder(val root: Path, val outputter: Outputter) {
     }
 
     companion object {
-        private fun gitRootTestingTemp(outputter: Outputter): Path {
+        private fun gitRootTestingTemp(reporter: Reporter): Path {
             try {
-                val gitRoot = requireGitRoot(Path.of("."), outputter)
+                val gitRoot = requireGitRoot(Path.of("."), reporter)
                 val testing = gitRoot.resolve("testing")
                 Files.createDirectories(testing)
                 val result = Files.createTempDirectory(testing, "test")
                 return result
             } catch (wrapped: IOException) {
-                outputter.add(Message(MessageType.Error, "Could not create testing subfolder."))
+                reporter.add(Message(MessageType.Error, "Could not create testing subfolder."))
                 throw EndException()
             }
         }

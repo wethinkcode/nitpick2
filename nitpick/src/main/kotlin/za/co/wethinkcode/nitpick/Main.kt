@@ -1,13 +1,13 @@
 package za.co.wethinkcode.nitpick
 
-import za.co.wethinkcode.core.CollectingOutputter
+import za.co.wethinkcode.core.CollectingReporter
 import za.co.wethinkcode.core.exceptions.EndException
 
 
 object Main {
     @JvmStatic
     fun main(args: Array<String>) {
-        val outputter = CollectingOutputter()
+        val outputter = CollectingReporter()
         EndException.runCommandSafely(outputter) {
             val parser = OptionParser(outputter)
             val command = parser.parse(*args)

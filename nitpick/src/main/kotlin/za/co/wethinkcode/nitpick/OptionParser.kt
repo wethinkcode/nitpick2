@@ -10,12 +10,12 @@ import org.apache.commons.cli.ParseException
 import za.co.wethinkcode.core.EdgePick
 import za.co.wethinkcode.core.Generate
 import za.co.wethinkcode.core.LmsPick
-import za.co.wethinkcode.core.Outputter
+import za.co.wethinkcode.core.Reporter
 import za.co.wethinkcode.core.Version
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
 
-class OptionParser(val outputter: Outputter) {
+class OptionParser(val reporter: Reporter) {
     val options: Options
     val usage: String
 
@@ -75,9 +75,9 @@ class OptionParser(val outputter: Outputter) {
         val shouldOverwrite = commandLine.hasOption("overwrite")
         if (commandLine.hasOption(LMS_FLAG_LONG)) {
             val authorString = commandLine.getOptionValue(LMS_FLAG_LONG)
-            return LmsPick(authorString, submissionString, true, outputter)
+            return LmsPick(authorString, submissionString, true, reporter)
         }
-        return EdgePick(submissionString, shouldOverwrite, outputter)
+        return EdgePick(submissionString, shouldOverwrite, reporter)
     }
 
     private fun guessSubmissionString(commandLine: CommandLine): String {
@@ -91,7 +91,7 @@ class OptionParser(val outputter: Outputter) {
         val destinationString = guessDestinationString(commandLine)
         return Generate(
             lmsString,
-            destinationString, outputter
+            destinationString, reporter
         )
     }
 

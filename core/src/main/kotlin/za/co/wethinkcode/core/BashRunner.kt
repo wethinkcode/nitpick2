@@ -6,9 +6,9 @@ import org.buildobjects.process.TimeoutException
 import java.nio.file.Path
 import java.util.stream.IntStream
 
-class BashRunner(val args: List<String>, val workingFolder: Path, private val outputter: Outputter) : PickRunnable {
+class BashRunner(val args: List<String>, val workingFolder: Path, private val reporter: Reporter) : PickRunnable {
     override fun pick(submission: Path) {
-        val interpreter = BashInterpreter(outputter)
+        val interpreter = BashInterpreter(reporter)
         interpreter.interpret(bash(submission))
     }
 
@@ -38,7 +38,7 @@ class BashRunner(val args: List<String>, val workingFolder: Path, private val ou
                 stderr.saver!!.lines
             )
         } catch (ignored: TimeoutException) {
-            throw PickTimeout(builder.getCommandLine(), outputter)
+            throw PickTimeout(builder.getCommandLine(), reporter)
         } catch (e: InterruptedException) {
             throw RuntimeException(e)
         }

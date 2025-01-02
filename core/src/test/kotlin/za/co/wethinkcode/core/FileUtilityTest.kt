@@ -11,14 +11,14 @@ import java.nio.file.Files
 import java.nio.file.attribute.PosixFilePermission
 
 class FileUtilityTest {
-    var outputter: Outputter = CollectingOutputter()
-    var folder: TestFolder = TestFolder(outputter)
+    var reporter: Reporter = CollectingReporter()
+    var folder: TestFolder = TestFolder(reporter)
 
     @Test
     @Throws(IOException::class)
     fun requireGitRepoAtTop() {
         folder.addGitFolder()
-        assertThat(FileUtility.requireGitRoot(folder.root, outputter)).isEqualTo(folder.root)
+        assertThat(FileUtility.requireGitRoot(folder.root, reporter)).isEqualTo(folder.root)
         folder.delete()
     }
 
@@ -28,7 +28,7 @@ class FileUtilityTest {
         folder.addGitFolder()
         val insidePath = folder.root.resolve("folder")
         Files.createDirectory(insidePath)
-        assertThat(FileUtility.requireGitRoot(insidePath, outputter)).isEqualTo(folder.root)
+        assertThat(FileUtility.requireGitRoot(insidePath, reporter)).isEqualTo(folder.root)
         folder.delete()
     }
 
@@ -43,7 +43,7 @@ class FileUtilityTest {
         Assertions.assertThrows(
             GitRootNotFound::class.java
         ) {
-            FileUtility.requireGitRoot(insidePath, outputter)
+            FileUtility.requireGitRoot(insidePath, reporter)
         }
         Files.deleteIfExists(insidePath)
         Files.delete(tempPath)
@@ -69,7 +69,7 @@ class FileUtilityTest {
         Files.createDirectory(extraPath)
         val leafPath = extraPath.resolve("extra.txt")
         Files.createFile(leafPath)
-        FileUtility.wipe(folder.root, outputter)
+        FileUtility.wipe(folder.root, reporter)
         assertThat(folder.root.toFile().listFiles().size).isEqualTo(0)
         folder.delete()
     }
@@ -81,7 +81,7 @@ class FileUtilityTest {
         Files.createDirectory(extraPath)
         val leafPath = extraPath.resolve("extra.txt")
         Files.createFile(leafPath)
-        FileUtility.wipe(folder.root, outputter)
+        FileUtility.wipe(folder.root, reporter)
         assertThat(folder.root.toFile().listFiles().size).isEqualTo(0)
         folder.delete()
     }

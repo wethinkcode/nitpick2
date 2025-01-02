@@ -7,7 +7,7 @@ class LmsPick(
     authorString: String?,
     submissionString: String?,
     private val overwrite: Boolean,
-    private val outputter: Outputter
+    private val reporter: Reporter
 ) : Runnable {
     val submission: Exercise
 
@@ -15,20 +15,20 @@ class LmsPick(
 
     init {
         val submissionPath = Path.of(submissionString).toAbsolutePath().normalize()
-        submission = Exercise(submissionPath, outputter)
+        submission = Exercise(submissionPath, reporter)
         val authorPath = Path.of(authorString).toAbsolutePath().normalize()
-        author = Exercise(authorPath, outputter)
+        author = Exercise(authorPath, reporter)
     }
 
     override fun run() {
-        EndException.runCommandSafely(outputter, { unsafeRun() }, submission.root)
+        EndException.runCommandSafely(reporter, { unsafeRun() }, submission.root)
     }
 
     fun unsafeRun() {
         author.validate()
         processAlteredFiles()
         submission.pickUsing(author.lms)
-        outputter.saveGrade(submission.root)
+        reporter.saveGrade(submission.root)
     }
 
     fun processAlteredFiles() {
@@ -48,7 +48,7 @@ class LmsPick(
                 
                 """.trimIndent()
             if (overwrite) start = "The following files have been overwritten with the starting code.\n"
-            outputter.add(
+            reporter.add(
                 Message(
                     type,
                     start + java.lang.String.join("\n", filenames)

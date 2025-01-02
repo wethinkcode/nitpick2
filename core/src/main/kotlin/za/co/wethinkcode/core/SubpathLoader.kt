@@ -58,14 +58,14 @@ class SubpathLoader(private val root: Path, private val filter: Predicate<Subpat
     }
 
     companion object {
-        fun fetch(path: Path, filter: Predicate<Subpath>, outputter: Outputter): List<Subpath> {
+        fun fetch(path: Path, filter: Predicate<Subpath>, reporter: Reporter): List<Subpath> {
             try {
                 val visitor = SubpathLoader(path, filter)
                 Files.walkFileTree(path, visitor)
                 visitor.results.sortWith(LongestFirst())
                 return visitor.results
             } catch (wrapped: IOException) {
-                outputter.add(
+                reporter.add(
                     Message(
                         MessageType.Error, """
      An unexpected error has occurred.

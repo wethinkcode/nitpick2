@@ -8,11 +8,11 @@ import za.co.wethinkcode.core.exceptions.PickDslNotRead
 import java.nio.file.Path
 
 internal class PickParserTest {
-    var outputter: Outputter = CollectingOutputter()
+    var reporter: Reporter = CollectingReporter()
 
     @Test
     fun throwsOnEmptyLines() {
-        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, outputter)
+        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, reporter)
         Assertions.assertThrows(
             NoValidDslCommandFound::class.java
         ) { parser.parse(emptyList()) }
@@ -20,7 +20,7 @@ internal class PickParserTest {
 
     @Test
     fun throwsOnGarbageLine() {
-        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, outputter)
+        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, reporter)
         Assertions.assertThrows(
             DslUnknownCommand::class.java
         ) { parser.parse(listOf("garbage")) }
@@ -28,7 +28,7 @@ internal class PickParserTest {
 
     @Test
     fun throwsOnBadPickPath() {
-        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, outputter)
+        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, reporter)
         Assertions.assertThrows(
             PickDslNotRead::class.java
         ) { parser.parse() }
@@ -36,7 +36,7 @@ internal class PickParserTest {
 
     @Test
     fun returnsBash() {
-        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, outputter)
+        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, reporter)
         val actual = parser.parse(listOf("bash something.sh"))
         org.assertj.core.api.Assertions.assertThat(actual).isInstanceOf(BashRunner::class.java)
         val bash = actual as BashRunner
@@ -49,7 +49,7 @@ internal class PickParserTest {
         contents.add("#")
         contents.add("")
         contents.add("bash something.sh")
-        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, outputter)
+        val parser = PickParser(IRRELEVANT_PATH, IRRELEVANT_PATH, reporter)
         val actual = parser.parse(contents)
         org.assertj.core.api.Assertions.assertThat(actual).isInstanceOf(BashRunner::class.java)
         val bash = actual as BashRunner

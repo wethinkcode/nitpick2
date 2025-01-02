@@ -1,6 +1,8 @@
 package za.co.wethinkcode.core
 
-import org.eclipse.jgit.lib.*
+import org.eclipse.jgit.lib.Config
+import org.eclipse.jgit.lib.Ref
+import org.eclipse.jgit.lib.RepositoryBuilder
 import za.co.wethinkcode.core.exceptions.GitRootNotFound
 import java.io.IOException
 import java.io.PrintWriter
@@ -17,14 +19,14 @@ class FileUtility {
     companion object {
         const val NITPICK_PREFIX: String = "nitpick"
 
-        fun requireGitRoot(from: Path, outputter: Outputter?): Path {
+        fun requireGitRoot(from: Path, reporter: Reporter?): Path {
             var candidate = from.toAbsolutePath()
             while (candidate.nameCount > 1) {
                 val candidateGit = candidate.resolve(".git")
                 if (candidateGit.toFile().exists() && candidateGit.toFile().isDirectory) return candidate
                 candidate = candidate.resolve("..").toAbsolutePath().normalize()
             }
-            throw GitRootNotFound(from, outputter!!)
+            throw GitRootNotFound(from, reporter!!)
         }
 
         fun delete(root: Path) {
@@ -37,12 +39,12 @@ class FileUtility {
             }
         }
 
-        fun wipe(root: Path, outputter: Outputter) {
+        fun wipe(root: Path, reporter: Reporter) {
             val deleter = DeletingFileVisitor(root)
             try {
                 Files.walkFileTree(root, deleter)
             } catch (wrapped: IOException) {
-                outputter.add(
+                reporter.add(
                     Message(
                         MessageType.Error,
                         "Wiping File Visitor failed for [$root]."
@@ -140,7 +142,7 @@ class FileUtility {
             }
         }
 
-        fun getRepoInformation(lmsRoot: Path, outputter: Outputter?): LmsRepo {
+        fun getRepoInformation(lmsRoot: Path, reporter: Reporter?): LmsRepo {
             try {
                 RepositoryBuilder()
                     .findGitDir(lmsRoot.toFile()).build().use { localRepo ->
@@ -154,7 +156,7 @@ class FileUtility {
                     }
             } catch (cause: Exception) {
                 cause.printStackTrace()
-                throw GitRootNotFound(lmsRoot, outputter!!)
+                throw GitRootNotFound(lmsRoot, reporter!!)
             }
         }
     }

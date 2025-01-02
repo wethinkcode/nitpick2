@@ -2,11 +2,12 @@ package za.co.wethinkcode.nitpick
 
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import za.co.wethinkcode.core.CollectingOutputter
+import za.co.wethinkcode.core.CollectingReporter
 
 class EndToEndTest {
-    var outputter = CollectingOutputter()
+    var outputter = CollectingReporter()
     var optionParser = OptionParser(outputter)
+
     @Disabled("WIP")
     @Test
     fun perfectRun() {

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import za.co.wethinkcode.core.exceptions.EndException
 
 class EndExceptionTest {
-    var outputter: CollectingOutputter = CollectingOutputter()
+    var outputter: CollectingReporter = CollectingReporter()
 
     @Test
     fun outputsExceptionsThatArentEndExceptions() {

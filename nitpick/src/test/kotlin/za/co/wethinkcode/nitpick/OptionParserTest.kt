@@ -5,14 +5,15 @@ package za.co.wethinkcode.nitpick
 
 import org.assertj.core.api.AssertionsForClassTypes
 import org.junit.jupiter.api.Test
-import za.co.wethinkcode.core.CollectingOutputter
+import za.co.wethinkcode.core.CollectingReporter
 import za.co.wethinkcode.core.EdgePick
 import za.co.wethinkcode.core.Generate
 import za.co.wethinkcode.core.LmsPick
 import java.nio.file.Path
 
 class OptionParserTest {
-    var parser = OptionParser(CollectingOutputter())
+    var parser = OptionParser(CollectingReporter())
+
     @Test
     fun noCommandGiven() {
         AssertionsForClassTypes.assertThat(parser.parse()).isInstanceOf(Help::class.java)

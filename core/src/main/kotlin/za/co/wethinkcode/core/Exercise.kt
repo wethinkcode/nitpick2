@@ -10,7 +10,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
-class Exercise(val root: Path, private val outputter: Outputter) {
+class Exercise(val root: Path, private val reporter: Reporter) {
     val lms: Path = root.resolve(LMS_FOLDER)
     val vault: Path = root.resolve(VAULT_FOLDER)
 
@@ -20,7 +20,7 @@ class Exercise(val root: Path, private val outputter: Outputter) {
     val meta: Path = lms.resolve(META_TXT_LEAF)
 
     fun pickUsing(pickFolder: Path) {
-        val parser = PickParser(pickFolder, root, outputter)
+        val parser = PickParser(pickFolder, root, reporter)
         val picker = parser.parse(pickFolder.resolve(DSL_LEAF))
         picker.pick(root)
     }
@@ -33,7 +33,7 @@ class Exercise(val root: Path, private val outputter: Outputter) {
     }
 
     private fun addRepoDetails(source: Exercise) {
-        val repo: LmsRepo = FileUtility.getRepoInformation(source.root, outputter)
+        val repo: LmsRepo = FileUtility.getRepoInformation(source.root, reporter)
         val repoDetails: PrintWriter = FileUtility.openForWriting(meta, "Cannot open repo details for writing")
         repoDetails.println("lms=" + repo.remote)
         repoDetails.println("exercise=" + repo.exercise)
@@ -46,16 +46,16 @@ class Exercise(val root: Path, private val outputter: Outputter) {
     fun makeOrWipe() {
         try {
             Files.createDirectories(root)
-            val subpaths: List<Subpath> = SubpathLoader.fetch(root, MatchAllButGit(), outputter)
+            val subpaths: List<Subpath> = SubpathLoader.fetch(root, MatchAllButGit(), reporter)
             Collections.reverse(subpaths)
             println("Wiping.")
             for (path in subpaths) {
                 FileUtility.delete(root.resolve(path.path))
             }
         } catch (wrapped: SecurityException) {
-            throw WipeSecurityException(outputter, root, wrapped)
+            throw WipeSecurityException(reporter, root, wrapped)
         } catch (wrapped: IOException) {
-            throw WipeSecurityException(outputter, root, wrapped)
+            throw WipeSecurityException(reporter, root, wrapped)
         }
     }
 
@@ -69,7 +69,7 @@ class Exercise(val root: Path, private val outputter: Outputter) {
 
     @Throws(IOException::class)
     private fun unsafeCopyFrom(source: Path) {
-        val subpaths: List<Subpath> = SubpathLoader.fetch(source, { subpath -> true }, outputter)
+        val subpaths: List<Subpath> = SubpathLoader.fetch(source, { subpath -> true }, reporter)
         for ((path, isFolder) in subpaths) {
             val sourceSubpath = source.resolve(path)
             val destinationPath = root.resolve(path)
@@ -100,7 +100,7 @@ class Exercise(val root: Path, private val outputter: Outputter) {
 
     fun protectedFilesFromLms(): List<Subpath> {
         val protectedGlobs = readProtectionTextLines()
-        val candidates: List<Subpath> = SubpathLoader.fetch(root, MatchByGlob(protectedGlobs), outputter)
+        val candidates: List<Subpath> = SubpathLoader.fetch(root, MatchByGlob(protectedGlobs), reporter)
         return candidates.stream().filter { subpath -> !subpath.path.startsWith(LMS_FOLDER) }.toList()
     }
 
@@ -126,8 +126,8 @@ class Exercise(val root: Path, private val outputter: Outputter) {
     }
 
     fun validate() {
-        if (!FileUtility.folderExists(root)) throw ExerciseNotFound(root, outputter)
-        if (!FileUtility.folderExists(lms)) throw ExerciseNoLms(lms, outputter)
-        if (!FileUtility.fileExists(dsl)) throw NoDslFileFound(dsl, outputter)
+        if (!FileUtility.folderExists(root)) throw ExerciseNotFound(root, reporter)
+        if (!FileUtility.folderExists(lms)) throw ExerciseNoLms(lms, reporter)
+        if (!FileUtility.fileExists(dsl)) throw NoDslFileFound(dsl, reporter)
     }
 }

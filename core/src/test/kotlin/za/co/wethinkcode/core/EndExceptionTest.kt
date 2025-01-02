@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test
 import za.co.wethinkcode.core.exceptions.EndException
 
 class EndExceptionTest {
-    var outputter: CollectingReporter = CollectingReporter()
+    var reporter = CollectingReporter()
 
     @Test
     fun outputsExceptionsThatArentEndExceptions() {
-        EndException.runCommandSafely(outputter) {
+        EndException.runCommandSafely(reporter) {
             throw RuntimeException("Error.")
         }
-        Assertions.assertThat(outputter.messages).isNotEmpty()
-        Assertions.assertThat(outputter.messages[0]!!.type).isEqualTo(MessageType.Exception)
+        Assertions.assertThat(reporter.messages).isNotEmpty()
+        Assertions.assertThat(reporter.messages[0].type).isEqualTo(MessageType.Exception)
     }
 }

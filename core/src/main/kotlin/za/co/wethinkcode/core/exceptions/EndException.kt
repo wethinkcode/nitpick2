@@ -8,8 +8,8 @@ import java.nio.file.Path
 open class EndException : RuntimeException {
     constructor()
 
-    constructor(reporter: Reporter, text: String?, cause: Throwable?) : super(text, cause) {
-        reporter.add(Message(MessageType.Error, text!!))
+    constructor(reporter: Reporter, text: String, cause: Throwable) : super(text, cause) {
+        reporter.add(Message(MessageType.Error, text))
     }
 
     constructor(message: String) : super(message)

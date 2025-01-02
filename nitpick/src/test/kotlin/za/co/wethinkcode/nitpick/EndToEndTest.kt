@@ -14,7 +14,7 @@ class EndToEndTest {
         val command = optionParser.parse(
             "pick",
             "--submission",
-            "../testData/exercisePassing"
+            "../testData/javaSubmissionPassing"
         )
         command.run()
     }

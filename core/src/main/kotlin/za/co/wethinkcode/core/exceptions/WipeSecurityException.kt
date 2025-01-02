@@ -3,7 +3,7 @@ package za.co.wethinkcode.core.exceptions
 import za.co.wethinkcode.core.Reporter
 import java.nio.file.Path
 
-class WipeSecurityException(reporter: Reporter?, root: Path, cause: Throwable?) : EndException(
+class WipeSecurityException(reporter: Reporter, root: Path, cause: Throwable) : EndException(
     reporter!!, text(root), cause
 ) {
     companion object {

@@ -1,62 +1,35 @@
 package za.co.wethinkcode.vnitpick
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.WindowPlacement
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberWindowState
-import org.pushingpixels.aurora.component.model.Command
-import org.pushingpixels.aurora.component.projection.CommandButtonProjection
-import org.pushingpixels.aurora.theming.auroraBackground
-import org.pushingpixels.aurora.theming.marinerSkin
-import org.pushingpixels.aurora.window.AuroraWindow
-import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfigurations
-import org.pushingpixels.aurora.window.auroraApplication
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import za.co.wethinkcode.core.SomeClass
 
-fun main() = auroraApplication {
-    val state = rememberWindowState(
-        placement = WindowPlacement.Floating,
-        position = WindowPosition.Aligned(Alignment.Center),
-        size = DpSize(220.dp, 150.dp)
-    )
+@Composable
+@Preview
+fun App() {
+    val some = SomeClass()
+    var text by remember { mutableStateOf("Hello, World!") }
 
-    val model = NitpickModel()
-
-    val windowTitle by remember { model.title }
-
-    AuroraWindow(
-        skin = marinerSkin(),
-        title = windowTitle,
-        state = state,
-        windowTitlePaneConfiguration = AuroraWindowTitlePaneConfigurations.AuroraPlain(),
-        onCloseRequest = ::exitApplication
-    ) {
-        var text by remember { mutableStateOf("Hello, World!") }
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize().auroraBackground()
-        ) {
-            CommandButtonProjection(
-                contentModel = Command(
-                    text = text,
-                    action = {
-                        text = "Hello, Desktop!"
-                        model.title.value = "I Have A Title"
-                    }
-                )
-            ).project()
+    MaterialTheme {
+        Button(onClick = {
+            text = "Hello, Desktop!"
+        }) {
+            Text(text)
         }
     }
 }
 
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication) {
+        App()
+    }
+}

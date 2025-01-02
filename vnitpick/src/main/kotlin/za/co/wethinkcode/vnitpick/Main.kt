@@ -11,17 +11,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import za.co.wethinkcode.core.SomeClass
 
 @Composable
 @Preview
-fun App() {
-    val some = SomeClass()
+fun App(model: NitpickModel) {
     var text by remember { mutableStateOf("Hello, World!") }
+
 
     MaterialTheme {
         Button(onClick = {
             text = "Hello, Desktop!"
+            model.title.value = "Different title."
         }) {
             Text(text)
         }
@@ -29,7 +29,12 @@ fun App() {
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
+    val model = NitpickModel()
+    var windowTitle by remember { model.title }
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = windowTitle
+    ) {
+        App(model)
     }
 }

@@ -9,19 +9,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import javax.swing.JFileChooser
+
 
 @Composable
 @Preview
 fun App(model: NitpickModel) {
     var text by remember { mutableStateOf("Hello, World!") }
 
-
     MaterialTheme {
         Button(onClick = {
             text = "Hello, Desktop!"
             model.title.value = "Different title."
+            val chooser = JFileChooser()
+            chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+            val returnVal = chooser.showOpenDialog(ComposeWindow())
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                println(
+                    "You chose to open this file: " +
+                            chooser.selectedFile.name
+                )
+            }
         }) {
             Text(text)
         }

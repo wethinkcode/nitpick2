@@ -41,8 +41,10 @@ class NitpickModel {
         if (index == projects.lastIndex) {
             currentProjectIndex.value = index - 1
         }
-        currentProject.value = projects[currentProjectIndex.value]
         projects.removeAt(index)
+        if (currentProjectIndex.value > index) {
+            select(currentProjectIndex.value - 1)
+        } else select(currentProjectIndex.value)
     }
 
     fun nextProject() {

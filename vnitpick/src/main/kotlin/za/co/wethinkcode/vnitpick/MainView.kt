@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import compose.icons.fontawesomeicons.RegularGroup
 import compose.icons.fontawesomeicons.SolidGroup
 import compose.icons.fontawesomeicons.regular.FolderOpen
+import compose.icons.fontawesomeicons.regular.WindowClose
 import compose.icons.fontawesomeicons.solid.CaretLeft
 import compose.icons.fontawesomeicons.solid.CaretRight
 import za.co.wethinkcode.vnitpick.Styles.DEFAULT_FONT_SIZE
@@ -48,9 +50,24 @@ fun MainView(model: NitpickModel) {
         ) {
             OpenIcon(model)
             ProjectTabRow(model)
-            Icon(SolidGroup.CaretLeft, "Scroll Left", Modifier.size(DEFAULT_ICON_SIZE))
-            Icon(SolidGroup.CaretRight, "Scroll Right", Modifier.size(DEFAULT_ICON_SIZE))
-
+            Spacer(Modifier.weight(1f))
+            Icon(SolidGroup.CaretLeft,
+                "Scroll Left",
+                Modifier.size(DEFAULT_ICON_SIZE)
+                    .clickable { model.previousProject() }
+            )
+            Icon(
+                SolidGroup.CaretRight,
+                "Scroll Right",
+                Modifier.size(DEFAULT_ICON_SIZE)
+                    .clickable { model.nextProject() }
+            )
+        }
+        val project by remember { model.currentProject }
+        Row() {
+            if (project != null) {
+                Text(project!!.path.toString())
+            }
         }
     }
 }
@@ -71,7 +88,17 @@ fun ProjectTabRow(model: NitpickModel) {
                     { model.select(index) },
                     Modifier.padding(4.dp)
                 ) {
-                    Text(project.path.name, fontSize = DEFAULT_FONT_SIZE)
+                    Row(Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text(project.path.name, fontSize = DEFAULT_FONT_SIZE)
+                        Spacer(Modifier.width(4.dp))
+                        Icon(
+                            RegularGroup.WindowClose, "Close",
+                            Modifier.size(DEFAULT_ICON_SIZE)
+                                .clickable {
+                                    model.close(index)
+                                }
+                        )
+                    }
                 }
             }
         }

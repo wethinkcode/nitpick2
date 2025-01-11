@@ -21,9 +21,7 @@ class NitpickModel {
     }
 
     private fun add(project: Project) {
-        projects.add(project)
-        currentProjectIndex.value = projects.lastIndex
-        currentProject.value = projects.last()
+        projectsModel.add(project)
     }
 
     fun select(index: Int) {

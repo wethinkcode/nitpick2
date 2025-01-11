@@ -16,47 +16,24 @@ class NitpickModel {
         chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
         val chooserResult = chooser.showOpenDialog(ComposeWindow())
         if (chooserResult == JFileChooser.APPROVE_OPTION) {
-            add(Project(chooser.selectedFile.toPath()))
+            projectsModel.add(Project(chooser.selectedFile.toPath()))
         }
-    }
-
-    private fun add(project: Project) {
-        projectsModel.add(project)
     }
 
     fun select(index: Int) {
-        currentProjectIndex.value = index
-        currentProject.value = projects[index]
+        projectsModel.select(index)
     }
 
     fun close(index: Int) {
-        if (index < 0 || index >= projects.size) return
-        if (projects.size == 1) {
-            // this is the last project
-            currentProjectIndex.value = -1
-            currentProject.value = null
-            projects.removeAt(index)
-            return
-        }
-        if (index == projects.lastIndex) {
-            currentProjectIndex.value = index - 1
-        }
-        projects.removeAt(index)
-        if (currentProjectIndex.value > index) {
-            select(currentProjectIndex.value - 1)
-        } else select(currentProjectIndex.value)
+        projectsModel.close(index)
     }
 
     fun nextProject() {
-        if (currentProjectIndex.value != projects.lastIndex) {
-            select(currentProjectIndex.value + 1)
-        }
+        projectsModel.nextProject()
     }
 
     fun previousProject() {
-        if (currentProjectIndex.value > 0) {
-            select(currentProjectIndex.value - 1)
-        }
+        projectsModel.previousProject()
     }
 
 }

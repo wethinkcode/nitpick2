@@ -11,115 +11,55 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import compose.icons.fontawesomeicons.RegularGroup
 import compose.icons.fontawesomeicons.SolidGroup
-import compose.icons.fontawesomeicons.regular.FolderOpen
-import compose.icons.fontawesomeicons.regular.WindowClose
 import compose.icons.fontawesomeicons.solid.CaretLeft
 import compose.icons.fontawesomeicons.solid.CaretRight
-import za.co.wethinkcode.vnitpick.Styles.DEFAULT_FONT_SIZE
 import za.co.wethinkcode.vnitpick.Styles.DEFAULT_ICON_SIZE
-import kotlin.io.path.name
 
 @Composable
 @Preview
 fun MainView(model: NitpickModel) {
+    ProjectsView(model)
+}
+
+@Composable
+fun ProjectsView(model: NitpickModel) {
     Column(Modifier.fillMaxSize()) {
-        Row(
-            Modifier.fillMaxWidth()
-                .background(Color.LightGray, RectangleShape)
-                .padding(4.dp),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OpenIcon(model)
-            ProjectTabRow(model)
-            Spacer(Modifier.weight(1f))
-            Icon(SolidGroup.CaretLeft,
-                "Scroll Left",
-                Modifier.size(DEFAULT_ICON_SIZE)
-                    .clickable { model.previousProject() }
-            )
-            Icon(
-                SolidGroup.CaretRight,
-                "Scroll Right",
-                Modifier.size(DEFAULT_ICON_SIZE)
-                    .clickable { model.nextProject() }
-            )
-        }
-        val project by remember { model.currentProject }
-        Row() {
-            if (project != null) {
-                Text(project!!.path.toString())
-            }
-        }
+        ProjectsBar(model.projectsModel)
+        ProjectView(model.projectsModel)
     }
 }
 
 @Composable
-fun ProjectTabRow(model: NitpickModel) {
-    if (model.projects.isNotEmpty()) {
-        var tab by remember { model.currentProjectIndex }
-        ScrollableTabRow(
-            tab,
-            Modifier.fillMaxWidth(0.95f),
-            backgroundColor = Color.LightGray,
-            contentColor = Color.Black,
-        ) {
-            model.projects.forEachIndexed { index, project ->
-                Tab(
-                    index == tab,
-                    { model.select(index) },
-                    Modifier.padding(4.dp)
-                ) {
-                    Row(Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text(project.path.name, fontSize = DEFAULT_FONT_SIZE)
-                        Spacer(Modifier.width(4.dp))
-                        Icon(
-                            RegularGroup.WindowClose, "Close",
-                            Modifier.size(DEFAULT_ICON_SIZE)
-                                .clickable {
-                                    model.close(index)
-                                }
-                        )
-                    }
-                }
-            }
-        }
-    } else {
-        Spacer(Modifier.fillMaxWidth(.95f).background(Color.LightGray, RectangleShape).padding(2.dp))
+fun ProjectsBar(model: ProjectsModel) {
+    Row(
+        Modifier.fillMaxWidth()
+            .background(Color.LightGray, RectangleShape)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OpenTool(model)
+        ProjectTabs(model)
+        Spacer(Modifier.weight(1f))
+        Icon(SolidGroup.CaretLeft,
+            "Scroll Left",
+            Modifier.size(DEFAULT_ICON_SIZE)
+                .clickable { model.previousProject() }
+        )
+        Icon(
+            SolidGroup.CaretRight,
+            "Scroll Right",
+            Modifier.size(DEFAULT_ICON_SIZE)
+                .clickable { model.nextProject() }
+        )
     }
 }
 
-@Composable
-fun OpenIcon(model: NitpickModel) {
-    Icon(RegularGroup.FolderOpen,
-        "Open Project",
-        Modifier.size(DEFAULT_ICON_SIZE)
-            .clickable {
-                model.open()
-            }
-    )
-}
-
-object Styles {
-    val DEFAULT_ICON_SIZE = 26.dp
-    val DEFAULT_FONT_SIZE = TextUnit(16f, TextUnitType.Sp)
-
-}

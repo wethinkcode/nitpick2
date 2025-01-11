@@ -17,11 +17,14 @@ class NitpickModel {
         chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
         val chooserResult = chooser.showOpenDialog(ComposeWindow())
         if (chooserResult == JFileChooser.APPROVE_OPTION) {
-            projects.add(Project(chooser.selectedFile.toPath()))
-            currentProjectIndex.value = projects.lastIndex
-            currentProject.value = projects.last()
+            add(Project(chooser.selectedFile.toPath()))
         }
+    }
 
+    private fun add(project: Project) {
+        projects.add(project)
+        currentProjectIndex.value = projects.lastIndex
+        currentProject.value = projects.last()
     }
 
     fun select(index: Int) {

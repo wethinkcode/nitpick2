@@ -1,26 +1,15 @@
 package za.co.wethinkcode.vnitpick
 
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.awt.ComposeWindow
-import javax.swing.JFileChooser
 
-class NitpickModel {
-    val title = mutableStateOf("Starting Title")
-    val projectsModel = ProjectsModel()
-    val projects get() = projectsModel.projects
-    val currentProjectIndex get() = projectsModel.currentProjectIndex
-    val currentProject get() = projectsModel.currentProject
+class ProjectsModel {
+    val projects = mutableStateListOf<Project>()
+    val currentProjectIndex = mutableIntStateOf(-1)
+    val currentProject = mutableStateOf<Project?>(null)
 
-    fun open() {
-        val chooser = JFileChooser()
-        chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-        val chooserResult = chooser.showOpenDialog(ComposeWindow())
-        if (chooserResult == JFileChooser.APPROVE_OPTION) {
-            add(Project(chooser.selectedFile.toPath()))
-        }
-    }
-
-    private fun add(project: Project) {
+    fun add(project: Project) {
         projects.add(project)
         currentProjectIndex.value = projects.lastIndex
         currentProject.value = projects.last()

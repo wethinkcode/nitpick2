@@ -22,3 +22,13 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "za.co.wethinkcode.nitpick.MainKt"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree) // OR .map { zipTree(it) }
+    from(dependencies).exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.SF", "META-INF/*.DSA")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

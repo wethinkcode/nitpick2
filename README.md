@@ -18,5 +18,6 @@ Todos
 [ ] Try the 7 steps above on a Pop box.
 [ ] Try the 7 steps above on a Mac box.
 [ ] Jiggle conveyor settings to release as a github release.
-[ ] Make the nitpick project do a fat jar so we can move it to a server.
+[X] Make the nitpick project do a fat jar so we can move it to a server.
+[ ] Install a jltk sample in the testData folder.
 

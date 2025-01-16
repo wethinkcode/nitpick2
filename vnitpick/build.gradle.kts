@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "za.co.wethinkcode"
-version = "1.2.0"
+
 
 repositories {
     mavenCentral()
@@ -30,6 +30,7 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
+    implementation("dev.hydraulic.conveyor:conveyor-control:1.1")
     implementation(project(":core"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     testImplementation("org.assertj:assertj-core:3.24.2")
@@ -42,7 +43,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "vnitpick"
-            packageVersion = "1.2.0"
+            packageVersion = project.version.toString()
         }
     }
 }

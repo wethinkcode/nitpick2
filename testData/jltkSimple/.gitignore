@@ -1,0 +1,6 @@
+target/
+build/
+.idea/
+**/.commit
+.jltk/jltk-monitor.jar
+.jltk/*.jltt

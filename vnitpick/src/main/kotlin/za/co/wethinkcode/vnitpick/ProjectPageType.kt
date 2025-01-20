@@ -1,6 +1,8 @@
 package za.co.wethinkcode.vnitpick
 
-enum class ProjectPage {
+enum class ProjectPageType {
     Settings,
     Process,
+    StdOut,
+    StdErr,
 }

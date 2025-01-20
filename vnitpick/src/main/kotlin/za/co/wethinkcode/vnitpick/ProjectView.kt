@@ -1,9 +1,12 @@
 package za.co.wethinkcode.vnitpick
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,8 +28,7 @@ fun ProjectView(model: ProjectsModel) {
     Row() {
         if (project == null) {
             Text(
-                "No current project\n" +
-                        "To get started, use the folder icon to navigate to a project folder."
+                "No current project\n" + "To get started, use the folder icon to navigate to a project folder."
             )
         } else {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -40,22 +42,31 @@ fun ProjectView(model: ProjectsModel) {
 @Composable
 fun ProjectPages(project: Project) {
     Column(Modifier.width(200.dp).fillMaxHeight().padding(10.dp)) {
-        PageSelector(project, ProjectPage.Settings, "Settings")
-        PageSelector(project, ProjectPage.Process, "Process")
+        project.pages.forEach { page ->
+            PageSelector(page, { project.pageTo(page) })
+        }
     }
 }
 
 @Composable
-fun PageSelector(project: Project, page: ProjectPage, title: String) {
-    Row(Modifier.fillMaxWidth()
-        .clickable { project.pageTo(page) }
-        .border(2.dp, Color.Blue)) {
-        Text(
-            title,
-            Modifier.align(Alignment.CenterVertically),
-            color = Color.Black,
-            fontSize = TextUnit(20f, TextUnitType.Sp)
-        )
+fun PageSelector(page: ProjectPage, onClick: (ProjectPage) -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().border(2.dp, Color.Blue)
+    ) {
+        val isSelected by remember { page.isSelected }
+        val isEnabled by remember { page.isEnabled }
+        Box(Modifier.weight(1f).fillMaxWidth().background(Color.White).clickable {
+            if (isEnabled) onClick(page)
+        }) {
+            Text(
+                page.name, color = Color.Black, fontSize = TextUnit(20f, TextUnitType.Sp)
+            )
+            if (isSelected) {
+                Row(Modifier.width(50.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(" > ", color = Color.Black, fontSize = TextUnit(20f, TextUnitType.Sp))
+                }
+            } else Spacer(Modifier.width(50.dp))
+        }
     }
 }
 

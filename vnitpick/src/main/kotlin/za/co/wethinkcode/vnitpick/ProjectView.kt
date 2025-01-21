@@ -1,16 +1,17 @@
 package za.co.wethinkcode.vnitpick
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,21 +60,16 @@ fun PageSelector(page: ProjectPage, onClick: () -> Unit) {
         .padding(10.dp)
         .height(50.dp)
     if (isEnabled) modifier = modifier.clickable { onClick() }
+    if (isSelected) {
+        modifier = modifier.border(1.dp, Color.LightGray, RoundedCornerShape(3.dp))
+    }
 
     Box(modifier, contentAlignment = Alignment.Center) {
         Text(
             page.name,
             color = if (page.isEnabled.value) Color.White else Color.Black,
-            fontSize = TextUnit(20f, TextUnitType.Sp)
+            fontSize = TextUnit(24f, TextUnitType.Sp)
         )
-        if (isSelected) {
-            Text(
-                " > ",
-                Modifier.align(Alignment.CenterEnd),
-                color = Color.White,
-                fontSize = TextUnit(20f, TextUnitType.Sp)
-            )
-        } else Spacer(Modifier.width(50.dp))
     }
 }
 

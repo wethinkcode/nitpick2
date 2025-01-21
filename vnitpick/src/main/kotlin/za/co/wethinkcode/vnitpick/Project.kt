@@ -27,7 +27,6 @@ class Project(val path: Path) {
 
 
     fun pageTo(newPage: ProjectPage) {
-        println("pageTo: $newPage")
         page.value.isSelected.value = false
         newPage.isSelected.value = true
         page.value = newPage

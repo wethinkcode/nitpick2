@@ -9,4 +9,12 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     }
 
     operator fun get(index: Int): Commit = this.toList()[index]
+
+    fun toFlowGrid(): FlowGrid {
+        val result = FlowGrid()
+        for (commit in this) {
+            commit.toFlowGrid(result)
+        }
+        return result
+    }
 }

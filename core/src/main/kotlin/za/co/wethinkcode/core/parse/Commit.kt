@@ -22,4 +22,29 @@ class Commit(val detail: LogDetail) : MutableSet<LogDetail> by LogDetailsByTimes
         run.timestamp < detail.timestamp
                 && (run.email.startsWith(detail.email) || detail.email.startsWith(run.email))
                 && run.branch == detail.branch
+
+    fun toFlowGrid(grid: FlowGrid) {
+        this.forEach { detail ->
+            val destX = grid.width
+            when (detail.type) {
+                RunType.run -> {
+                    grid[destX, 1] = CellType.RunBar
+                    grid[destX, 0] = CellType.LocalLeft
+                }
+
+                RunType.local -> {
+                    grid[destX, 1] = CellType.LocalBar
+                    grid[destX, 0] = CellType.LocalRight
+                }
+
+                else -> {
+                    grid[destX, 1] = CellType.Nothing
+                    grid[destX, 0] = CellType.Nothing
+                }
+            }
+        }
+        val destX = grid.width
+        grid[destX, 1] = CellType.LocalBar
+        grid[destX, 0] = CellType.LocalRight
+    }
 }

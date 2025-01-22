@@ -23,5 +23,6 @@ data class LogDetail(
             }
             return type.name
         }
-
 }
+
+val NO_DETAIL = LogDetail("N/A", RunType.unknown, "N/A", "N/A", "N/A")

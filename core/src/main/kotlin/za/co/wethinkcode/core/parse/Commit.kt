@@ -2,19 +2,6 @@ package za.co.wethinkcode.core.parse
 
 
 class Commit(val detail: LogDetail) : MutableSet<LogDetail> by LogDetailsByTimestamp() {
-    val height: Int
-        get() {
-            if (isEmpty()) return 2
-            else return maxOf { entry ->
-                when (entry.type) {
-                    RunType.test -> entry.total
-                    else -> 1
-                }
-            } + 1
-        }
-
-    val width: Int
-        get() = Math.max(size + 1, 2)
 
     operator fun get(index: Int): LogDetail = this.toList()[index]
 
@@ -28,23 +15,23 @@ class Commit(val detail: LogDetail) : MutableSet<LogDetail> by LogDetailsByTimes
             val destX = grid.width
             when (detail.type) {
                 RunType.run -> {
-                    grid[destX, 1] = CellType.RunBar
-                    grid[destX, 0] = CellType.LocalLeft
+                    grid[destX, 1] = FlowCell(detail, CellType.RunBar)
+                    grid[destX, 0] = FlowCell(detail, CellType.LocalLeft)
                 }
 
                 RunType.local -> {
-                    grid[destX, 1] = CellType.LocalBar
-                    grid[destX, 0] = CellType.LocalRight
+                    grid[destX, 1] = FlowCell(detail, CellType.LocalBar)
+                    grid[destX, 0] = FlowCell(detail, CellType.LocalRight)
                 }
 
                 else -> {
-                    grid[destX, 1] = CellType.Nothing
-                    grid[destX, 0] = CellType.Nothing
+                    grid[destX, 1] = FlowCell(detail, CellType.Nothing)
+                    grid[destX, 0] = FlowCell(detail, CellType.Nothing)
                 }
             }
         }
         val destX = grid.width
-        grid[destX, 1] = CellType.LocalBar
-        grid[destX, 0] = CellType.LocalRight
+        grid[destX, 1] = FlowCell(detail, CellType.LocalBar)
+        grid[destX, 0] = FlowCell(detail, CellType.LocalRight)
     }
 }

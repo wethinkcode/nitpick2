@@ -7,13 +7,13 @@ class FlowGrid {
     val width get() = _width + 1
     val height get() = _height + 1
 
-    val map = mutableMapOf<Pair<Int, Int>, CellType>()
+    val map = mutableMapOf<Pair<Int, Int>, FlowCell>()
 
-    operator fun get(x: Int, y: Int): CellType {
-        return map.getOrDefault(Pair(x, y), CellType.Nothing)
+    operator fun get(x: Int, y: Int): FlowCell {
+        return map.getOrDefault(Pair(x, y), NO_CELL)
     }
 
-    operator fun set(x: Int, y: Int, value: CellType) {
+    operator fun set(x: Int, y: Int, value: FlowCell) {
         map[Pair(x, y)] = value
         if (x > _width) _width = x
         if (y > _height) _height = y
@@ -25,7 +25,7 @@ class FlowGrid {
             builder.append('|')
             for (x in 0 until width) {
                 val invertY = height - 1 - y
-                when (get(x, invertY)) {
+                when (get(x, invertY).type) {
                     CellType.Nothing -> builder.append("   |")
                     CellType.CommitLeft -> builder.append("CL |")
                     CellType.FakeCommitLeft -> builder.append("FCL|")

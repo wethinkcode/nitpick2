@@ -24,10 +24,10 @@ class CommitsTest {
         val grid = commits.toFlowGrid()
         assertThat(grid.width).isEqualTo(2)
         assertThat(grid.height).isEqualTo(2)
-        val x = """
+        val expected = """
         |RB |LB |
         |LL |LR |""".trimIndent()
-        assertThat(grid.toString()).isEqualTo(x)
+        assertThat(grid.toString()).isEqualTo(expected)
 
     }
 }

@@ -76,7 +76,17 @@ fun PageSelector(page: ProjectPage, onClick: () -> Unit) {
 @Composable
 fun ProjectPage(project: Project) {
     Column(Modifier.fillMaxWidth()) {
-        Text(project.path.toString())
-        Text(project.page.value.name)
+        when (project.page.value.type) {
+            ProjectPageType.Process -> ProcessPage(project)
+            else -> {
+                Text(project.path.toString())
+                Text(project.page.value.name)
+            }
+        }
     }
+}
+
+@Composable
+fun ProcessPage(project: Project) {
+    
 }

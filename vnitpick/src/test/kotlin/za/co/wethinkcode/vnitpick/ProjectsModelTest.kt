@@ -16,7 +16,7 @@ class ProjectsModelTest {
 
     @Test
     fun `add adds and selects`() {
-        val project = Project(Path("."))
+        val project = ProjectModel(Path("."))
         model.add(project)
         assertThat(model.projects).containsExactly(project)
         assertThat(model.currentProjectIndex.value).isEqualTo(0)
@@ -25,8 +25,8 @@ class ProjectsModelTest {
 
     @Test
     fun `select changes selection`() {
-        val one = Project(Path("one"))
-        val two = Project(Path("two"))
+        val one = ProjectModel(Path("one"))
+        val two = ProjectModel(Path("two"))
         model.add(one)
         model.add(two)
         assertThat(model.currentProject.value).isEqualTo(two)
@@ -44,8 +44,8 @@ class ProjectsModelTest {
 
     @Test
     fun `next and previous increment and decrement`() {
-        val one = Project(Path("one"))
-        val two = Project(Path("two"))
+        val one = ProjectModel(Path("one"))
+        val two = ProjectModel(Path("two"))
         model.add(one)
         model.add(two)
         assertThat(model.currentProject.value).isEqualTo(two)
@@ -57,7 +57,7 @@ class ProjectsModelTest {
 
     @Test
     fun `close no-ops on invalid index`() {
-        val one = Project(Path("one"))
+        val one = ProjectModel(Path("one"))
         model.add(one)
         model.close(-1)
         assertThat(model.currentProject.value).isEqualTo(one)
@@ -67,7 +67,7 @@ class ProjectsModelTest {
 
     @Test
     fun `close removes single project`() {
-        val one = Project(Path("one"))
+        val one = ProjectModel(Path("one"))
         model.add(one)
         model.close(0)
         assertThat(model.currentProject.value).isNull()
@@ -77,8 +77,8 @@ class ProjectsModelTest {
 
     @Test
     fun `close on unselected project right of current works`() {
-        val one = Project(Path("one"))
-        val two = Project(Path("two"))
+        val one = ProjectModel(Path("one"))
+        val two = ProjectModel(Path("two"))
         model.add(one)
         model.add(two)
         model.select(0)
@@ -90,8 +90,8 @@ class ProjectsModelTest {
 
     @Test
     fun `close on unselected project left of current changes selection`() {
-        val one = Project(Path("one"))
-        val two = Project(Path("two"))
+        val one = ProjectModel(Path("one"))
+        val two = ProjectModel(Path("two"))
         model.add(one)
         model.add(two)
         model.select(1)
@@ -103,8 +103,8 @@ class ProjectsModelTest {
 
     @Test
     fun `close on selected project changes selection`() {
-        val one = Project(Path("one"))
-        val two = Project(Path("two"))
+        val one = ProjectModel(Path("one"))
+        val two = ProjectModel(Path("two"))
         model.add(one)
         model.add(two)
         model.select(0)

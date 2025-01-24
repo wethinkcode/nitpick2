@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 
 class ProjectsModel {
-    val projects = mutableStateListOf<Project>()
+    val projects = mutableStateListOf<ProjectModel>()
     val currentProjectIndex = mutableIntStateOf(-1)
-    val currentProject = mutableStateOf<Project?>(null)
+    val currentProject = mutableStateOf<ProjectModel?>(null)
 
-    fun add(project: Project) {
+    fun add(project: ProjectModel) {
         projects.add(project)
         currentProjectIndex.value = projects.lastIndex
         currentProject.value = projects.last()

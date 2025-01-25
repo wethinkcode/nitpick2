@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 
-private val CommitShape = GenericShape { size, _ ->
+private val TempCommitShape = GenericShape { size, _ ->
     moveTo(0f, size.height)
     lineTo(0f, size.height - 20f)
     lineTo(size.width - 20f, size.height - 20f)

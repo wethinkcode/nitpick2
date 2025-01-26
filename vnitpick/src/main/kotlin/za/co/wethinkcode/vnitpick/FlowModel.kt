@@ -28,6 +28,10 @@ class FlowModel {
         shapes.clear()
         shapes.addAll(layout.shapes)
     }
+
+    fun flowClick(shape: LogShape) {
+        println("Clicked")
+    }
 }
 
 const val FLOW_SIZE = 20f

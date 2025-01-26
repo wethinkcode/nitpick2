@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+
 package za.co.wethinkcode.vnitpick
 
 import androidx.compose.foundation.BasicTooltipBox
@@ -27,11 +29,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
+import za.co.wethinkcode.core.parse.BarShape
 import za.co.wethinkcode.core.parse.CommitShape
+import za.co.wethinkcode.core.parse.TestShape
 
 @Composable
 fun ProjectView(model: ProjectsModel) {
@@ -107,14 +112,24 @@ fun ProcessPage(model: FlowModel) {
         ) {
             model.shapes.forEach {
                 when (it) {
-                    is CommitShape -> DrawCommitShape(it, model.height.value)
+                    is CommitShape -> DrawCommitShape(it, model.height.value) {
+                        model.flowClick(it)
+                    }
+
+                    is BarShape -> DrawBarShape(it, model.height.value) {
+                        model.flowClick(it)
+                    }
+
+                    is TestShape -> DrawTestShape(it, model.height.value) {
+                        model.flowClick(it)
+                    }
                 }
             }
         }
     }
 }
 
-private val TempCommitShape = GenericShape { size, _ ->
+private val reverseEllShape = GenericShape { size, _ ->
     moveTo(0f, size.height)
     lineTo(0f, size.height - 20f)
     lineTo(size.width - 20f, size.height - 20f)
@@ -123,18 +138,15 @@ private val TempCommitShape = GenericShape { size, _ ->
     lineTo(size.width, size.height)
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+
 @Composable
-fun DrawCommitShape(shape: CommitShape, totalHeight: Int) {
+fun DrawCommitShape(shape: CommitShape, totalHeight: Int, onClick: () -> Unit) {
     val tooltipState = rememberBasicTooltipState(isPersistent = true)
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - shape.height) * 20
-    println("$offsetX,$offsetY")
-    println("${shape.x} ${shape.height}")
-    println("${shape.width},${shape.height}")
     BasicTooltipBox(
         modifier = Modifier.offset(offsetX.dp, offsetY.dp)
-            .clip(TempCommitShape),
+            .clip(reverseEllShape),
         positionProvider = PopupPositionProviderAtPosition(
             Offset(0f, 0f),
             true,
@@ -149,13 +161,72 @@ fun DrawCommitShape(shape: CommitShape, totalHeight: Int) {
         Box(
             modifier = Modifier.width((shape.width * 20).dp)
                 .height((shape.height * 20).dp)
-//                .offset(offsetX.dp, offsetY.dp)
-                .clip(TempCommitShape)
+                .clip(reverseEllShape)
                 .clickable {
-                    println("Clicked")
+                    onClick()
                 }
                 .background(Color.Red)
-                .border(1.dp, Color.Blue, shape = TempCommitShape)
+                .border(1.dp, Color.Black, shape = reverseEllShape)
+        )
+    }
+}
+
+@Composable
+fun DrawBarShape(shape: BarShape, totalHeight: Int, onClick: () -> Unit) {
+    val tooltipState = rememberBasicTooltipState(isPersistent = true)
+    val offsetX = shape.x * 20
+    val offsetY = (totalHeight - (shape.height + 1)) * 20
+    BasicTooltipBox(
+        modifier = Modifier.offset(offsetX.dp, offsetY.dp),
+        positionProvider = PopupPositionProviderAtPosition(
+            Offset(0f, 0f),
+            true,
+            Offset(0f, 0f),
+            windowMarginPx = 5
+        ),
+        tooltip = {
+            Text("${shape.detail.timestamp}")
+        },
+        state = tooltipState
+    ) {
+        Box(
+            modifier = Modifier.width((shape.width * 20).dp)
+                .height((shape.height * 20).dp)
+                .clickable {
+                    onClick()
+                }
+                .background(Color.Gray)
+                .border(1.dp, Color.Black, shape = RectangleShape)
+        )
+    }
+}
+
+@Composable
+fun DrawTestShape(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
+    val tooltipState = rememberBasicTooltipState(isPersistent = true)
+    val offsetX = shape.x * 20
+    val offsetY = (totalHeight - ((shape.y + 1))) * 20
+    BasicTooltipBox(
+        modifier = Modifier.offset(offsetX.dp, offsetY.dp),
+        positionProvider = PopupPositionProviderAtPosition(
+            Offset(0f, 0f),
+            true,
+            Offset(0f, 0f),
+            windowMarginPx = 5
+        ),
+        tooltip = {
+            Text("${shape.detail.timestamp}")
+        },
+        state = tooltipState
+    ) {
+        Box(
+            modifier = Modifier.width(20.dp)
+                .height(20.dp)
+                .clickable {
+                    onClick()
+                }
+                .background(Color.Green)
+                .border(1.dp, Color.Black, shape = RectangleShape)
         )
     }
 }

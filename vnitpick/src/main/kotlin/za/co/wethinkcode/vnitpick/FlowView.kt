@@ -24,11 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
-import za.co.wethinkcode.core.parse.BarShape
-import za.co.wethinkcode.core.parse.CommitShape
-import za.co.wethinkcode.core.parse.RunType
-import za.co.wethinkcode.core.parse.TestShape
-import za.co.wethinkcode.core.parse.TestStatus
+import za.co.wethinkcode.core.flow.BarShape
+import za.co.wethinkcode.core.flow.CommitShape
+import za.co.wethinkcode.core.flow.RunType
+import za.co.wethinkcode.core.flow.TestShape
+import za.co.wethinkcode.core.flow.TestStatus
 
 @Composable
 fun FlowPage(model: FlowModel) {
@@ -40,15 +40,15 @@ fun FlowPage(model: FlowModel) {
         ) {
             model.shapes.forEach {
                 when (it) {
-                    is CommitShape -> DrawCommitShape(it, model.height.value) {
+                    is CommitShape -> FlowCommit(it, model.height.value) {
                         model.flowClick(it)
                     }
 
-                    is BarShape -> DrawBarShape(it, model.height.value) {
+                    is BarShape -> FlowBar(it, model.height.value) {
                         model.flowClick(it)
                     }
 
-                    is TestShape -> DrawTestShape(it, model.height.value) {
+                    is TestShape -> FlowTest(it, model.height.value) {
                         model.flowClick(it)
                     }
                 }
@@ -57,7 +57,7 @@ fun FlowPage(model: FlowModel) {
     }
 }
 
-private val reverseEllShape = GenericShape { size, _ ->
+private val flowCommitShape = GenericShape { size, _ ->
     moveTo(0f, size.height)
     lineTo(0f, size.height - 20f)
     lineTo(size.width - 20f, size.height - 20f)
@@ -68,7 +68,7 @@ private val reverseEllShape = GenericShape { size, _ ->
 
 
 @Composable
-fun DrawCommitShape(shape: CommitShape, totalHeight: Int, onClick: () -> Unit) {
+fun FlowCommit(shape: CommitShape, totalHeight: Int, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - shape.height) * 20
     val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
@@ -76,18 +76,18 @@ fun DrawCommitShape(shape: CommitShape, totalHeight: Int, onClick: () -> Unit) {
         Box(
             modifier = Modifier.width((shape.width * 20).dp)
                 .height((shape.height * 20).dp)
-                .clip(reverseEllShape)
+                .clip(flowCommitShape)
                 .clickable {
                     onClick()
                 }
                 .background(background)
-                .border(1.dp, Color.Black, shape = reverseEllShape)
+                .border(1.dp, Color.Black, shape = flowCommitShape)
         )
     }
 }
 
 @Composable
-fun DrawBarShape(shape: BarShape, totalHeight: Int, onClick: () -> Unit) {
+fun FlowBar(shape: BarShape, totalHeight: Int, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - (shape.height + 1)) * 20
     FlowTip(offsetX, offsetY, false, "Run: ${shape.detail.timestamp}") {
@@ -104,7 +104,7 @@ fun DrawBarShape(shape: BarShape, totalHeight: Int, onClick: () -> Unit) {
 }
 
 @Composable
-fun DrawTestShape(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
+fun FlowTest(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - ((shape.y + 1))) * 20
     val background = when (shape.result.status) {
@@ -131,7 +131,7 @@ fun DrawTestShape(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
 @Composable
 fun FlowTip(offsetX: Int, offsetY: Int, isEll: Boolean, tip: String, content: @Composable () -> Unit) {
     val tooltipState = rememberBasicTooltipState(isPersistent = true)
-    val modifier = if (isEll) Modifier.offset(offsetX.dp, offsetY.dp).clip(reverseEllShape)
+    val modifier = if (isEll) Modifier.offset(offsetX.dp, offsetY.dp).clip(flowCommitShape)
     else Modifier.offset(offsetX.dp, offsetY.dp)
     BasicTooltipBox(
         modifier = modifier,

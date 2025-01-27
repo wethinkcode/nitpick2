@@ -1,4 +1,4 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 class SequencedTestResults {
 

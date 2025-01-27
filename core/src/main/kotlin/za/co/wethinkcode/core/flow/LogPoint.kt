@@ -1,3 +1,3 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 data class LogPoint(val x: Int, val y: Int)

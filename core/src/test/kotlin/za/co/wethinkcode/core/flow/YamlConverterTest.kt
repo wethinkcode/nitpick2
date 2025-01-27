@@ -1,4 +1,4 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

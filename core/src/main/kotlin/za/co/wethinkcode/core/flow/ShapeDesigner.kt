@@ -1,4 +1,4 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 import java.awt.Color
 
@@ -47,7 +47,7 @@ class ShapeDesigner {
     }
 
     private fun runShape(
-        run: LogDetail,
+        run: FlowDetail,
         previousUpperRight: LogPoint,
         paths: LogShapes
     ): LogPoint {
@@ -60,7 +60,7 @@ class ShapeDesigner {
     }
 
     private fun makeUnknownShape(
-        run: LogDetail,
+        run: FlowDetail,
         previousUpperRight: LogPoint,
         paths: LogShapes
     ): LogPoint {
@@ -69,7 +69,7 @@ class ShapeDesigner {
     }
 
     private fun makeBase64Shape(
-        run: LogDetail,
+        run: FlowDetail,
         previousUpperRight: LogPoint,
         paths: LogShapes
     ): LogPoint {
@@ -78,7 +78,7 @@ class ShapeDesigner {
     }
 
     private fun makeRunShape(
-        run: LogDetail,
+        run: FlowDetail,
         previousUpperRight: LogPoint,
         paths: LogShapes
     ): LogPoint {
@@ -87,7 +87,7 @@ class ShapeDesigner {
     }
 
     private fun makeTestShape(
-        detail: LogDetail,
+        detail: FlowDetail,
         previousUpperRight: LogPoint,
         paths: LogShapes
     ): LogPoint {

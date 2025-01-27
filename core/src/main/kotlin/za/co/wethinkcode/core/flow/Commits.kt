@@ -1,4 +1,4 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     class CommitComparator : Comparator<Commit> {
@@ -9,12 +9,4 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     }
 
     operator fun get(index: Int): Commit = this.toList()[index]
-
-    fun toFlowGrid(): FlowGrid {
-        val result = FlowGrid()
-        for (commit in this) {
-            commit.toFlowGrid(result)
-        }
-        return result
-    }
 }

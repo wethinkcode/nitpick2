@@ -1,18 +1,18 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 import org.yaml.snakeyaml.Yaml
 
 class YamlConverter {
 
-    fun convert(texts: List<String>): List<LogDetail> {
-        val entries = mutableListOf<LogDetail>()
+    fun convert(texts: List<String>): List<FlowDetail> {
+        val entries = mutableListOf<FlowDetail>()
         texts.forEach { text ->
             entries.add(convert(text))
         }
         return entries
     }
 
-    fun convert(decoded: String): LogDetail {
+    fun convert(decoded: String): FlowDetail {
         val map = (Yaml().load<Any?>(decoded) ?: return notValidYaml()) as? Map<*, *> ?: return notValidYaml()
         val messages = mutableListOf<String>()
         val typeString = forceString(TYPE_KEY, map, MISSING_TYPE, messages)
@@ -25,7 +25,7 @@ class YamlConverter {
         val fails = stringListFrom(map, FAILS_KEY)
         val disables = stringListFrom(map, DISABLES_KEY)
         val aborts = stringListFrom(map, ABORTS_KEY)
-        return LogDetail(
+        return FlowDetail(
             branch,
             type,
             timestamp,
@@ -47,8 +47,8 @@ class YamlConverter {
         return map[key] as String
     }
 
-    private fun notValidYaml(): LogDetail {
-        return LogDetail(
+    private fun notValidYaml(): FlowDetail {
+        return FlowDetail(
             UNKNOWN, RunType.error, UNKNOWN, UNKNOWN, UNKNOWN, emptyList(), emptyList(), emptyList(),
             emptyList(), listOf(INVALID_YAML)
         )

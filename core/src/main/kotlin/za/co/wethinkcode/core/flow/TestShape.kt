@@ -1,11 +1,11 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 
 class TestShape(
-    override val detail: LogDetail,
+    override val detail: FlowDetail,
     override val x: Int,
     val y: Int,
     val result: TestResult,
     val tests: List<TestResult>
-) : LogShape {
+) : FlowShape {
 }

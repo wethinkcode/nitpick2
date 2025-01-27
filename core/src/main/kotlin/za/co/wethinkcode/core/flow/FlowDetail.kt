@@ -1,7 +1,7 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 
-data class LogDetail(
+data class FlowDetail(
     val branch: String,
     val type: RunType,
     val timestamp: String,
@@ -25,4 +25,4 @@ data class LogDetail(
         }
 }
 
-val NO_DETAIL = LogDetail("N/A", RunType.unknown, "N/A", "N/A", "N/A")
+val NO_DETAIL = FlowDetail("N/A", RunType.unknown, "N/A", "N/A", "N/A")

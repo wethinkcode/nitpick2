@@ -1,4 +1,4 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 enum class RunType {
     base64, // parse error on base64 step

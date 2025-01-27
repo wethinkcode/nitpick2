@@ -2,8 +2,8 @@ package za.co.wethinkcode.core
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import za.co.wethinkcode.core.parse.LogCollater
-import za.co.wethinkcode.core.parse.RunsBuilder
+import za.co.wethinkcode.core.flow.LogCollater
+import za.co.wethinkcode.core.flow.RunsBuilder
 
 class CommitsTest {
 

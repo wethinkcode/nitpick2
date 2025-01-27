@@ -2,11 +2,11 @@ package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import za.co.wethinkcode.core.parse.Base64Loader
-import za.co.wethinkcode.core.parse.LogCollater
-import za.co.wethinkcode.core.parse.LogShape
-import za.co.wethinkcode.core.parse.ShapeDesigner
-import za.co.wethinkcode.core.parse.YamlConverter
+import za.co.wethinkcode.core.flow.Base64Loader
+import za.co.wethinkcode.core.flow.FlowShape
+import za.co.wethinkcode.core.flow.LogCollater
+import za.co.wethinkcode.core.flow.ShapeDesigner
+import za.co.wethinkcode.core.flow.YamlConverter
 import java.nio.file.Path
 
 class FlowModel {
@@ -14,7 +14,7 @@ class FlowModel {
     val raw = mutableStateListOf("")
     val width = mutableStateOf(0)
     val height = mutableStateOf(0)
-    val shapes = mutableStateListOf<LogShape>()
+    val shapes = mutableStateListOf<FlowShape>()
 
     fun load(path: Path) {
         val yamls = Base64Loader().load(path.resolve(".jltk"))
@@ -29,7 +29,7 @@ class FlowModel {
         shapes.addAll(layout.shapes)
     }
 
-    fun flowClick(shape: LogShape) {
+    fun flowClick(shape: FlowShape) {
         println("Clicked")
     }
 }

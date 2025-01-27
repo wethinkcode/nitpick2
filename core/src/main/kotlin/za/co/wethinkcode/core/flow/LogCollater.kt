@@ -1,7 +1,7 @@
-package za.co.wethinkcode.core.parse
+package za.co.wethinkcode.core.flow
 
 class LogCollater() {
-    fun collate(runs: List<LogDetail>): Commits {
+    fun collate(runs: List<FlowDetail>): Commits {
         val commits = Commits()
         val sortedRuns = runs.sortedBy { it.timestamp }
         for (run in sortedRuns.filter { it.type == RunType.commit }) commits.add(Commit(run))
@@ -11,7 +11,7 @@ class LogCollater() {
         return commits
     }
 
-    private fun forceRunIntoCommit(commits: Commits, run: LogDetail) {
+    private fun forceRunIntoCommit(commits: Commits, run: FlowDetail) {
         for (commit in commits) {
             if (commit.owns(run)) {
                 commit.add(run)
@@ -19,7 +19,7 @@ class LogCollater() {
             }
         }
         val commit = Commit(
-            LogDetail(run.branch, RunType.local, "99999", run.committer, run.email)
+            FlowDetail(run.branch, RunType.local, "99999", run.committer, run.email)
         )
         commit.add(run)
         commits.add(commit)

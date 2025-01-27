@@ -5,22 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import za.co.wethinkcode.core.flow.Base64Loader
 import za.co.wethinkcode.core.flow.FlowCollater
 import za.co.wethinkcode.core.flow.FlowShape
-import za.co.wethinkcode.core.flow.StringToDetail
 import java.nio.file.Path
 
 class FlowModel {
 
-    val raw = mutableStateListOf("")
     val width = mutableStateOf(0)
     val height = mutableStateOf(0)
     val shapes = mutableStateListOf<FlowShape>()
 
     fun load(path: Path) {
-        val yamls = Base64Loader().load(path.resolve(".jltk"))
-        raw.clear()
-        yamls.forEach { yaml -> raw.add(yaml) }
-        val entries = StringToDetail().convert(yamls)
-        val commits = FlowCollater().collate(entries)
+        val details = Base64Loader().load(path.resolve(".jltk"))
+        val commits = FlowCollater().collate(details)
         shapes.clear()
         commits.layoutToShapes(shapes)
         width.value = commits.width

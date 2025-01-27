@@ -3,13 +3,11 @@ package za.co.wethinkcode.core.flow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class StringToDetailTest {
-    val builder = StringToDetail()
-
+class YamlFlowDetailTest {
     @Test
     fun `fromYaml with non-yaml text`() {
-        val entry = builder.convert("")
-        assertThat(entry.messages).containsExactly(StringToDetail.INVALID_YAML)
+        val entry = YamlFlowDetail("").convert()
+        assertThat(entry.messages).containsExactly(YamlFlowDetail.INVALID_YAML)
     }
 
     @Test
@@ -30,7 +28,7 @@ class StringToDetailTest {
             aborts:
             - aborted
         """.trimIndent()
-        val record = builder.convert(yaml)
+        val record = YamlFlowDetail(yaml).convert()
         with(record) {
             assertThat(type).isEqualTo(RunType.test)
             assertThat(branch).isEqualTo("branch")
@@ -57,7 +55,7 @@ class StringToDetailTest {
             type: run
             timestamp: 'Timestamp'
         """.trimIndent()
-        val record = builder.convert(yaml)
+        val record = YamlFlowDetail(yaml).convert()
         with(record) {
             assertThat(type).isEqualTo(RunType.run)
             assertThat(branch).isEqualTo("branch")
@@ -83,7 +81,7 @@ class StringToDetailTest {
             type: commit
             timestamp: 'Timestamp'
         """.trimIndent()
-        val record = builder.convert(yaml)
+        val record = YamlFlowDetail(yaml).convert()
         with(record) {
             assertThat(type).isEqualTo(RunType.commit)
             assertThat(branch).isEqualTo("branch")
@@ -118,7 +116,7 @@ class StringToDetailTest {
             aborts:
             - aborted
         """.trimIndent()
-        val record = builder.convert(yaml)
+        val record = YamlFlowDetail(yaml).convert()
         with(record) {
             assertThat(type).isEqualTo(RunType.unknown)
             assertThat(branch).isEqualTo("branch")
@@ -129,7 +127,7 @@ class StringToDetailTest {
             assertThat(fails).containsExactly("failed")
             assertThat(disables).containsExactly("disabled")
             assertThat(aborts).containsExactly("aborted")
-            assertThat(messages).containsExactly(StringToDetail.UNKNOWN_TYPE)
+            assertThat(messages).containsExactly(YamlFlowDetail.UNKNOWN_TYPE)
             assertThat(isError).isTrue()
         }
     }
@@ -147,24 +145,24 @@ class StringToDetailTest {
             aborts:
             - aborted
         """.trimIndent()
-        val record = builder.convert(yaml)
+        val record = YamlFlowDetail(yaml).convert()
         with(record) {
             assertThat(type).isEqualTo(RunType.unknown)
-            assertThat(branch).isEqualTo(StringToDetail.UNKNOWN)
-            assertThat(committer).isEqualTo(StringToDetail.UNKNOWN)
-            assertThat(email).isEqualTo(StringToDetail.UNKNOWN)
-            assertThat(timestamp).isEqualTo(StringToDetail.UNKNOWN)
+            assertThat(branch).isEqualTo(YamlFlowDetail.UNKNOWN)
+            assertThat(committer).isEqualTo(YamlFlowDetail.UNKNOWN)
+            assertThat(email).isEqualTo(YamlFlowDetail.UNKNOWN)
+            assertThat(timestamp).isEqualTo(YamlFlowDetail.UNKNOWN)
             assertThat(passes).containsExactly("passed")
             assertThat(fails).containsExactly("failed")
             assertThat(disables).containsExactly("disabled")
             assertThat(aborts).containsExactly("aborted")
             assertThat(messages).containsExactlyInAnyOrder(
-                StringToDetail.MISSING_BRANCH,
-                StringToDetail.MISSING_COMMITTER,
-                StringToDetail.MISSING_EMAIL,
-                StringToDetail.MISSING_TIMESTAMP,
-                StringToDetail.MISSING_TYPE,
-                StringToDetail.UNKNOWN_TYPE,
+                YamlFlowDetail.MISSING_BRANCH,
+                YamlFlowDetail.MISSING_COMMITTER,
+                YamlFlowDetail.MISSING_EMAIL,
+                YamlFlowDetail.MISSING_TIMESTAMP,
+                YamlFlowDetail.MISSING_TYPE,
+                YamlFlowDetail.UNKNOWN_TYPE,
             )
             assertThat(isError).isTrue()
         }

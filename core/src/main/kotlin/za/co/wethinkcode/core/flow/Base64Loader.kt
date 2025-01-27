@@ -12,10 +12,10 @@ import kotlin.io.path.isDirectory
 class Base64Loader {
     val decoder = Base64.getDecoder()
 
-    fun load(path: Path): List<String> {
+    fun load(path: Path): List<FlowDetail> {
         if (!path.exists()) return listOf(makeBase64Error(path, "File does not exist."))
         if (!path.isDirectory()) return listOf(makeBase64Error(path, "File is not a folder."))
-        val runs = mutableListOf<String>()
+        val runs = mutableListOf<FlowDetail>()
         Files.list(path).forEach { log ->
             if (isJltkLog(log)) {
                 safeLoad(runs, log)
@@ -30,7 +30,7 @@ class Base64Loader {
     }
 
     fun safeLoad(
-        runs: MutableList<String>,
+        runs: MutableList<FlowDetail>,
         log: Path
     ) {
         try {
@@ -42,18 +42,19 @@ class Base64Loader {
 
     private fun unsafeLoad(
         log: Path,
-        runs: MutableList<String>
+        runs: MutableList<FlowDetail>
     ) {
         val lines = Files.readAllLines(log)
         for (line in lines) {
             val decoded = decoder.decode(line).toString(Charset.forName("UTF-8"))
-            runs.add(decoded)
+            runs.add(YamlFlowDetail(decoded).convert())
         }
     }
 
-    fun makeBase64Error(path: Path, error: String): String {
+    fun makeBase64Error(path: Path, error: String): FlowDetail {
         val parse = ParsedFileName(path.toString())
-        return """
+        return YamlFlowDetail(
+            """
             ---
             type: base64
             timestamp: '${parse.timestamp}'
@@ -63,5 +64,6 @@ class Base64Loader {
             file: ${path.toAbsolutePath()}
             error: $error
         """.trimIndent()
+        ).convert()
     }
 }

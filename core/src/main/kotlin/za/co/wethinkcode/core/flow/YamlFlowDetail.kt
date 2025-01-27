@@ -2,18 +2,9 @@ package za.co.wethinkcode.core.flow
 
 import org.yaml.snakeyaml.Yaml
 
-class StringToDetail {
-
-    fun convert(texts: List<String>): List<FlowDetail> {
-        val entries = mutableListOf<FlowDetail>()
-        texts.forEach { text ->
-            entries.add(convert(text))
-        }
-        return entries
-    }
-
-    fun convert(decoded: String): FlowDetail {
-        val map = (Yaml().load<Any?>(decoded) ?: return notValidYaml()) as? Map<*, *> ?: return notValidYaml()
+class YamlFlowDetail(val yaml: String) {
+    fun convert(): FlowDetail {
+        val map = (Yaml().load<Any?>(yaml) ?: return notValidYaml()) as? Map<*, *> ?: return notValidYaml()
         val messages = mutableListOf<String>()
         val typeString = forceString(TYPE_KEY, map, MISSING_TYPE, messages)
         val type = typeFromString(typeString, messages)

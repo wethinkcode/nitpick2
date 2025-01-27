@@ -1,7 +1,7 @@
 package za.co.wethinkcode.core.flow
 
 
-class CommitShape(val commit: Commit, lastUpperRight: LogPoint) :
+class CommitShape(val commit: Commit, lastUpperRight: FlowPoint) :
     FlowShape {
     override val detail = commit.detail
 

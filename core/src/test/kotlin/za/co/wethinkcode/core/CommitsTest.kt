@@ -2,13 +2,13 @@ package za.co.wethinkcode.core
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import za.co.wethinkcode.core.flow.LogCollater
+import za.co.wethinkcode.core.flow.FlowCollater
 import za.co.wethinkcode.core.flow.RunsBuilder
 
 class CommitsTest {
 
     val builder = RunsBuilder()
-    val collater = LogCollater()
+    val collater = FlowCollater()
 
     @Test
     fun `no commits means empty grid`() {

@@ -5,14 +5,14 @@ import java.awt.Color
 class ShapeDesigner {
     val results = TestResults()
 
-    fun design(commits: Commits): LogShapes {
+    fun design(commits: Commits): FlowShapes {
         if (commits.isEmpty()) {
-            return LogShapes(1, 1)
+            return FlowShapes(1, 1)
         }
         val height = commits.maxOf { it.height } + 1
         val width = commits.sumOf { it.width }
-        val shapes = LogShapes(height, width)
-        var previousUpperRight = LogPoint(0, 0)
+        val shapes = FlowShapes(height, width)
+        var previousUpperRight = FlowPoint(0, 0)
         for (commit in commits) {
             previousUpperRight = commitShape(commit, previousUpperRight, shapes)
         }
@@ -21,24 +21,24 @@ class ShapeDesigner {
 
     private fun commitShape(
         commit: Commit,
-        previousUpperRight: LogPoint,
-        paths: LogShapes
-    ): LogPoint {
+        previousUpperRight: FlowPoint,
+        paths: FlowShapes
+    ): FlowPoint {
         val upperRightFromRuns = runsForCommit(previousUpperRight, commit, paths)
         paths.shapes.add(
             CommitShape(
                 commit,
-                LogPoint(previousUpperRight.x, upperRightFromRuns.y)
+                FlowPoint(previousUpperRight.x, upperRightFromRuns.y)
             )
         )
-        return LogPoint(upperRightFromRuns.x + 1, upperRightFromRuns.y)
+        return FlowPoint(upperRightFromRuns.x + 1, upperRightFromRuns.y)
     }
 
     private fun runsForCommit(
-        previousUpperRight: LogPoint,
+        previousUpperRight: FlowPoint,
         commit: Commit,
-        paths: LogShapes
-    ): LogPoint {
+        paths: FlowShapes
+    ): FlowPoint {
         var currentUpperRight = previousUpperRight
         for (run in commit) {
             currentUpperRight = runShape(run, currentUpperRight, paths)
@@ -48,9 +48,9 @@ class ShapeDesigner {
 
     private fun runShape(
         run: FlowDetail,
-        previousUpperRight: LogPoint,
-        paths: LogShapes
-    ): LogPoint {
+        previousUpperRight: FlowPoint,
+        paths: FlowShapes
+    ): FlowPoint {
         when (run.type) {
             RunType.run -> return makeRunShape(run, previousUpperRight, paths)
             RunType.test -> return makeTestShape(run, previousUpperRight, paths)
@@ -61,36 +61,36 @@ class ShapeDesigner {
 
     private fun makeUnknownShape(
         run: FlowDetail,
-        previousUpperRight: LogPoint,
-        paths: LogShapes
-    ): LogPoint {
+        previousUpperRight: FlowPoint,
+        paths: FlowShapes
+    ): FlowPoint {
         paths.shapes.add(BarShape(run, previousUpperRight, Color.blue, Color.BLACK))
-        return LogPoint(previousUpperRight.x + 1, previousUpperRight.y)
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
     private fun makeBase64Shape(
         run: FlowDetail,
-        previousUpperRight: LogPoint,
-        paths: LogShapes
-    ): LogPoint {
+        previousUpperRight: FlowPoint,
+        paths: FlowShapes
+    ): FlowPoint {
         paths.shapes.add(BarShape(run, previousUpperRight, Color.YELLOW, Color.BLACK))
-        return LogPoint(previousUpperRight.x + 1, previousUpperRight.y)
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
     private fun makeRunShape(
         run: FlowDetail,
-        previousUpperRight: LogPoint,
-        paths: LogShapes
-    ): LogPoint {
+        previousUpperRight: FlowPoint,
+        paths: FlowShapes
+    ): FlowPoint {
         paths.shapes.add(BarShape(run, previousUpperRight, Color.darkGray, Color.darkGray))
-        return LogPoint(previousUpperRight.x + 1, previousUpperRight.y)
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
     private fun makeTestShape(
         detail: FlowDetail,
-        previousUpperRight: LogPoint,
-        paths: LogShapes
-    ): LogPoint {
+        previousUpperRight: FlowPoint,
+        paths: FlowShapes
+    ): FlowPoint {
         results.add(detail.passes, detail.fails, detail.disables, detail.aborts)
         var y = 1
         val resultCopy = results.toList().reversed()
@@ -99,6 +99,6 @@ class ShapeDesigner {
             y += 1
         }
         results.endRun()
-        return LogPoint(previousUpperRight.x + 1, y - 1)
+        return FlowPoint(previousUpperRight.x + 1, y - 1)
     }
 }

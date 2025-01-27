@@ -3,8 +3,8 @@ package za.co.wethinkcode.vnitpick
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import za.co.wethinkcode.core.flow.Base64Loader
+import za.co.wethinkcode.core.flow.FlowCollater
 import za.co.wethinkcode.core.flow.FlowShape
-import za.co.wethinkcode.core.flow.LogCollater
 import za.co.wethinkcode.core.flow.ShapeDesigner
 import za.co.wethinkcode.core.flow.YamlConverter
 import java.nio.file.Path
@@ -21,7 +21,7 @@ class FlowModel {
         raw.clear()
         yamls.forEach { yaml -> raw.add(yaml) }
         val entries = YamlConverter().convert(yamls)
-        val commits = LogCollater().collate(entries)
+        val commits = FlowCollater().collate(entries)
         val layout = ShapeDesigner().design(commits)
         width.value = layout.width
         height.value = layout.height

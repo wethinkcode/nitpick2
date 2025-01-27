@@ -1,6 +1,6 @@
 package za.co.wethinkcode.core.flow
 
-class LogCollater() {
+class FlowCollater() {
     fun collate(runs: List<FlowDetail>): Commits {
         val commits = Commits()
         val sortedRuns = runs.sortedBy { it.timestamp }

@@ -3,9 +3,9 @@ package za.co.wethinkcode.core.flow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class LogCollaterTest {
+class FlowCollaterTest {
     val runs = RunsBuilder()
-    val collater = LogCollater()
+    val collater = FlowCollater()
 
     @Test
     fun `one commit yields one commit with no runs`() {

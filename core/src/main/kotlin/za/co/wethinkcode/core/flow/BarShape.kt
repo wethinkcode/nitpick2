@@ -4,7 +4,7 @@ import java.awt.Color
 
 class BarShape(
     override val detail: FlowDetail,
-    lastUpperRight: LogPoint,
+    lastUpperRight: FlowPoint,
     val fill: Color,
     val border: Color
 ) :

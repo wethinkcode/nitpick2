@@ -11,7 +11,7 @@ class BarShapeTest {
     @Test
     fun `at left with no left neighbor`() {
         runs.run()
-        val lastUpperRight = LogPoint(0, 0)
+        val lastUpperRight = FlowPoint(0, 0)
         val shape = BarShape(runs[0], lastUpperRight, Color.GREEN, Color.GREEN)
         assertThat(shape.x).isEqualTo(0)
         assertThat(shape.width).isEqualTo(1)
@@ -21,7 +21,7 @@ class BarShapeTest {
     @Test
     fun `at left with taller left neighbor`() {
         runs.run()
-        val lastUpperRight = LogPoint(0, 4)
+        val lastUpperRight = FlowPoint(0, 4)
         val shape = BarShape(runs[0], lastUpperRight, Color.GREEN, Color.GREEN)
         assertThat(shape.x).isEqualTo(0)
         assertThat(shape.width).isEqualTo(1)
@@ -31,7 +31,7 @@ class BarShapeTest {
     @Test
     fun `honors lastUpperRight on x axis`() {
         runs.run()
-        val lastUpperRight = LogPoint(5, 4)
+        val lastUpperRight = FlowPoint(5, 4)
         val shape = BarShape(runs[0], lastUpperRight, Color.GREEN, Color.GREEN)
         assertThat(shape.x).isEqualTo(5)
         assertThat(shape.width).isEqualTo(1)

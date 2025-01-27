@@ -1,7 +1,7 @@
 package za.co.wethinkcode.core.flow
 
 
-class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by LogDetailsByTimestamp() {
+class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTimestamp() {
 
     val height: Int
         get() {

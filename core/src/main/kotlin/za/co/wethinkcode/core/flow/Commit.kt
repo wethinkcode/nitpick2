@@ -23,4 +23,88 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         run.timestamp < detail.timestamp
                 && (run.email.startsWith(detail.email) || detail.email.startsWith(run.email))
                 && run.branch == detail.branch
+
+    fun layoutToShapes(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        testCollator: TestResults
+    ): FlowPoint {
+        val upperRightFromRuns = runsForCommit(previousUpperRight, shapes, testCollator)
+        val shape = CommitShape(
+            this,
+            FlowPoint(previousUpperRight.x, upperRightFromRuns.y)
+        )
+        shapes.add(shape)
+        return FlowPoint(upperRightFromRuns.x + 1, upperRightFromRuns.y)
+    }
+
+    private fun runsForCommit(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        testCollator: TestResults
+    ): FlowPoint {
+        var currentUpperRight = previousUpperRight
+        for (run in this) {
+            currentUpperRight = runShape(run, currentUpperRight, shapes, testCollator)
+        }
+        return currentUpperRight
+    }
+
+    private fun runShape(
+        run: FlowDetail,
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        testCollator: TestResults
+    ): FlowPoint {
+        return when (run.type) {
+            RunType.run -> makeRunShape(run, previousUpperRight, shapes)
+            RunType.test -> makeTestShape(run, previousUpperRight, shapes, testCollator)
+            RunType.base64 -> makeBase64Shape(run, previousUpperRight, shapes)
+            else -> makeUnknownShape(run, previousUpperRight, shapes)
+        }
+    }
+
+    private fun makeUnknownShape(
+        run: FlowDetail,
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>
+    ): FlowPoint {
+        shapes.add(BarShape(run, previousUpperRight))
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+    }
+
+    private fun makeBase64Shape(
+        run: FlowDetail,
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>
+    ): FlowPoint {
+        shapes.add(BarShape(run, previousUpperRight))
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+    }
+
+    private fun makeRunShape(
+        run: FlowDetail,
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>
+    ): FlowPoint {
+        shapes.add(BarShape(run, previousUpperRight))
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+    }
+
+    private fun makeTestShape(
+        detail: FlowDetail,
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        testCollator: TestResults
+    ): FlowPoint {
+        testCollator.add(detail.passes, detail.fails, detail.disables, detail.aborts)
+        var y = 1
+        val resultCopy = testCollator.toList().reversed()
+        for (result in testCollator.toList()) {
+            shapes.add(TestShape(detail, previousUpperRight.x, y, result, resultCopy))
+            y += 1
+        }
+        testCollator.endRun()
+        return FlowPoint(previousUpperRight.x + 1, y - 1)
+    }
 }

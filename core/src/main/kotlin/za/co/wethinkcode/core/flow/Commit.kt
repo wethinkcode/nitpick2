@@ -29,7 +29,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         shapes: MutableList<FlowShape>,
         testCollator: TestResults
     ): FlowPoint {
-        val upperRightFromRuns = runsForCommit(previousUpperRight, shapes, testCollator)
+        val upperRightFromRuns = layoutAllRuns(previousUpperRight, shapes, testCollator)
         val shape = CommitShape(
             this,
             FlowPoint(previousUpperRight.x, upperRightFromRuns.y)
@@ -38,33 +38,33 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         return FlowPoint(upperRightFromRuns.x + 1, upperRightFromRuns.y)
     }
 
-    private fun runsForCommit(
+    private fun layoutAllRuns(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
         testCollator: TestResults
     ): FlowPoint {
         var currentUpperRight = previousUpperRight
         for (run in this) {
-            currentUpperRight = runShape(run, currentUpperRight, shapes, testCollator)
+            currentUpperRight = layoutOneRun(run, currentUpperRight, shapes, testCollator)
         }
         return currentUpperRight
     }
 
-    private fun runShape(
+    private fun layoutOneRun(
         run: FlowDetail,
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
         testCollator: TestResults
     ): FlowPoint {
         return when (run.type) {
-            RunType.run -> makeRunShape(run, previousUpperRight, shapes)
-            RunType.test -> makeTestShape(run, previousUpperRight, shapes, testCollator)
-            RunType.base64 -> makeBase64Shape(run, previousUpperRight, shapes)
-            else -> makeUnknownShape(run, previousUpperRight, shapes)
+            RunType.run -> layoutRun(run, previousUpperRight, shapes)
+            RunType.test -> layoutTest(run, previousUpperRight, shapes, testCollator)
+            RunType.base64 -> layoutError(run, previousUpperRight, shapes)
+            else -> layoutUnknown(run, previousUpperRight, shapes)
         }
     }
 
-    private fun makeUnknownShape(
+    private fun layoutUnknown(
         run: FlowDetail,
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
@@ -73,7 +73,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
-    private fun makeBase64Shape(
+    private fun layoutError(
         run: FlowDetail,
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
@@ -82,7 +82,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
-    private fun makeRunShape(
+    private fun layoutRun(
         run: FlowDetail,
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
@@ -91,7 +91,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
-    private fun makeTestShape(
+    private fun layoutTest(
         detail: FlowDetail,
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,

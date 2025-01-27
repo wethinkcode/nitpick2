@@ -1,7 +1,7 @@
 package za.co.wethinkcode.core.flow
 
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
-    val testCollator = TestResults()
+    val testCollator = TestCollator()
 
     val height get() = maxOf { it.height } + 1
     val width get() = sumOf { it.width }

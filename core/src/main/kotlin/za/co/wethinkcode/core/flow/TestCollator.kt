@@ -1,6 +1,6 @@
 package za.co.wethinkcode.core.flow
 
-class TestResults() {
+class TestCollator() {
     private val current = SequencedTestResults()
     private val old = mutableListOf<String>()
     private var isFirstRun = true

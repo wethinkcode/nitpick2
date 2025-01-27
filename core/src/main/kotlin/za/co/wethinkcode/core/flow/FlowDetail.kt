@@ -26,7 +26,7 @@ data class FlowDetail(
     fun layoutOneRun(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        testCollator: TestResults
+        testCollator: TestCollator
     ): FlowPoint {
         return when (type) {
             RunType.run -> layoutRun(previousUpperRight, shapes)
@@ -63,7 +63,7 @@ data class FlowDetail(
     private fun layoutTest(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        testCollator: TestResults
+        testCollator: TestCollator
     ): FlowPoint {
         testCollator.add(passes, fails, disables, aborts)
         var y = 1

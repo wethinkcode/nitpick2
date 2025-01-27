@@ -27,7 +27,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
     fun layoutToShapes(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        testCollator: TestResults
+        testCollator: TestCollator
     ): FlowPoint {
         val upperRightFromRuns = layoutAllRuns(previousUpperRight, shapes, testCollator)
         val shape = CommitShape(
@@ -41,12 +41,10 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
     private fun layoutAllRuns(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        testCollator: TestResults
+        testCollator: TestCollator
     ): FlowPoint {
         var currentUpperRight = previousUpperRight
-        for (run in this) {
-            currentUpperRight = run.layoutOneRun(currentUpperRight, shapes, testCollator)
-        }
+        forEach { run -> currentUpperRight = run.layoutOneRun(currentUpperRight, shapes, testCollator) }
         return currentUpperRight
     }
 }

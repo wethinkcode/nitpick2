@@ -1,7 +1,5 @@
 package za.co.wethinkcode.core.flow
 
-import java.awt.Color
-
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     val testCollator = TestResults()
 
@@ -69,7 +67,7 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
     ): FlowPoint {
-        shapes.add(BarShape(run, previousUpperRight, Color.blue, Color.BLACK))
+        shapes.add(BarShape(run, previousUpperRight))
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
@@ -78,7 +76,7 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
     ): FlowPoint {
-        shapes.add(BarShape(run, previousUpperRight, Color.YELLOW, Color.BLACK))
+        shapes.add(BarShape(run, previousUpperRight))
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
@@ -87,7 +85,7 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
     ): FlowPoint {
-        shapes.add(BarShape(run, previousUpperRight, Color.darkGray, Color.darkGray))
+        shapes.add(BarShape(run, previousUpperRight))
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 

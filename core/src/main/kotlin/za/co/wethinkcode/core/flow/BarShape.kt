@@ -1,12 +1,8 @@
 package za.co.wethinkcode.core.flow
 
-import java.awt.Color
-
 class BarShape(
     override val detail: FlowDetail,
-    lastUpperRight: FlowPoint,
-    val fill: Color,
-    val border: Color
+    lastUpperRight: FlowPoint
 ) :
     FlowShape {
     override val x = lastUpperRight.x

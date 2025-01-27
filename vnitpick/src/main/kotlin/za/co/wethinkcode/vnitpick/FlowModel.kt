@@ -22,6 +22,7 @@ class FlowModel {
         val entries = StringToDetail().convert(yamls)
         val commits = FlowCollater().collate(entries)
         shapes.clear()
+        commits.layoutToShapes(shapes)
         width.value = commits.width
         height.value = commits.height
     }

@@ -3,13 +3,13 @@ package za.co.wethinkcode.core.flow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class YamlConverterTest {
-    val builder = YamlConverter()
+class StringToDetailTest {
+    val builder = StringToDetail()
 
     @Test
     fun `fromYaml with non-yaml text`() {
         val entry = builder.convert("")
-        assertThat(entry.messages).containsExactly(YamlConverter.INVALID_YAML)
+        assertThat(entry.messages).containsExactly(StringToDetail.INVALID_YAML)
     }
 
     @Test
@@ -129,7 +129,7 @@ class YamlConverterTest {
             assertThat(fails).containsExactly("failed")
             assertThat(disables).containsExactly("disabled")
             assertThat(aborts).containsExactly("aborted")
-            assertThat(messages).containsExactly(YamlConverter.UNKNOWN_TYPE)
+            assertThat(messages).containsExactly(StringToDetail.UNKNOWN_TYPE)
             assertThat(isError).isTrue()
         }
     }
@@ -150,21 +150,21 @@ class YamlConverterTest {
         val record = builder.convert(yaml)
         with(record) {
             assertThat(type).isEqualTo(RunType.unknown)
-            assertThat(branch).isEqualTo(YamlConverter.UNKNOWN)
-            assertThat(committer).isEqualTo(YamlConverter.UNKNOWN)
-            assertThat(email).isEqualTo(YamlConverter.UNKNOWN)
-            assertThat(timestamp).isEqualTo(YamlConverter.UNKNOWN)
+            assertThat(branch).isEqualTo(StringToDetail.UNKNOWN)
+            assertThat(committer).isEqualTo(StringToDetail.UNKNOWN)
+            assertThat(email).isEqualTo(StringToDetail.UNKNOWN)
+            assertThat(timestamp).isEqualTo(StringToDetail.UNKNOWN)
             assertThat(passes).containsExactly("passed")
             assertThat(fails).containsExactly("failed")
             assertThat(disables).containsExactly("disabled")
             assertThat(aborts).containsExactly("aborted")
             assertThat(messages).containsExactlyInAnyOrder(
-                YamlConverter.MISSING_BRANCH,
-                YamlConverter.MISSING_COMMITTER,
-                YamlConverter.MISSING_EMAIL,
-                YamlConverter.MISSING_TIMESTAMP,
-                YamlConverter.MISSING_TYPE,
-                YamlConverter.UNKNOWN_TYPE,
+                StringToDetail.MISSING_BRANCH,
+                StringToDetail.MISSING_COMMITTER,
+                StringToDetail.MISSING_EMAIL,
+                StringToDetail.MISSING_TIMESTAMP,
+                StringToDetail.MISSING_TYPE,
+                StringToDetail.UNKNOWN_TYPE,
             )
             assertThat(isError).isTrue()
         }

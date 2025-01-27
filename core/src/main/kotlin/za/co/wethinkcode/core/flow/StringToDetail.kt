@@ -2,7 +2,7 @@ package za.co.wethinkcode.core.flow
 
 import org.yaml.snakeyaml.Yaml
 
-class YamlConverter {
+class StringToDetail {
 
     fun convert(texts: List<String>): List<FlowDetail> {
         val entries = mutableListOf<FlowDetail>()

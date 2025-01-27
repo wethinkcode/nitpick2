@@ -6,7 +6,7 @@ import za.co.wethinkcode.core.flow.Base64Loader
 import za.co.wethinkcode.core.flow.FlowCollater
 import za.co.wethinkcode.core.flow.FlowShape
 import za.co.wethinkcode.core.flow.ShapeDesigner
-import za.co.wethinkcode.core.flow.YamlConverter
+import za.co.wethinkcode.core.flow.StringToDetail
 import java.nio.file.Path
 
 class FlowModel {
@@ -20,7 +20,7 @@ class FlowModel {
         val yamls = Base64Loader().load(path.resolve(".jltk"))
         raw.clear()
         yamls.forEach { yaml -> raw.add(yaml) }
-        val entries = YamlConverter().convert(yamls)
+        val entries = StringToDetail().convert(yamls)
         val commits = FlowCollater().collate(entries)
         val layout = ShapeDesigner().design(commits)
         width.value = layout.width

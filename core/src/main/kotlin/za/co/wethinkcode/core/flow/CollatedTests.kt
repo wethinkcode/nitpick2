@@ -1,7 +1,18 @@
 package za.co.wethinkcode.core.flow
 
-class TestCollator() {
-    private val current = SequencedTestResults()
+class CollatedTests {
+
+    private val current = sortedSetOf(SequenceComparator())
+
+    private class SequenceComparator : Comparator<TestResult> {
+        override fun compare(first: TestResult?, second: TestResult?): Int {
+            if (first == null || second == null) return 0
+            return first.sequence.compareTo(second.sequence)
+        }
+    }
+
+    fun contains(name: String): Boolean = current.any { it.name == name }
+
     private val old = mutableListOf<String>()
     private var isFirstRun = true
 
@@ -37,7 +48,7 @@ class TestCollator() {
     private fun oldUnrunTestsAdded(): List<TestResult> {
         old.indices.forEach {
             val name = old[it]
-            if (!current.contains(name)) {
+            if (!contains(name)) {
                 current.add(TestResult(name, TestStatus.unrun, false, it))
             }
         }

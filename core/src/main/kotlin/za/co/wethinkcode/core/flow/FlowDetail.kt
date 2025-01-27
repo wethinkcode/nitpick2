@@ -26,11 +26,11 @@ data class FlowDetail(
     fun layoutOneRun(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        testCollator: TestCollator
+        collatedTests: CollatedTests
     ): FlowPoint {
         return when (type) {
             RunType.run -> layoutRun(previousUpperRight, shapes)
-            RunType.test -> layoutTest(previousUpperRight, shapes, testCollator)
+            RunType.test -> layoutTest(previousUpperRight, shapes, collatedTests)
             RunType.base64 -> layoutError(previousUpperRight, shapes)
             else -> layoutUnknown(previousUpperRight, shapes)
         }
@@ -63,16 +63,16 @@ data class FlowDetail(
     private fun layoutTest(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        testCollator: TestCollator
+        collatedTests: CollatedTests
     ): FlowPoint {
-        testCollator.add(passes, fails, disables, aborts)
+        collatedTests.add(passes, fails, disables, aborts)
         var y = 1
-        val resultCopy = testCollator.toList().reversed()
-        for (result in testCollator.toList()) {
+        val resultCopy = collatedTests.toList().reversed()
+        for (result in collatedTests.toList()) {
             shapes.add(TestShape(this, previousUpperRight.x, y, result, resultCopy))
             y += 1
         }
-        testCollator.endRun()
+        collatedTests.endRun()
         return FlowPoint(previousUpperRight.x + 1, y - 1)
     }
 }

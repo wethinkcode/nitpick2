@@ -3,8 +3,8 @@ package za.co.wethinkcode.core.flow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class TestCollatorTest {
-    val results = TestCollator()
+class CollatedTestsTest {
+    val results = CollatedTests()
 
     @Test
     fun `tests are sorted by time of addition`() {

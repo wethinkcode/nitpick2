@@ -1,7 +1,7 @@
 package za.co.wethinkcode.core.flow
 
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
-    val testCollator = TestCollator()
+    val collatedTests = CollatedTests()
 
     val height get() = maxOf { it.height } + 1
     val width get() = sumOf { it.width }
@@ -18,7 +18,7 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     fun layoutToShapes(shapes: MutableList<FlowShape>) {
         var previousUpperRight = FlowPoint(0, 0)
         forEach { commit ->
-            previousUpperRight = commit.layoutToShapes(previousUpperRight, shapes, testCollator)
+            previousUpperRight = commit.layoutToShapes(previousUpperRight, shapes, collatedTests)
         }
     }
 }

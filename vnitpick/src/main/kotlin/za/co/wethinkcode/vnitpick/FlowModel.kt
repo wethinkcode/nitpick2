@@ -21,11 +21,9 @@ class FlowModel {
         yamls.forEach { yaml -> raw.add(yaml) }
         val entries = StringToDetail().convert(yamls)
         val commits = FlowCollater().collate(entries)
-        val layout = commits.layoutToShapes()
+        shapes.clear()
         width.value = commits.width
         height.value = commits.height
-        shapes.clear()
-        shapes.addAll(layout.shapes)
     }
 
     fun flowClick(shape: FlowShape) {

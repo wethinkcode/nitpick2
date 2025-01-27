@@ -13,7 +13,6 @@ data class FlowDetail(
     val aborts: List<String> = emptyList(),
     val messages: List<String> = emptyList()
 ) {
-    val all = passes + fails + disables + aborts
     val total: Int get() = passes.size + fails.size + disables.size + aborts.size
     val isError: Boolean get() = messages.isNotEmpty()
     val summary: String
@@ -23,6 +22,57 @@ data class FlowDetail(
             }
             return type.name
         }
-}
 
-val NO_DETAIL = FlowDetail("N/A", RunType.unknown, "N/A", "N/A", "N/A")
+    fun layoutOneRun(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        testCollator: TestResults
+    ): FlowPoint {
+        return when (type) {
+            RunType.run -> layoutRun(previousUpperRight, shapes)
+            RunType.test -> layoutTest(previousUpperRight, shapes, testCollator)
+            RunType.base64 -> layoutError(previousUpperRight, shapes)
+            else -> layoutUnknown(previousUpperRight, shapes)
+        }
+    }
+
+    private fun layoutUnknown(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>
+    ): FlowPoint {
+        shapes.add(BarShape(this, previousUpperRight))
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+    }
+
+    private fun layoutError(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>
+    ): FlowPoint {
+        shapes.add(BarShape(this, previousUpperRight))
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+    }
+
+    private fun layoutRun(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>
+    ): FlowPoint {
+        shapes.add(BarShape(this, previousUpperRight))
+        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+    }
+
+    private fun layoutTest(
+        previousUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        testCollator: TestResults
+    ): FlowPoint {
+        testCollator.add(passes, fails, disables, aborts)
+        var y = 1
+        val resultCopy = testCollator.toList().reversed()
+        for (result in testCollator.toList()) {
+            shapes.add(TestShape(this, previousUpperRight.x, y, result, resultCopy))
+            y += 1
+        }
+        testCollator.endRun()
+        return FlowPoint(previousUpperRight.x + 1, y - 1)
+    }
+}

@@ -2,8 +2,7 @@ package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import za.co.wethinkcode.core.flow.Base64Loader
-import za.co.wethinkcode.core.flow.FlowCollater
+import za.co.wethinkcode.core.flow.FlowDetailLoader
 import za.co.wethinkcode.core.flow.FlowShape
 import java.nio.file.Path
 
@@ -14,8 +13,7 @@ class FlowModel {
     val shapes = mutableStateListOf<FlowShape>()
 
     fun load(path: Path) {
-        val details = Base64Loader().load(path.resolve(".jltk"))
-        val commits = FlowCollater().collate(details)
+        val commits = FlowDetailLoader().load(path.resolve(".jltk"))
         shapes.clear()
         commits.layoutToShapes(shapes)
         width.value = commits.width

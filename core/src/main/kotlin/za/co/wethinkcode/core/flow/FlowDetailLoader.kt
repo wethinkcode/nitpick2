@@ -9,10 +9,39 @@ import java.util.*
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
-class Base64Loader {
+class FlowDetailLoader {
     val decoder = Base64.getDecoder()
 
-    fun load(path: Path): List<FlowDetail> {
+    fun load(path: Path): Commits {
+        val details = loadFlowDetails(path)
+        return collate(details)
+    }
+
+    fun collate(runs: List<FlowDetail>): Commits {
+        val commits = Commits()
+        val sortedRuns = runs.sortedBy { it.timestamp }
+        for (run in sortedRuns.filter { it.type == RunType.commit }) commits.add(Commit(run))
+        for (run in sortedRuns.filter { it.type != RunType.commit }) {
+            forceRunIntoCommit(commits, run)
+        }
+        return commits
+    }
+
+    private fun forceRunIntoCommit(commits: Commits, run: FlowDetail) {
+        for (commit in commits) {
+            if (commit.owns(run)) {
+                commit.add(run)
+                return
+            }
+        }
+        val commit = Commit(
+            FlowDetail(run.branch, RunType.local, "99999", run.committer, run.email)
+        )
+        commit.add(run)
+        commits.add(commit)
+    }
+
+    fun loadFlowDetails(path: Path): List<FlowDetail> {
         if (!path.exists()) return listOf(makeBase64Error(path, "File does not exist."))
         if (!path.isDirectory()) return listOf(makeBase64Error(path, "File is not a folder."))
         val runs = mutableListOf<FlowDetail>()

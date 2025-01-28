@@ -32,8 +32,10 @@ fun ProjectView(model: ProjectsModel) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (project == null) {
             AdviceBox(
-                "No current project\n" +
-                        "Use the folder icon to navigate to a project folder."
+                listOf(
+                    "No current project.",
+                    "Use the folder icon to navigate to a project folder."
+                )
             )
         } else {
             ProjectPage(project!!)

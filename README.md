@@ -19,5 +19,7 @@ Todos
 [ ] Try the 7 steps above on a Mac box.
 [ ] Jiggle conveyor settings to release as a github release.
 [X] Make the nitpick project do a fat jar so we can move it to a server.
-[ ] Install a jltk sample in the testData folder.
+[X] Install a jltk sample in the testData folder.
+[ ] Add MRU support and standard folders for student and author projects.
+[ ] Use native file dialogs, or customize native file dialogs?
 

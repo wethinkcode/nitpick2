@@ -13,13 +13,15 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AdviceBox(advice: String) {
+fun AdviceBox(advice: List<String>) {
     Column(
         modifier = Modifier.fillMaxSize()
             .background(Color.White, shape = RectangleShape),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(advice, color = Color.Black, fontSize = 28.sp)
+        advice.forEach {
+            Text(it, color = Color.Black, fontSize = 28.sp)
+        }
     }
 }

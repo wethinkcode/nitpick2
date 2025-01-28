@@ -33,26 +33,31 @@ import za.co.wethinkcode.core.flow.TestStatus
 @Composable
 fun FlowPage(model: FlowModel) {
     Box(Modifier.fillMaxSize().background(color = Color.LightGray)) {
-        Box(
-            Modifier.width((20 * model.width.value).dp)
-                .height((20 * model.height.value).dp)
-                .background(color = Color.LightGray)
-        ) {
-            model.shapes.forEach {
-                when (it) {
-                    is CommitShape -> FlowCommit(it, model.height.value) {
-                        model.flowClick(it)
-                    }
+        if (model.isJltk.value) {
+            Box(
+                Modifier.width((20 * model.width.value).dp).height((20 * model.height.value).dp)
+                    .background(color = Color.LightGray)
+            ) {
+                model.shapes.forEach {
+                    when (it) {
+                        is CommitShape -> FlowCommit(it, model.height.value) {
+                            model.flowClick(it)
+                        }
 
-                    is BarShape -> FlowBar(it, model.height.value) {
-                        model.flowClick(it)
-                    }
+                        is BarShape -> FlowBar(it, model.height.value) {
+                            model.flowClick(it)
+                        }
 
-                    is TestShape -> FlowTest(it, model.height.value) {
-                        model.flowClick(it)
+                        is TestShape -> FlowTest(it, model.height.value) {
+                            model.flowClick(it)
+                        }
                     }
                 }
             }
+        } else {
+            AdviceBox(
+                "This is not a jltk project.\n" + "Please open a jltk project."
+            )
         }
     }
 }
@@ -73,16 +78,10 @@ fun FlowCommit(shape: CommitShape, totalHeight: Int, onClick: () -> Unit) {
     val offsetY = (totalHeight - shape.height) * 20
     val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
     FlowTip(offsetX, offsetY, true, "Commit: ${shape.detail.timestamp}") {
-        Box(
-            modifier = Modifier.width((shape.width * 20).dp)
-                .height((shape.height * 20).dp)
-                .clip(flowCommitShape)
-                .clickable {
-                    onClick()
-                }
-                .background(background)
-                .border(1.dp, Color.Black, shape = flowCommitShape)
-        )
+        Box(modifier = Modifier.width((shape.width * 20).dp).height((shape.height * 20).dp).clip(flowCommitShape)
+            .clickable {
+                onClick()
+            }.background(background).border(1.dp, Color.Black, shape = flowCommitShape))
     }
 }
 
@@ -91,15 +90,9 @@ fun FlowBar(shape: BarShape, totalHeight: Int, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - (shape.height + 1)) * 20
     FlowTip(offsetX, offsetY, false, "Run: ${shape.detail.timestamp}") {
-        Box(
-            modifier = Modifier.width((shape.width * 20).dp)
-                .height((shape.height * 20).dp)
-                .clickable {
-                    onClick()
-                }
-                .background(Color.Gray)
-                .border(1.dp, Color.Black, shape = RectangleShape)
-        )
+        Box(modifier = Modifier.width((shape.width * 20).dp).height((shape.height * 20).dp).clickable {
+                onClick()
+            }.background(Color.Gray).border(1.dp, Color.Black, shape = RectangleShape))
     }
 }
 
@@ -116,15 +109,9 @@ fun FlowTest(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
     }
     val tip = shape.result.name
     FlowTip(offsetX, offsetY, false, tip) {
-        Box(
-            modifier = Modifier.width(20.dp)
-                .height(20.dp)
-                .clickable {
-                    onClick()
-                }
-                .background(background)
-                .border(1.dp, Color.Black, shape = RectangleShape)
-        )
+        Box(modifier = Modifier.width(20.dp).height(20.dp).clickable {
+                onClick()
+            }.background(background).border(1.dp, Color.Black, shape = RectangleShape))
     }
 }
 
@@ -134,17 +121,11 @@ fun FlowTip(offsetX: Int, offsetY: Int, isEll: Boolean, tip: String, content: @C
     val modifier = if (isEll) Modifier.offset(offsetX.dp, offsetY.dp).clip(flowCommitShape)
     else Modifier.offset(offsetX.dp, offsetY.dp)
     BasicTooltipBox(
-        modifier = modifier,
-        positionProvider = PopupPositionProviderAtPosition(
-            Offset(0f, 0f),
-            true,
-            Offset(0f, 0f),
-            windowMarginPx = 5
-        ),
-        tooltip = {
+        modifier = modifier, positionProvider = PopupPositionProviderAtPosition(
+            Offset(0f, 0f), true, Offset(0f, 0f), windowMarginPx = 5
+        ), tooltip = {
             Text(tip)
-        },
-        state = tooltipState
+        }, state = tooltipState
     ) { content() }
 }
 

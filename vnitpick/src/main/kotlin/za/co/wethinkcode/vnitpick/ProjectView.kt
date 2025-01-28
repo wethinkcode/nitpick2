@@ -8,7 +8,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,13 +29,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProjectView(model: ProjectsModel) {
     val project by model.currentProject
-    Row {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (project == null) {
-            Text(
-                "No current project\n" + "To get started, use the folder icon to navigate to a project folder."
+            AdviceBox(
+                "No current project\n" +
+                        "Use the folder icon to navigate to a project folder."
             )
         } else {
-//            ProjectPages(project!!)
             ProjectPage(project!!)
         }
     }

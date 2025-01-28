@@ -2,7 +2,6 @@ package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateOf
 import java.nio.file.Path
-import kotlin.io.path.exists
 
 class ProjectPage(
     val name: String,
@@ -17,20 +16,14 @@ class ProjectPage(
 
 class ProjectModel(val path: Path) {
 
-    val flowModel = FlowModel()
+    val flowModel = FlowModel(path)
 
     val pages = listOf(
         ProjectPage("Settings", ProjectPageType.Settings, true, true),
-        ProjectPage("Process", ProjectPageType.Process, isPathJltk(path)),
+        ProjectPage("Process", ProjectPageType.Process, flowModel.isJltk.value),
         ProjectPage("StdOut", ProjectPageType.StdOut),
         ProjectPage("StdErr", ProjectPageType.StdErr),
     )
-
-    private fun isPathJltk(path: Path): Boolean {
-        if (!path.resolve(".jltk").exists()) return false
-        flowModel.load(path)
-        return true
-    }
 
     val page = mutableStateOf(pages[0])
 

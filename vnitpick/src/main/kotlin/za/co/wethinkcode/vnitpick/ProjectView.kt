@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +36,7 @@ fun ProjectView(model: ProjectsModel) {
                 "No current project\n" + "To get started, use the folder icon to navigate to a project folder."
             )
         } else {
-            ProjectPages(project!!)
+//            ProjectPages(project!!)
             ProjectPage(project!!)
         }
     }
@@ -79,14 +80,8 @@ fun PageSelector(page: ProjectPage, onClick: () -> Unit) {
 
 @Composable
 fun ProjectPage(project: ProjectModel) {
-    Column(Modifier.fillMaxWidth()) {
-        when (project.page.value.type) {
-            ProjectPageType.Process -> FlowPage(project.flowModel)
-            else -> {
-                Text(project.path.toString())
-                Text(project.page.value.name)
-            }
-        }
+    Column(Modifier.fillMaxSize()) {
+        FlowPage(project.flowModel)
     }
 }
 

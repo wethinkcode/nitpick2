@@ -7,6 +7,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +21,8 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -54,15 +59,18 @@ fun FlowPage(model: FlowModel) {
                 ) {
                     model.shapes.forEach {
                         when (it) {
-                            is CommitShape -> FlowCommit(it, model.height.value) {
+                            is CommitShape -> FlowCommit(
+                                it,
+                                model.height.value,
+                                { flag -> model.hover(it.detail, flag) }) {
                                 model.flowClick(it)
                             }
 
-                            is BarShape -> FlowBar(it, model.height.value) {
+                            is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it.detail, flag) }) {
                                 model.flowClick(it)
                             }
 
-                            is TestShape -> FlowTest(it, model.height.value) {
+                            is TestShape -> FlowTest(it, model.height.value, { flag -> model.hover(it.detail, flag) }) {
                                 model.flowClick(it)
                             }
                         }
@@ -84,35 +92,51 @@ private val flowCommitShape = GenericShape { size, _ ->
 
 
 @Composable
-fun FlowCommit(shape: CommitShape, totalHeight: Int, onClick: () -> Unit) {
+fun FlowCommit(shape: CommitShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - shape.height) * 20
+    val width = shape.width * 20
+    val height = shape.height * 20
     val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
-    FlowTip(offsetX, offsetY, true, "Commit: ${shape.detail.timestamp}") {
-        Box(
-            modifier = Modifier.width((shape.width * 20).dp).height((shape.height * 20).dp).clip(flowCommitShape)
-                .clickable {
-                    onClick()
-                }.background(background).border(1.dp, Color.Black, shape = flowCommitShape)
-        )
-    }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isEntered by interactionSource.collectIsHoveredAsState()
+    onEnter(isEntered)
+    Box(
+        modifier = Modifier.offset(offsetX.dp, offsetY.dp).clip(flowCommitShape).width(width.dp)
+            .height(height.dp).clip(flowCommitShape)
+            .clickable {
+                onClick()
+            }
+            .hoverable(interactionSource)
+            .background(background).border(1.dp, Color.Black, shape = flowCommitShape)
+    )
 }
 
 @Composable
-fun FlowBar(shape: BarShape, totalHeight: Int, onClick: () -> Unit) {
+fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - (shape.height + 1)) * 20
-    FlowTip(offsetX, offsetY, false, "Run: ${shape.detail.timestamp}") {
-        Box(modifier = Modifier.width((shape.width * 20).dp).height((shape.height * 20).dp).clickable {
-            onClick()
-        }.background(Color.Gray).border(1.dp, Color.Black, shape = RectangleShape))
+    val width = shape.width * 20
+    val height = shape.height * 20
+    val interactionSource = remember { MutableInteractionSource() }
+    val isEntered by interactionSource.collectIsHoveredAsState()
+    onEnter(isEntered)
+    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp).width(width.dp).height(height.dp).clickable {
+        onClick()
     }
+        .hoverable(interactionSource)
+        .background(Color.Gray)
+        .border(1.dp, Color.Black, shape = RectangleShape)
+    )
 }
 
 @Composable
-fun FlowTest(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
+fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
     val offsetX = shape.x * 20
     val offsetY = (totalHeight - ((shape.y + 1))) * 20
+    val width = 20
+    val height = 20
+
     val background = when (shape.result.status) {
         TestStatus.fail -> FAILED_BACKGROUND
         TestStatus.pass -> PASSED_BACKGROUND
@@ -120,12 +144,18 @@ fun FlowTest(shape: TestShape, totalHeight: Int, onClick: () -> Unit) {
         TestStatus.abort -> ABORT_BACKGROUND
         TestStatus.unrun -> UNRUN_BACKGROUND
     }
-    val tip = shape.result.name
-    FlowTip(offsetX, offsetY, false, tip) {
-        Box(modifier = Modifier.width(20.dp).height(20.dp).clickable {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isEntered by interactionSource.collectIsHoveredAsState()
+    onEnter(isEntered)
+
+    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp)
+        .width(width.dp)
+        .height(height.dp)
+        .clickable {
             onClick()
-        }.background(background).border(1.dp, Color.Black, shape = RectangleShape))
-    }
+        }
+        .hoverable(interactionSource)
+        .background(background).border(1.dp, Color.Black, shape = RectangleShape))
 }
 
 

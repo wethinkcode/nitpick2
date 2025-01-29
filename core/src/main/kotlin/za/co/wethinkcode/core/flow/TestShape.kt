@@ -5,7 +5,6 @@ class TestShape(
     override val detail: FlowDetail,
     override val x: Int,
     val y: Int,
-    val result: TestResult,
-    val tests: List<TestResult>
+    val result: TestResult
 ) : FlowShape {
 }

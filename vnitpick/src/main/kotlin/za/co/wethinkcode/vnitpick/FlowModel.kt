@@ -2,7 +2,6 @@ package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import za.co.wethinkcode.core.flow.FlowDetail
 import za.co.wethinkcode.core.flow.FlowDetailLoader
 import za.co.wethinkcode.core.flow.FlowShape
 import java.nio.file.Path
@@ -16,6 +15,7 @@ class FlowModel(path: Path) {
     val height = mutableStateOf(0)
     val shapes = mutableStateListOf<FlowShape>()
     val isJltk = mutableStateOf(false)
+    val hover = mutableStateOf("")
 
     init {
         this.path = path
@@ -40,9 +40,9 @@ class FlowModel(path: Path) {
         println("Clicked")
     }
 
-    fun hover(it: FlowDetail, isHovered: Boolean) {
-        if (isHovered) println("Hovered")
-        else println("Unhovered.")
+    fun hover(it: FlowShape, isHovered: Boolean) {
+        if (isHovered) hover.value = it.tip
+        else hover.value = ""
     }
 
 

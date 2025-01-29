@@ -7,13 +7,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
@@ -21,8 +20,6 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -30,6 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 import za.co.wethinkcode.core.flow.BarShape
@@ -37,6 +37,7 @@ import za.co.wethinkcode.core.flow.CommitShape
 import za.co.wethinkcode.core.flow.RunType
 import za.co.wethinkcode.core.flow.TestShape
 import za.co.wethinkcode.core.flow.TestStatus
+import za.co.wethinkcode.vnitpick.Styles.LARGE_FONT_SIZE
 
 @Composable
 fun FlowPage(model: FlowModel) {
@@ -47,31 +48,37 @@ fun FlowPage(model: FlowModel) {
             )
         )
     } else {
-        PanAndZoom {
-            Column(
-                Modifier.fillMaxSize().background(Color.White),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    Modifier.width((20 * model.width.value).dp).height((20 * model.height.value).dp)
-                        .background(color = Color.LightGray)
+        Column(Modifier.fillMaxSize()) {
+            Row(Modifier.fillMaxWidth()) {
+                Text(model.hover.value, fontSize = LARGE_FONT_SIZE)
+            }
+
+            PanAndZoom {
+                Column(
+                    Modifier.fillMaxSize().background(Color.White),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    model.shapes.forEach {
-                        when (it) {
-                            is CommitShape -> FlowCommit(
-                                it,
-                                model.height.value,
-                                { flag -> model.hover(it.detail, flag) }) {
-                                model.flowClick(it)
-                            }
+                    Box(
+                        Modifier.width((20 * model.width.value).dp).height((20 * model.height.value).dp)
+                            .background(color = Color.LightGray)
+                    ) {
+                        model.shapes.forEach {
+                            when (it) {
+                                is CommitShape -> FlowCommit(
+                                    it,
+                                    model.height.value,
+                                    { flag -> model.hover(it, flag) }) {
+                                    model.flowClick(it)
+                                }
 
-                            is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it.detail, flag) }) {
-                                model.flowClick(it)
-                            }
+                                is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
+                                    model.flowClick(it)
+                                }
 
-                            is TestShape -> FlowTest(it, model.height.value, { flag -> model.hover(it.detail, flag) }) {
-                                model.flowClick(it)
+                                is TestShape -> FlowTest(it, model.height.value, { flag -> model.hover(it, flag) }) {
+                                    model.flowClick(it)
+                                }
                             }
                         }
                     }
@@ -98,18 +105,8 @@ fun FlowCommit(shape: CommitShape, totalHeight: Int, onEnter: (Boolean) -> Unit,
     val width = shape.width * 20
     val height = shape.height * 20
     val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
-    val interactionSource = remember { MutableInteractionSource() }
-    val isEntered by interactionSource.collectIsHoveredAsState()
-    onEnter(isEntered)
-    Box(
-        modifier = Modifier.offset(offsetX.dp, offsetY.dp).clip(flowCommitShape).width(width.dp)
-            .height(height.dp).clip(flowCommitShape)
-            .clickable {
-                onClick()
-            }
-            .hoverable(interactionSource)
-            .background(background).border(1.dp, Color.Black, shape = flowCommitShape)
-    )
+    val clip = flowCommitShape
+    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
 }
 
 @Composable
@@ -118,16 +115,9 @@ fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onCli
     val offsetY = (totalHeight - (shape.height + 1)) * 20
     val width = shape.width * 20
     val height = shape.height * 20
-    val interactionSource = remember { MutableInteractionSource() }
-    val isEntered by interactionSource.collectIsHoveredAsState()
-    onEnter(isEntered)
-    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp).width(width.dp).height(height.dp).clickable {
-        onClick()
-    }
-        .hoverable(interactionSource)
-        .background(Color.Gray)
-        .border(1.dp, Color.Black, shape = RectangleShape)
-    )
+    val background = Color.Gray
+    val clip = RectangleShape
+    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
 }
 
 @Composable
@@ -136,7 +126,6 @@ fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onC
     val offsetY = (totalHeight - ((shape.y + 1))) * 20
     val width = 20
     val height = 20
-
     val background = when (shape.result.status) {
         TestStatus.fail -> FAILED_BACKGROUND
         TestStatus.pass -> PASSED_BACKGROUND
@@ -144,18 +133,42 @@ fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onC
         TestStatus.abort -> ABORT_BACKGROUND
         TestStatus.unrun -> UNRUN_BACKGROUND
     }
-    val interactionSource = remember { MutableInteractionSource() }
-    val isEntered by interactionSource.collectIsHoveredAsState()
-    onEnter(isEntered)
+    val clip = RectangleShape
+    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
+}
 
-    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp)
+@Composable
+fun FlowItem(
+    offsetX: Int,
+    offsetY: Int,
+    clip: Shape,
+    width: Int,
+    height: Int,
+    onEnter: (Boolean) -> Unit,
+    onClick: () -> Unit,
+    background: Color
+) {
+    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp).clip(clip)
         .width(width.dp)
         .height(height.dp)
-        .clickable {
-            onClick()
+        .pointerInput(PointerEventType.Enter) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    onEnter(true)
+                }
+            }
         }
-        .hoverable(interactionSource)
-        .background(background).border(1.dp, Color.Black, shape = RectangleShape))
+        .pointerInput(PointerEventType.Exit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    onEnter(false)
+                }
+            }
+        }
+        .clickable { onClick() }
+        .background(background).border(1.dp, Color.Black, shape = clip))
 }
 
 

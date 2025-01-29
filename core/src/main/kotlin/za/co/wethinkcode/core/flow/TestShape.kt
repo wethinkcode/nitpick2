@@ -7,4 +7,6 @@ class TestShape(
     val y: Int,
     val result: TestResult
 ) : FlowShape {
+    override val tip: String = "${detail.type.name}: ${result.name}"
+
 }

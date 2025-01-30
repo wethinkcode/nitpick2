@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -61,6 +63,20 @@ fun PanAndZoom(content: @Composable () -> Unit) {
                     // after offset
                     .transformable(state = state)
                     .fillMaxSize()
+                    .pointerInput(PointerEventType.Scroll) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent()
+                                val direction = event.changes.first().scrollDelta.y
+                                if (direction == 1.0f) {
+                                    scale = scale * 0.9f
+                                }
+                                if (direction == -1.0f) {
+                                    scale = scale * 1.1f
+                                }
+                            }
+                        }
+                    }
             ) {
                 content()
             }

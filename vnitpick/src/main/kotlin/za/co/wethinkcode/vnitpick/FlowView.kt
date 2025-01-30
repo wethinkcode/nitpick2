@@ -50,7 +50,7 @@ fun FlowPage(model: FlowModel) {
     } else {
         Column(Modifier.fillMaxSize()) {
             Row(Modifier.fillMaxWidth()) {
-                Text(model.hover.value, fontSize = LARGE_FONT_SIZE)
+                Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
             }
 
             PanAndZoom {

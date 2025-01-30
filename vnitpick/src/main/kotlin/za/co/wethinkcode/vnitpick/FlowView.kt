@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,43 +49,57 @@ fun FlowPage(model: FlowModel) {
             )
         )
     } else {
-        Column(Modifier.fillMaxSize()) {
-            Row(Modifier.fillMaxWidth()) {
-                Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
-            }
-
-            PanAndZoom {
-                Column(
-                    Modifier.fillMaxSize().background(Color.White),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        Modifier.width((20 * model.width.value).dp).height((20 * model.height.value).dp)
-                            .background(color = Color.LightGray)
+        Row(Modifier.fillMaxWidth()) {
+            Column(Modifier.fillMaxWidth(.75f).fillMaxHeight()) {
+                Row(Modifier.fillMaxWidth()) {
+                    Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
+                }
+                PanAndZoom {
+                    Column(
+                        Modifier.fillMaxSize().background(Color.White),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        model.shapes.forEach {
-                            when (it) {
-                                is CommitShape -> FlowCommit(
-                                    it,
-                                    model.height.value,
-                                    { flag -> model.hover(it, flag) }) {
-                                    model.flowClick(it)
-                                }
+                        Box(
+                            Modifier.width((20 * model.width.value).dp).height((20 * model.height.value).dp)
+                                .background(color = Color.LightGray)
+                        ) {
+                            model.shapes.forEach {
+                                when (it) {
+                                    is CommitShape -> FlowCommit(
+                                        it,
+                                        model.height.value,
+                                        { flag -> model.hover(it, flag) }) {
+                                        model.flowClick(it)
+                                    }
 
-                                is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
-                                    model.flowClick(it)
-                                }
+                                    is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
+                                        model.flowClick(it)
+                                    }
 
-                                is TestShape -> FlowTest(it, model.height.value, { flag -> model.hover(it, flag) }) {
-                                    model.flowClick(it)
+                                    is TestShape -> FlowTest(
+                                        it,
+                                        model.height.value,
+                                        { flag -> model.hover(it, flag) }) {
+                                        model.flowClick(it)
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            Column(Modifier.fillMaxWidth().fillMaxHeight().background(Color.LightGray)) {
+                DetailView(model)
+            }
         }
+    }
+}
+
+@Composable
+fun DetailView(model: FlowModel) {
+    Column(Modifier.width(200.dp)) {
+        Text("Here Ya Go")
     }
 }
 

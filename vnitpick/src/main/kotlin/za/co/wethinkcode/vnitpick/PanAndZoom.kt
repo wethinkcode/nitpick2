@@ -69,10 +69,10 @@ fun PanAndZoom(content: @Composable () -> Unit) {
             FlowGraphIcon(Icons.Filled.ZoomIn, "Zoom In") { scale *= 1.1f }
             FlowGraphIcon(Icons.Filled.ZoomOut, "Zoom Out") { scale *= .9f }
             FlowGraphIcon(Icons.Filled.CenterFocusWeak, "Center") { }
-            FlowGraphIcon(Icons.AutoMirrored.Filled.ArrowRight, "Right") { }
-            FlowGraphIcon(Icons.AutoMirrored.Filled.ArrowLeft, "Left") { }
-            FlowGraphIcon(Icons.Filled.ArrowUpward, "Up") { }
-            FlowGraphIcon(Icons.Filled.ArrowDownward, "Down") { }
+            FlowGraphIcon(Icons.AutoMirrored.Filled.ArrowRight, "Right") { offset = Offset(offset.x + 15f, offset.y) }
+            FlowGraphIcon(Icons.AutoMirrored.Filled.ArrowLeft, "Left") { offset = Offset(offset.x - 15f, offset.y) }
+            FlowGraphIcon(Icons.Filled.ArrowUpward, "Up") { offset = Offset(offset.x, offset.y - 15f) }
+            FlowGraphIcon(Icons.Filled.ArrowDownward, "Down") { offset = Offset(offset.x, offset.y + 15f) }
         }
     }
 }

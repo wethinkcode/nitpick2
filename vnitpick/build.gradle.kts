@@ -29,6 +29,7 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    implementation("androidx.compose.material:material-icons-extended:1.7.6")
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
     implementation("dev.hydraulic.conveyor:conveyor-control:1.1")
     implementation(project(":core"))

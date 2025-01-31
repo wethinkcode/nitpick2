@@ -67,8 +67,11 @@ data class FlowDetail(
     ): FlowPoint {
         collatedTests.add(passes, fails, disables, aborts)
         var y = 1
+        val testList = collatedTests.toList().reversed()
         for (result in collatedTests.toList()) {
-            shapes.add(TestShape(this, previousUpperRight.x, y, result))
+            shapes.add(
+                TestShape(this, previousUpperRight.x, y, result, testList)
+            )
             y += 1
         }
         collatedTests.endRun()

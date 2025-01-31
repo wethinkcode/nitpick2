@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.Text
@@ -36,9 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 import za.co.wethinkcode.core.flow.BarShape
 import za.co.wethinkcode.core.flow.CommitShape
+import za.co.wethinkcode.core.flow.FlowShape
 import za.co.wethinkcode.core.flow.RunType
+import za.co.wethinkcode.core.flow.TestResult
 import za.co.wethinkcode.core.flow.TestShape
 import za.co.wethinkcode.core.flow.TestStatus
+import za.co.wethinkcode.vnitpick.Styles.DEFAULT_FONT_SIZE
 import za.co.wethinkcode.vnitpick.Styles.LARGE_FONT_SIZE
 
 @Composable
@@ -51,7 +57,7 @@ fun FlowPage(model: FlowModel) {
         )
     } else {
         Row(Modifier.fillMaxWidth()) {
-            Column(Modifier.fillMaxWidth(.80f).fillMaxHeight()) {
+            Column(Modifier.fillMaxWidth(.75f).fillMaxHeight()) {
                 Row(Modifier.fillMaxWidth()) {
                     Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
                 }
@@ -59,7 +65,7 @@ fun FlowPage(model: FlowModel) {
             }
             Spacer(Modifier.fillMaxHeight().width(1.dp))
             Column(Modifier.fillMaxWidth().fillMaxHeight().background(Color.LightGray)) {
-                DetailView(model)
+                DetailView(model.current.value)
             }
         }
     }
@@ -104,10 +110,80 @@ fun FlowGraph(model: FlowModel) {
 }
 
 @Composable
-fun DetailView(model: FlowModel) {
-    Column(Modifier.width(200.dp)) {
-        Text("Here Ya Go")
+fun DetailView(shape: FlowShape?) {
+    Column(Modifier.fillMaxHeight().padding(10.dp)) {
+        if (shape != null) {
+            Text(shape.titleBlock, fontSize = LARGE_FONT_SIZE)
+            CommitBlock(shape)
+            if (shape is TestShape) TestBlock(shape)
+        }
     }
+}
+
+@Composable
+fun Base64Error() {
+    Column(Modifier.background(Color.Yellow)) {
+        Text("Encoding Error", fontSize = LARGE_FONT_SIZE)
+        Text("This is a corrupted log entry.")
+    }
+}
+
+@Composable
+fun TestBlock(shape: TestShape) {
+    if (shape.detail.type == RunType.test) {
+        LazyColumn(Modifier.fillMaxWidth().padding(0.dp, 20.dp)) {
+            items(shape.tests) { test ->
+                val textColor = determineTestText(test)
+                val textBackground = determineTestColor(test)
+                Column(
+                    Modifier.fillMaxWidth()
+                        .background(textBackground)
+                ) {
+                    Text(test.className, color = textColor)
+                    Text(
+                        test.testName,
+                        color = textColor,
+                        fontSize = LARGE_FONT_SIZE,
+                    )
+                    Spacer(Modifier.height(1.dp).fillMaxWidth().background(Color.Black))
+                }
+            }
+        }
+    }
+}
+
+fun determineTestColor(test: TestResult): Color {
+    return when (test.status) {
+        TestStatus.fail -> FAILED_BACKGROUND
+        TestStatus.pass -> PASSED_BACKGROUND
+        TestStatus.disable -> DISABLED_BACKGROUND
+        TestStatus.abort -> ABORT_BACKGROUND
+        TestStatus.unrun -> UNRUN_BACKGROUND
+    }
+}
+
+fun determineTestText(test: TestResult): Color {
+    if (test.isNew) return Color.White
+    else return Color.Black
+}
+
+@Composable
+fun CommitBlock(shape: FlowShape) {
+    Column(
+        Modifier.fillMaxWidth()
+            .padding(5.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (shape.detail.type == RunType.local) {
+            Text("Uncommitted Files", fontSize = DEFAULT_FONT_SIZE)
+        } else {
+            Text(shape.detail.timestamp, fontSize = DEFAULT_FONT_SIZE)
+        }
+        Text(shape.detail.branch, fontSize = DEFAULT_FONT_SIZE)
+        Text(shape.detail.email, fontSize = DEFAULT_FONT_SIZE)
+        Text(shape.detail.committer, fontSize = DEFAULT_FONT_SIZE)
+    }
+
 }
 
 private val flowCommitShape = GenericShape { size, _ ->
@@ -148,13 +224,7 @@ fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onC
     val offsetY = (totalHeight - ((shape.y + 1))) * 20
     val width = 20
     val height = 20
-    val background = when (shape.result.status) {
-        TestStatus.fail -> FAILED_BACKGROUND
-        TestStatus.pass -> PASSED_BACKGROUND
-        TestStatus.disable -> DISABLED_BACKGROUND
-        TestStatus.abort -> ABORT_BACKGROUND
-        TestStatus.unrun -> UNRUN_BACKGROUND
-    }
+    val background = determineTestColor(shape.result)
     val clip = RectangleShape
     FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
 }

@@ -16,6 +16,7 @@ class FlowModel(path: Path) {
     val shapes = mutableStateListOf<FlowShape>()
     val isJltk = mutableStateOf(false)
     val hover = mutableStateOf("")
+    val current = mutableStateOf<FlowShape?>(null)
 
     init {
         this.path = path
@@ -37,7 +38,7 @@ class FlowModel(path: Path) {
     }
 
     fun flowClick(shape: FlowShape) {
-        println("Clicked")
+        current.value = shape
     }
 
     fun hover(it: FlowShape, isHovered: Boolean) {

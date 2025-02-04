@@ -22,7 +22,7 @@ public class TestFolder {
     }
 
     public TestFolder() {
-        this(Path.of("testFolder", "root"));
+        this(Path.of("../testing", "root"));
     }
 
     public void assertRootTree() {

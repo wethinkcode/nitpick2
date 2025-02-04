@@ -22,4 +22,5 @@ Todos
 [X] Install a jltk sample in the testData folder.
 [ ] Add MRU support and standard folders for student and author projects.
 [ ] Use native file dialogs, or customize native file dialogs?
+[ ] nitpick-flow isn't using the same test folder arrangement as the others.
 

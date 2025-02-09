@@ -42,4 +42,19 @@ public class InitializerTest {
         assertTrue(initializer.shouldInitialize());
         folder.delete();
     }
+
+    @Test
+    public void initializeEmitsJunitFiles() throws IOException {
+        Path gitFolder = folder.root.resolve(".git");
+        Files.createDirectories(gitFolder);
+        Initializer initializer = new Initializer(folder.root);
+        initializer.emitJunitFiles();
+        Path junitProperties = folder.root
+                .resolve("src/test/resources/junit-platform.properties");
+        assertTrue(Files.exists(junitProperties));
+        Files.lines(junitProperties).forEach(System.out::println);
+        Path metaInf = folder.root.resolve("src/test/resources/META-INF/services/org.junit.jupiter.api.extension.Extension");
+        assertTrue(Files.exists(metaInf));
+        folder.delete();
+    }
 }

@@ -25,8 +25,6 @@ public class InitializerTest {
 
     @Test
     public void noAuthorFileButFlowFolderMeansNoInitialization() throws IOException {
-        Path authorPath = folder.root.resolve("author.txt");
-        Files.createFile(authorPath);
         Path gitFolder = folder.root.resolve(".git");
         Files.createDirectories(gitFolder);
         Path flowFolder = folder.root.resolve(JLTK_FOLDER);

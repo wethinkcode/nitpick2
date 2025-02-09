@@ -1,5 +1,8 @@
 package za.co.wethinkcode.flow;
 
+import org.eclipse.jgit.api.*;
+import org.eclipse.jgit.api.errors.*;
+
 import java.io.*;
 import java.nio.file.*;
 
@@ -70,6 +73,10 @@ public class TestFolder {
         } catch (IOException wrapped) {
             throw new RuntimeException(wrapped);
         }
+    }
+
+    public void makeGitFolder() throws GitAPIException {
+        Git git = Git.init().setDirectory(root.toFile()).call();
     }
 
 

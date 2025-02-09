@@ -1,5 +1,6 @@
 package za.co.wethinkcode.flow;
 
+import org.eclipse.jgit.api.errors.*;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
@@ -56,5 +57,10 @@ public class InitializerTest {
         Path metaInf = folder.root.resolve("src/test/resources/META-INF/services/org.junit.jupiter.api.extension.Extension");
         assertTrue(Files.exists(metaInf));
         folder.delete();
+    }
+
+    @Test
+    public void canBuildGit() throws GitAPIException {
+        folder.makeGitFolder();
     }
 }

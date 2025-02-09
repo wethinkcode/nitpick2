@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static za.co.wethinkcode.flow.FileHelpers.*;
 
 public class TestFolder {
 
@@ -22,7 +23,7 @@ public class TestFolder {
     }
 
     public TestFolder() {
-        this(Path.of("../testing", "root"));
+        this(gitRootTestingTemp());
     }
 
     public void assertRootTree() {
@@ -32,6 +33,10 @@ public class TestFolder {
 
     void wipeRoot() {
         recursivelyWipe(root.toFile());
+    }
+
+    void delete() {
+        recursivelyDelete(root.toFile());
     }
 
     void recursivelyDelete(File directoryToBeDeleted) {
@@ -55,4 +60,17 @@ public class TestFolder {
     public File[] finalFiles() {
         return FileHelpers.finalFiles(root);
     }
+
+    public static Path gitRootTestingTemp() {
+        try {
+            Path gitRoot = requireGitRoot(Path.of("."));
+            Path testing = gitRoot.resolve("testing");
+            Files.createDirectories(testing);
+            return Files.createTempDirectory(testing, "test");
+        } catch (IOException wrapped) {
+            throw new RuntimeException(wrapped);
+        }
+    }
+
+
 }

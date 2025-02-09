@@ -25,6 +25,7 @@ public class RecorderTest {
         String firstEntry = new String(Base64.getDecoder().decode(lines.get(0)));
         String[] resultYaml = firstEntry.split("\n");
         assertEquals(resultYaml[5], "type: run");
+        folder.delete();
     }
 
     @Test
@@ -43,6 +44,7 @@ public class RecorderTest {
         String secondEntry = new String(Base64.getDecoder().decode(lines.get(1)));
         String[] secondYaml = secondEntry.split("\n");
         assertEquals(secondYaml[5], "type: test");
+        folder.delete();
     }
 
     @Test
@@ -59,5 +61,6 @@ public class RecorderTest {
         String[] firstYaml = firstEntry.split("\n");
         assertEquals(firstYaml[5], "type: commit");
         assertFalse(folder.rootWtc.resolve("jltk.key").toFile().exists());
+        folder.delete();
     }
 }

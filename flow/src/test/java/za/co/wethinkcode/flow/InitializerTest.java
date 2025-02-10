@@ -60,7 +60,14 @@ public class InitializerTest {
     }
 
     @Test
-    public void canBuildGit() throws GitAPIException {
+    public void initializeEmitsCommitHooks() throws GitAPIException, IOException {
         folder.makeGitFolder();
+        Initializer initializer = new Initializer(folder.root);
+        initializer.emitCommitHooks();
+        Path hooksPath = folder.root.resolve(".git/hooks");
+        Path preCommitHook = hooksPath.resolve("pre-commit");
+        Path postCommitHook = hooksPath.resolve("post-commit");
+        assertTrue(preCommitHook.toFile().exists());
+        assertTrue(postCommitHook.toFile().exists());
     }
 }

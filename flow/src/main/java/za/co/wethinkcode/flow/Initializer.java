@@ -37,4 +37,38 @@ public class Initializer {
         writer.flush();
         writer.close();
     }
+
+    public void emitCommitHooks() throws IOException {
+        Path precommit = gitRoot.resolve(".git/hooks/pre-commit");
+        writeAll(precommit, precommitText);
+        precommit.toFile().setExecutable(true);
+        Path postcommit = gitRoot.resolve(".git/hooks/post-commit");
+        writeAll(postcommit, postcommitText);
+        postcommit.toFile().setExecutable(true);
+    }
+
+    public void writeAll(Path path, String text) throws IOException {
+        BufferedWriter writer = Files.newBufferedWriter(path);
+        writer.write(text);
+        writer.flush();
+        writer.close();
+    }
+
+
+    static String precommitText = """
+            #!/bin/sh
+
+            echo "Pre-Commit"
+            touch .commit
+            """;
+
+    static String postcommitText = """
+            #!/bin/sh
+            if [ -e .commit ] ; then
+              echo "Post-Commit"
+              rm .commit
+              git add .jltk/*.jltl
+              git commit --amend -C HEAD --no-verify
+            fi
+            """;
 }

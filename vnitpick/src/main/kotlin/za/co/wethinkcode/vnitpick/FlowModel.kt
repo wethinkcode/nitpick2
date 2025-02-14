@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import za.co.wethinkcode.core.flow.FlowDetailLoader
 import za.co.wethinkcode.core.flow.FlowShape
+import za.co.wethinkcode.flow.FileHelpers.JLTK_FOLDER
 import java.nio.file.Path
 import kotlin.io.path.exists
 
@@ -24,13 +25,13 @@ class FlowModel(path: Path) {
     }
 
     private fun isPathJltk(path: Path): Boolean {
-        if (!path.resolve(".jltk").exists()) return false
+        if (!path.resolve(JLTK_FOLDER).exists()) return false
         load()
         return true
     }
 
     fun load() {
-        val commits = FlowDetailLoader().load(path.resolve(".jltk"))
+        val commits = FlowDetailLoader().load(path.resolve(JLTK_FOLDER))
         shapes.clear()
         commits.layoutToShapes(shapes)
         width.value = commits.width

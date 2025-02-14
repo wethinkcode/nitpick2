@@ -6,6 +6,7 @@ group = "za.co.wethinkcode"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
     mavenCentral()
     google()
 }

@@ -6,13 +6,13 @@ class CollatedTests {
 
     fun begin() {
         results.keys.forEach { key ->
-            results.put(key, TestResult(key, TestStatus.unrun, false, 0))
+            results.put(key, TestResult(key, TestStatus.unrun, false))
         }
     }
 
     fun add(name: String, result: TestStatus) {
         val isNew = !results.containsKey(name)
-        results.put(name, TestResult(name, result, isNew, 0))
+        results.put(name, TestResult(name, result, isNew))
     }
 
     fun toList(): List<TestResult> = results.values.toList()

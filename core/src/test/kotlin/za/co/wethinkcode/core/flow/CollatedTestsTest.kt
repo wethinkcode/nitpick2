@@ -17,6 +17,19 @@ class CollatedTestsTest {
     }
 
     @Test
+    fun `tests are sorted by time of addition regardless of second ordering`() {
+        results.begin()
+        results.add("b", TestStatus.pass)
+        results.add("a", TestStatus.pass)
+        results.begin()
+        results.add("a", TestStatus.pass)
+        results.add("b", TestStatus.pass)
+        val actual = results.toList()
+        assertThat(actual[0].name).isEqualTo("b")
+        assertThat(actual[1].name).isEqualTo("a")
+    }
+
+    @Test
     fun `new tests are new`() {
         results.begin()
         results.add("new", TestStatus.pass)
@@ -33,7 +46,7 @@ class CollatedTestsTest {
     }
 
     @Test
-    fun `old tests are unrun in results after endRun`() {
+    fun `tests marked unrun after second begin`() {
         results.begin()
         results.add("old", TestStatus.pass)
         results.begin()

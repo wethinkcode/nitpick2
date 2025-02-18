@@ -8,42 +8,39 @@ class CollatedTestsTest {
 
     @Test
     fun `tests are sorted by time of addition`() {
+        results.begin()
         results.add("b", TestStatus.pass)
         results.add("a", TestStatus.pass)
-        assertThat(results[0].name).isEqualTo("b")
-        assertThat(results[1].name).isEqualTo("a")
+        val actual = results.toList()
+        assertThat(actual[0].name).isEqualTo("b")
+        assertThat(actual[1].name).isEqualTo("a")
     }
 
     @Test
-    fun `on first run, all tests are old`() {
-        results.add("b", TestStatus.pass)
-        results.add("a", TestStatus.pass)
-        assertThat(results[0].isNew).isFalse()
-        assertThat(results[1].isNew).isFalse()
-    }
-
-    @Test
-    fun `on any other run, new tests are new`() {
-        results.endRun()
+    fun `new tests are new`() {
+        results.begin()
         results.add("new", TestStatus.pass)
-        assertThat(results[0].isNew).isTrue()
+        assertThat(results.toList()[0].isNew).isTrue()
     }
 
     @Test
-    fun `old tests are old after endRun`() {
+    fun `old tests are old`() {
+        results.begin()
         results.add("old", TestStatus.pass)
-        results.endRun()
+        results.begin()
         results.add("old", TestStatus.pass)
-        assertThat(results[0].isNew).isFalse()
+        assertThat(results.toList()[0].isNew).isFalse()
     }
 
     @Test
     fun `old tests are unrun in results after endRun`() {
+        results.begin()
         results.add("old", TestStatus.pass)
-        results.endRun()
-        assertThat(results[0].name).isEqualTo("old")
-        assertThat(results[0].status).isEqualTo(TestStatus.unrun)
-        assertThat(results[0].isNew).isFalse()
+        results.begin()
+        val actual = results.toList()
+        assertThat(actual[0].name).isEqualTo("old")
+        assertThat(actual[0].status).isEqualTo(TestStatus.unrun)
+        assertThat(actual[0].isNew).isFalse()
     }
 
 }

@@ -65,6 +65,7 @@ data class FlowDetail(
         shapes: MutableList<FlowShape>,
         collatedTests: CollatedTests
     ): FlowPoint {
+        collatedTests.begin()
         collatedTests.add(passes, fails, disables, aborts)
         var y = 1
         val testList = collatedTests.toList().reversed()
@@ -74,7 +75,6 @@ data class FlowDetail(
             )
             y += 1
         }
-        collatedTests.endRun()
         return FlowPoint(previousUpperRight.x + 1, y - 1)
     }
 }

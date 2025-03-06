@@ -13,6 +13,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://jitpack.io")
     google()
 }
 
@@ -29,6 +30,7 @@ dependencies {
     // compose.desktop.currentOs should be used in launcher-sourceSet
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
+    implementation("com.github.vishna:watchservice-ktx:master-SNAPSHOT")
     implementation(compose.desktop.currentOs)
     implementation("androidx.compose.material:material-icons-extended:1.7.6")
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")

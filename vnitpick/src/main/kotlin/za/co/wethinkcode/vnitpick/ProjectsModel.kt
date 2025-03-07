@@ -26,12 +26,14 @@ class ProjectsModel {
             // this is the last project
             currentProjectIndex.value = -1
             currentProject.value = null
+            projects[index].close()
             projects.removeAt(index)
             return
         }
         if (index == projects.lastIndex) {
             currentProjectIndex.value = index - 1
         }
+        projects[index].close()
         projects.removeAt(index)
         if (currentProjectIndex.value > index) {
             select(currentProjectIndex.value - 1)

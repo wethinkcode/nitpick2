@@ -27,6 +27,9 @@ class ProjectModel(val path: Path) {
 
     val page = mutableStateOf(pages[0])
 
+    fun close() {
+        flowModel.close()
+    }
 
     fun pageTo(newPage: ProjectPage) {
         page.value.isSelected.value = false

@@ -2,11 +2,13 @@ package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import dev.vishna.watchservice.KWatchEvent
 import dev.vishna.watchservice.asWatchChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import za.co.wethinkcode.core.flow.FlowDetailLoader
 import za.co.wethinkcode.core.flow.FlowShape
 import za.co.wethinkcode.flow.FileHelpers.JLTK_FOLDER
@@ -31,7 +33,18 @@ class FlowModel(path: Path) {
         if (isJltk.value) {
             CoroutineScope(Dispatchers.IO).launch {
                 watchChannel.consumeEach { event ->
-                    println(event)
+                    println(event.toString())
+                    if (event.kind == KWatchEvent.Kind.Modified
+                        && (
+                                event.file.name.endsWith(".flot")
+                                        || event.file.name.endsWith(".flol")
+                                )
+                    ) {
+                        println("Modified.")
+                        withContext(Dispatchers.Main) {
+                            load()
+                        }
+                    }
                 }
 
             }
@@ -61,7 +74,9 @@ class FlowModel(path: Path) {
         else hover.value = ""
     }
 
-
+    fun close() {
+        watchChannel.close()
+    }
 }
 
 const val FLOW_SIZE = 20f

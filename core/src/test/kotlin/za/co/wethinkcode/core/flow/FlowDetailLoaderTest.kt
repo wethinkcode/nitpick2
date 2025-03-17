@@ -10,7 +10,7 @@ class FlowDetailLoaderTest {
     @Test
     fun `one commit yields one commit with no runs`() {
         runs.commit()
-        val commits = collater.collate(runs.toList(), Commits())
+        val commits = collater.collate(runs.toList(), runs.commits)
         assertThat(commits).hasSize(1)
         assertThat(commits[0].detail.type).isEqualTo(RunType.commit)
         assertThat(commits[0]).isEmpty()
@@ -26,7 +26,7 @@ class FlowDetailLoaderTest {
     fun `one run one commit yields one Commit`() {
         runs.run()
         runs.commit()
-        val result = collater.collate(runs.toList(), Commits())
+        val result = collater.collate(runs.toList(), runs.commits)
         assertThat(result).hasSize(1)
         assertThat(result[0].detail.type).isEqualTo(RunType.commit)
         assertThat(result[0][0].type).isEqualTo(RunType.run)
@@ -38,7 +38,7 @@ class FlowDetailLoaderTest {
         runs.commit()
         runs.run()
         runs.commit()
-        val result = collater.collate(runs.toList(), Commits())
+        val result = collater.collate(runs.toList(), runs.commits)
         assertThat(result).hasSize(2)
         assertThat(result[0][0].type).isEqualTo(RunType.run)
         assertThat(result[0][0].timestamp).isEqualTo("1")
@@ -49,7 +49,7 @@ class FlowDetailLoaderTest {
     fun `makes local commit if needed`() {
         runs.run()
         runs.run()
-        val result = collater.collate(runs.toList(), Commits())
+        val result = collater.collate(runs.toList(), runs.commits)
         assertThat(result).hasSize(1)
         assertThat(result[0].detail.type).isEqualTo(RunType.local)
         assertThat(result[0].size).isEqualTo(2)

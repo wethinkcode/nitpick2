@@ -2,12 +2,12 @@ package za.co.wethinkcode.core.flow
 
 class RunsBuilder : MutableList<FlowDetail> by mutableListOf() {
     var sequence = 1
+    val commits = Commits()
 
-    fun commit(altSequence: Int = sequence): FlowDetail {
+    fun commit(altSequence: Int = sequence) {
         val run = FlowDetail("main", RunType.commit, "$altSequence", "geepaw", "geepawmail")
-        this.add(run)
+        commits.add(Commit(run))
         sequence += 1
-        return run
     }
 
     fun run(altSequence: Int = sequence): FlowDetail {

@@ -14,14 +14,12 @@ class FlowDetailLoader {
 
     fun load(path: Path): Commits {
         val details = loadFlowDetails(path)
-        return collate(details)
+        return collate(details, Commits())
     }
 
-    fun collate(runs: List<FlowDetail>): Commits {
-        val commits = Commits()
-        val sortedRuns = runs.sortedBy { it.timestamp }
-        for (run in sortedRuns.filter { it.type == RunType.commit }) commits.add(Commit(run))
-        for (run in sortedRuns.filter { it.type != RunType.commit }) {
+    fun collate(runs: List<FlowDetail>, commits: Commits): Commits {
+        for (run in runs.filter { it.type == RunType.commit }) commits.add(Commit(run))
+        for (run in runs.filter { it.type != RunType.commit }) {
             forceRunIntoCommit(commits, run)
         }
         return commits
@@ -50,7 +48,7 @@ class FlowDetailLoader {
                 safeLoad(runs, log)
             }
         }
-        return runs
+        return runs.sortedBy { it.timestamp }
     }
 
     private fun isJltkLog(log: Path): Boolean {

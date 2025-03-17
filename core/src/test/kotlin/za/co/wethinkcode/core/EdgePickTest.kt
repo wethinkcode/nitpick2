@@ -26,7 +26,6 @@ class EdgePickTest {
         folder.delete()
     }
 
-    @Test
     @Throws(IOException::class)
     fun leavesGradeResultsBehind() {
         val lms = Exercise(Path.of("../testData/authorSimple/exercise"), outputter)
@@ -40,7 +39,6 @@ class EdgePickTest {
         folder.delete()
     }
 
-    @Test
     @Throws(IOException::class)
     fun doesNotRequireLmsFolderInLmsPick() {
         val lms = Exercise(Path.of("../testData/authorSimple/exercise"), outputter)

@@ -14,15 +14,18 @@ class FlowDetailLoader {
 
     fun load(path: Path): Commits {
         val details = loadFlowDetails(path)
-        return collate(details, Commits())
+        val commits = Commits()
+        val earliest = details[0].timestamp
+        commits.load(path, earliest)
+        putDetailsInCommits(details, commits)
+        return commits
     }
 
-    fun collate(runs: List<FlowDetail>, commits: Commits): Commits {
-        for (run in runs.filter { it.type == RunType.commit }) commits.add(Commit(run))
-        for (run in runs.filter { it.type != RunType.commit }) {
-            forceRunIntoCommit(commits, run)
-        }
-        return commits
+    fun putDetailsInCommits(
+        details: List<FlowDetail>,
+        commits: Commits
+    ) {
+        for (detail in details) forceRunIntoCommit(commits, detail)
     }
 
     private fun forceRunIntoCommit(commits: Commits, run: FlowDetail) {

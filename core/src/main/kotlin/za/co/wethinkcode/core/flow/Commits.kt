@@ -1,5 +1,7 @@
 package za.co.wethinkcode.core.flow
 
+import java.nio.file.Path
+
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     val collatedTests = CollatedTests()
 
@@ -20,5 +22,8 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
         forEach { commit ->
             previousUpperRight = commit.layoutToShapes(previousUpperRight, shapes, collatedTests)
         }
+    }
+
+    fun load(path: Path, earliest: String) {
     }
 }

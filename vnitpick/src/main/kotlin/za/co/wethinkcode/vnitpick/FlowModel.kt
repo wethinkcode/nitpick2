@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import za.co.wethinkcode.core.flow.FlowDetailLoader
 import za.co.wethinkcode.core.flow.FlowShape
-import za.co.wethinkcode.flow.FileHelpers.JLTK_FOLDER
+import za.co.wethinkcode.flow.FileHelpers.*
 import java.nio.file.Path
 import kotlin.io.path.exists
 
@@ -25,7 +25,7 @@ class FlowModel(path: Path) {
     val isJltk = mutableStateOf(false)
     val hover = mutableStateOf("")
     val current = mutableStateOf<FlowShape?>(null)
-    val watchChannel = path.resolve(".flow").toFile().asWatchChannel()
+    val watchChannel = path.resolve(JLTK_FOLDER).toFile().asWatchChannel()
 
     init {
         this.path = path
@@ -36,11 +36,10 @@ class FlowModel(path: Path) {
                     println(event.toString())
                     if (event.kind == KWatchEvent.Kind.Modified
                         && (
-                                event.file.name.endsWith(".flot")
-                                        || event.file.name.endsWith(".flol")
+                                event.file.name.endsWith(JLTK_TMP_SUFFIX)
+                                        || event.file.name.endsWith(JLTK_LOG_SUFFIX)
                                 )
                     ) {
-                        println("Modified.")
                         withContext(Dispatchers.Main) {
                             load()
                         }

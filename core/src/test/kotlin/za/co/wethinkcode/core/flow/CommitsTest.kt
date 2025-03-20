@@ -8,7 +8,15 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Path
 
 
-class GitWalkerTest {
+class CommitsTest {
+
+    val commits = Commits()
+
+    @Test
+    fun stopsAtTimeStamp() {
+        commits.load(Path.of("."), "2025031712523100")
+//        assertThat(commits.size).isGreaterThan(3)
+    }
 
     @Test
     fun basic() {
@@ -25,7 +33,7 @@ class GitWalkerTest {
         walk.close()
     }
 
-    fun gitRoot(from:Path):Path {
+    fun gitRoot(from: Path): Path {
         var candidate = from.toAbsolutePath()
         while (candidate.nameCount > 1) {
             val candidateGit = candidate.resolve(".git")

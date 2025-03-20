@@ -1,6 +1,12 @@
 package za.co.wethinkcode.core.flow
 
+import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.revwalk.RevSort
+import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.nio.file.Path
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     val collatedTests = CollatedTests()
@@ -25,5 +31,27 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     }
 
     fun load(path: Path, earliest: String) {
+        val repo = FileRepositoryBuilder().findGitDir().build()
+        val walk = RevWalk(repo)
+        walk.markStart(walk.parseCommit(repo.resolve(Constants.HEAD)))
+        walk.sort(RevSort.COMMIT_TIME_DESC)
+        for (commit in walk) {
+            val committerIdent = commit.committerIdent
+            val name = committerIdent.name
+            val email = committerIdent.emailAddress.substringBefore("@")
+            val timestamp = timestampFrom(committerIdent.`when`)
+            val shortMessage = commit.shortMessage
+            val hash = commit.name
+            val detail = FlowDetail("main", RunType.commit, "$timestamp", "geepaw", "geepawmail")
+
+            println("$timestamp ${shortMessage} $hash")
+            if (timestamp < earliest) break;
+        }
+        walk.close()
+    }
+
+    fun timestampFrom(time: Date): String {
+        val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
+        return dateFormat.format(time)
     }
 }

@@ -4,11 +4,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import dev.vishna.watchservice.KWatchEvent
 import dev.vishna.watchservice.asWatchChannel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import za.co.wethinkcode.core.flow.FlowDetailLoader
 import za.co.wethinkcode.core.flow.FlowShape
 import za.co.wethinkcode.flow.FileHelpers.*
@@ -25,7 +22,7 @@ class FlowModel(path: Path) {
     val isJltk = mutableStateOf(false)
     val hover = mutableStateOf("")
     val current = mutableStateOf<FlowShape?>(null)
-    val watchChannel = path.resolve(JLTK_FOLDER).toFile().asWatchChannel()
+    val watchChannel = path.resolve(FLOW_FOLDER).toFile().asWatchChannel()
 
     init {
         this.path = path
@@ -36,8 +33,8 @@ class FlowModel(path: Path) {
                     println(event.toString())
                     if (event.kind == KWatchEvent.Kind.Modified
                         && (
-                                event.file.name.endsWith(JLTK_TMP_SUFFIX)
-                                        || event.file.name.endsWith(JLTK_LOG_SUFFIX)
+                                event.file.name.endsWith(FLOW_TMP_SUFFIX)
+                                        || event.file.name.endsWith(FLOW_LOG_SUFFIX)
                                 )
                     ) {
                         withContext(Dispatchers.Main) {
@@ -51,13 +48,13 @@ class FlowModel(path: Path) {
     }
 
     private fun isPathJltk(path: Path): Boolean {
-        if (!path.resolve(JLTK_FOLDER).exists()) return false
+        if (!path.resolve(FLOW_FOLDER).exists()) return false
         load()
         return true
     }
 
     fun load() {
-        val commits = FlowDetailLoader().load(path.resolve(JLTK_FOLDER))
+        val commits = FlowDetailLoader().load(path.resolve(FLOW_FOLDER))
         shapes.clear()
         commits.layoutToShapes(shapes)
         width.value = commits.width

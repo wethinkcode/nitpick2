@@ -1,7 +1,7 @@
 package za.co.wethinkcode.core.flow
 
-import za.co.wethinkcode.flow.FileHelpers.JLTK_LOG_SUFFIX
-import za.co.wethinkcode.flow.FileHelpers.JLTK_TMP_SUFFIX
+import za.co.wethinkcode.flow.FileHelpers.FLOW_LOG_SUFFIX
+import za.co.wethinkcode.flow.FileHelpers.FLOW_TMP_SUFFIX
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
@@ -56,7 +56,7 @@ class FlowDetailLoader {
 
     private fun isJltkLog(log: Path): Boolean {
         val name = log.toString();
-        return name.endsWith(JLTK_TMP_SUFFIX) || name.endsWith(JLTK_LOG_SUFFIX)
+        return name.endsWith(FLOW_TMP_SUFFIX) || name.endsWith(FLOW_LOG_SUFFIX)
     }
 
     fun safeLoad(

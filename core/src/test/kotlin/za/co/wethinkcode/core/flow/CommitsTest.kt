@@ -15,7 +15,7 @@ class CommitsTest {
 
     @Test
     fun stopsAtTimeStamp() {
-        commits.load(Path.of("."), "2025-03-17T12:52:30")
+        commits.load(Path.of(".."), "2025-03-17T12:52:30")
         assertThat(commits.size).isGreaterThan(3)
     }
 

@@ -5,7 +5,9 @@ import org.eclipse.jgit.revwalk.RevSort
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.nio.file.Path
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
@@ -31,7 +33,7 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     }
 
     fun load(path: Path, earliest: String) {
-        val repo = FileRepositoryBuilder().findGitDir().build()
+        val repo = FileRepositoryBuilder().findGitDir(path.toFile()).build()
         val walk = RevWalk(repo)
         walk.markStart(walk.parseCommit(repo.resolve(Constants.HEAD)))
         walk.sort(RevSort.COMMIT_TIME_DESC)
@@ -42,16 +44,21 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
             val timestamp = timestampFrom(committerIdent.`when`)
             val shortMessage = commit.shortMessage
             val hash = commit.name
-            val detail = FlowDetail("main", RunType.commit, "$timestamp", "geepaw", "geepawmail")
-
-            println("$timestamp ${shortMessage} $hash")
+            val detail = FlowDetail("main", RunType.commit, timestamp, name, email)
+            val commit = Commit(detail)
             if (timestamp < earliest) break;
+            add(commit)
         }
         walk.close()
+        repo.close()
     }
 
-    fun timestampFrom(time: Date): String {
-        val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
-        return dateFormat.format(time)
+    companion object {
+
+        fun timestampFrom(time: Date): String {
+            val a = LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault())
+            return a.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray().get(0)
+        }
     }
 }

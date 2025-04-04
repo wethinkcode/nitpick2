@@ -1,5 +1,6 @@
 package za.co.wethinkcode.core.flow
 
+import org.assertj.core.api.Assertions.assertThat
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.revwalk.RevSort
 import org.eclipse.jgit.revwalk.RevWalk
@@ -14,8 +15,8 @@ class CommitsTest {
 
     @Test
     fun stopsAtTimeStamp() {
-        commits.load(Path.of("."), "2025031712523100")
-//        assertThat(commits.size).isGreaterThan(3)
+        commits.load(Path.of("."), "2025-03-17T12:52:30")
+        assertThat(commits.size).isGreaterThan(3)
     }
 
     @Test

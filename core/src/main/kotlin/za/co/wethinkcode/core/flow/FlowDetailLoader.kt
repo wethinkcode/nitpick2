@@ -25,6 +25,8 @@ class FlowDetailLoader {
         details: List<FlowDetail>,
         commits: Commits
     ) {
+        println("Commit count: ${commits.size}")
+        println("Details: ${details.size}")
         for (detail in details) forceRunIntoCommit(commits, detail)
     }
 

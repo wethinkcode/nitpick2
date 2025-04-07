@@ -17,7 +17,7 @@ class FileUtilityTest {
     @Test
     @Throws(IOException::class)
     fun requireGitRepoAtTop() {
-        folder.addGitFolder()
+        folder.initGitRepo()
         assertThat(FileUtility.requireGitRoot(folder.root, reporter)).isEqualTo(folder.root)
         folder.delete()
     }
@@ -25,7 +25,7 @@ class FileUtilityTest {
     @Test
     @Throws(IOException::class)
     fun requireGitRepoFromInside() {
-        folder.addGitFolder()
+        folder.initGitRepo()
         val insidePath = folder.root.resolve("folder")
         Files.createDirectory(insidePath)
         assertThat(FileUtility.requireGitRoot(insidePath, reporter)).isEqualTo(folder.root)

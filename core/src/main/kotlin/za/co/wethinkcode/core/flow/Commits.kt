@@ -35,7 +35,8 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
     fun load(path: Path, earliest: String) {
         val repo = FileRepositoryBuilder().findGitDir(path.toFile()).build()
         val walk = RevWalk(repo)
-        walk.markStart(walk.parseCommit(repo.resolve(Constants.HEAD)))
+        val head = repo.resolve(Constants.HEAD) ?: return
+        walk.markStart(walk.parseCommit(head))
         walk.sort(RevSort.COMMIT_TIME_DESC)
         for (commit in walk) {
             val committerIdent = commit.committerIdent

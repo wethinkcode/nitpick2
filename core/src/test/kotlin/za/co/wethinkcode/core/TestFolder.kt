@@ -15,13 +15,6 @@ class TestFolder(val root: Path, val reporter: Reporter) {
     constructor() : this(NullReporter())
 
     @Throws(IOException::class)
-    fun addGitFolder() {
-        val gitPath = root.resolve(".git")
-        Files.createDirectory(gitPath)
-        val gitFile = gitPath.resolve("git.txt")
-    }
-
-    @Throws(IOException::class)
     fun delete() {
         delete(root)
     }

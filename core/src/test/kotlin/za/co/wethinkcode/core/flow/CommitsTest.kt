@@ -15,9 +15,14 @@ class CommitsTest {
     fun stopsAtTimeStamp() {
         commits.load(Path.of(".."), "2025-03-17T12:52:30")
         assertThat(commits.size).isGreaterThan(3)
+        folder.delete()
     }
 
     @Test
     fun zeroCommitsInRepo() {
+        folder.initGitRepo()
+        commits.load(folder.root, "2025-04-08T12:52:30")
+        assertThat(commits.size).isEqualTo(0)
+        folder.delete()
     }
 }

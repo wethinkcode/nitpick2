@@ -17,32 +17,10 @@ class FlowDetailLoader {
         val commits = Commits()
         val earliest = details[0].timestamp
         commits.load(path, earliest)
-        putDetailsInCommits(details, commits)
+        commits.putDetailsInCommits(details)
         return commits
     }
 
-    fun putDetailsInCommits(
-        details: List<FlowDetail>,
-        commits: Commits
-    ) {
-        println("Commit count: ${commits.size}")
-        println("Details: ${details.size}")
-        for (detail in details) forceRunIntoCommit(commits, detail)
-    }
-
-    private fun forceRunIntoCommit(commits: Commits, run: FlowDetail) {
-        for (commit in commits) {
-            if (commit.owns(run)) {
-                commit.add(run)
-                return
-            }
-        }
-        val commit = Commit(
-            FlowDetail(run.branch, RunType.local, "99999", run.committer, run.email)
-        )
-        commit.add(run)
-        commits.add(commit)
-    }
 
     fun loadFlowDetails(path: Path): List<FlowDetail> {
         if (!path.exists()) return listOf(makeBase64Error(path, "File does not exist."))

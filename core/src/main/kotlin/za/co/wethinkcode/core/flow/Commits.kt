@@ -55,6 +55,27 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
         repo.close()
     }
 
+    fun putDetailsInCommits(
+        details: List<FlowDetail>
+    ) {
+        for (detail in details) forceRunIntoCommit(detail)
+    }
+
+    private fun forceRunIntoCommit(run: FlowDetail) {
+        for (commit in this) {
+            if (commit.owns(run)) {
+                commit.add(run)
+                return
+            }
+        }
+        val commit = Commit(
+            FlowDetail(run.branch, RunType.local, "99999", run.committer, run.email)
+        )
+        commit.add(run)
+        add(commit)
+    }
+
+
     companion object {
 
         fun timestampFrom(time: Date): String {

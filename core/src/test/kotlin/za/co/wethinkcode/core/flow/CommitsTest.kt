@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit
 
 class CommitsTest {
 
+    val runs = RunsBuilder()
     val commits = Commits()
     val folder = TestFolder()
 
@@ -59,6 +60,7 @@ class CommitsTest {
         folder.commit()
         commits.load(folder.root, earliest)
         assertThat(commits.size).isEqualTo(1)
+        folder.delete()
     }
 
     fun now(): String {
@@ -73,5 +75,59 @@ class CommitsTest {
 
         return plus.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray().get(0);
+    }
+
+
+    @Test
+    fun `one commit yields one commit with no runs`() {
+        runs.commit()
+        runs.commits.putDetailsInCommits(runs.toList())
+        assertThat(runs.commits).hasSize(1)
+        assertThat(runs.commits[0].detail.type).isEqualTo(RunType.commit)
+        assertThat(runs.commits[0]).isEmpty()
+        folder.delete()
+    }
+
+    @Test
+    fun `empty yields empty`() {
+        runs.commits.putDetailsInCommits(runs.toList())
+        assertThat(runs.commits).isEmpty()
+        folder.delete()
+    }
+
+    @Test
+    fun `one run one commit yields one Commit`() {
+        runs.run()
+        runs.commit()
+        runs.commits.putDetailsInCommits(runs.toList())
+        assertThat(runs.commits).hasSize(1)
+        assertThat(runs.commits[0].detail.type).isEqualTo(RunType.commit)
+        assertThat(runs.commits[0][0].type).isEqualTo(RunType.run)
+        folder.delete()
+    }
+
+    @Test
+    fun `run commit run commit forms two commits`() {
+        runs.run()
+        runs.commit()
+        runs.run()
+        runs.commit()
+        runs.commits.putDetailsInCommits(runs.toList())
+        assertThat(runs.commits).hasSize(2)
+        assertThat(runs.commits[0][0].type).isEqualTo(RunType.run)
+        assertThat(runs.commits[0][0].timestamp).isEqualTo("1")
+        assertThat(runs.commits[1][0].type).isEqualTo(RunType.run)
+        folder.delete()
+    }
+
+    @Test
+    fun `makes local commit if needed`() {
+        runs.run()
+        runs.run()
+        runs.commits.putDetailsInCommits(runs.toList())
+        assertThat(runs.commits).hasSize(1)
+        assertThat(runs.commits[0].detail.type).isEqualTo(RunType.local)
+        assertThat(runs.commits[0].size).isEqualTo(2)
+        folder.delete()
     }
 }

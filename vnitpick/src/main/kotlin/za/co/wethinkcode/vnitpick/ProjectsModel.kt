@@ -1,13 +1,12 @@
 package za.co.wethinkcode.vnitpick
 
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 
 class ProjectsModel {
     val projects = mutableStateListOf<ProjectModel>()
     val currentProjectIndex = mutableIntStateOf(-1)
     val currentProject = mutableStateOf<ProjectModel?>(null)
+    val isOpening = mutableStateOf(false);
 
     fun add(project: ProjectModel) {
         projects.add(project)

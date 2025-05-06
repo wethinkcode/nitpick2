@@ -5,12 +5,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposeWindow
 import compose.icons.fontawesomeicons.RegularGroup
 import compose.icons.fontawesomeicons.regular.FolderOpen
 import za.co.wethinkcode.vnitpick.Styles.DEFAULT_ICON_SIZE
-import javax.swing.JFileChooser
-import kotlin.io.path.Path
 
 @Composable
 fun OpenTool(model: ProjectsModel) {
@@ -25,12 +22,6 @@ fun OpenTool(model: ProjectsModel) {
 }
 
 fun open(model: ProjectsModel) {
-    val chooser = JFileChooser()
-    chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-    chooser.currentDirectory = Path(".").toFile()
-    val chooserResult = chooser.showOpenDialog(ComposeWindow())
-    if (chooserResult == JFileChooser.APPROVE_OPTION) {
-        model.add(ProjectModel(chooser.selectedFile.toPath()))
-    }
+    model.isOpening.value = true
 }
 

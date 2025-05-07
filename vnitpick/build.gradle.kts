@@ -7,6 +7,8 @@ plugins {
 }
 
 group = "za.co.wethinkcode"
+val junitVersion = property("junit.version")
+val assertJVersion = property("assertj.version")
 
 
 repositories {
@@ -35,10 +37,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.6")
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
     implementation("dev.hydraulic.conveyor:conveyor-control:1.1")
-    implementation("za.co.wethinkcode:flow:1.0.3")
+    implementation("za.co.wethinkcode:flow:1.0.4")
     implementation(project(":core"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
 }
 
 compose.desktop {

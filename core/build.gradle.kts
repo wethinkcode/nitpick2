@@ -3,7 +3,8 @@ plugins {
 }
 
 group = "za.co.wethinkcode"
-version = "1.0-SNAPSHOT"
+val junitVersion = property("junit.version")
+val assertJVersion = property("assertj.version")
 
 repositories {
     mavenLocal()
@@ -18,9 +19,13 @@ dependencies {
     implementation("org.buildobjects:jproc:2.8.2")
     implementation("org.yaml:snakeyaml:2.0")
     implementation("org.slf4j:slf4j-nop:2.0.7")
-    implementation("za.co.wethinkcode:flow:1.0.3")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    implementation("za.co.wethinkcode:flow:1.0.4")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 tasks.test {

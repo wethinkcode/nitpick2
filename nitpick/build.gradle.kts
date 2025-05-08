@@ -3,7 +3,8 @@ plugins {
 }
 
 group = "za.co.wethinkcode"
-version = "1.0-SNAPSHOT"
+val junitVersion = property("junit.version")
+val assertJVersion = property("assertj.version")
 
 repositories {
     mavenLocal()
@@ -16,8 +17,12 @@ dependencies {
     implementation("za.co.wethinkcode:jltk-io:0.1.0")
 
     implementation(project(":core"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 tasks.test {

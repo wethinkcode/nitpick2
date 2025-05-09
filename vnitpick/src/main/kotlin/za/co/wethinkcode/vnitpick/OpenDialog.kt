@@ -5,14 +5,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import za.co.wethinkcode.vnitpick.tree.UiTreeNode
 import za.co.wethinkcode.vnitpick.tree.UiTreeView
 import java.nio.file.Path
+import kotlin.io.path.name
 
 
 @Composable
@@ -32,24 +31,18 @@ fun OpenDialog(model: OpenModel, onDismissRequest: () -> Unit) {
                     model::expand,
                     model::select
                 ) { item ->
-                    TreeItem(item)
+                    PathNode(item)
                 }
             }
-            Text(
-                text = "This is a minimal dialog",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center),
-                textAlign = TextAlign.Center,
-            )
         }
     }
 }
 
 @Composable
-fun TreeItem(item: UiTreeNode<Path>) {
+fun PathNode(node: UiTreeNode<Path>) {
+    val name = if (node.item.nameCount == 0) node.item.toString() else node.item.name
     Text(
-        item.item.toString(),
+        name,
         Modifier
             .padding(4.dp)
             .fillMaxWidth(),

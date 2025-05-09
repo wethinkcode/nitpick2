@@ -1,7 +1,7 @@
 package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateOf
-import za.co.wethinkcode.vnitpick.tree.ExpandedState
+import za.co.wethinkcode.vnitpick.tree.ExpandedState.*
 import za.co.wethinkcode.vnitpick.tree.UiTreeNode
 import java.io.File
 import java.nio.file.Path
@@ -15,19 +15,21 @@ class OpenModel {
     init {
         val files = File.listRoots().map { it.toPath() }
         files.forEach {
-            root.children.add(UiTreeNode(it))
+            val drive = UiTreeNode(it)
+            if (it.isDirectory()) {
+                drive.expandedState.value = Closed
+            }
+            root.children.add(drive)
         }
-        refreshChildren(root.children.get(0))
-        root.children.get(0).expandedState.value = ExpandedState.Closed
     }
 
     fun expand(node: UiTreeNode<Path>) {
         when (node.expandedState.value) {
-            ExpandedState.None -> {}
-            ExpandedState.Open -> node.expandedState.value = ExpandedState.Closed
-            ExpandedState.Closed -> {
+            None -> {}
+            Open -> node.expandedState.value = Closed
+            Closed -> {
                 refreshChildren(node)
-                node.expandedState.value = ExpandedState.Open
+                node.expandedState.value = Open
             }
         }
     }
@@ -37,8 +39,12 @@ class OpenModel {
         if (path.isDirectory()) {
             node.children.clear()
             val children = path.listDirectoryEntries()
-            children.forEach {
-                node.children.add(UiTreeNode(it))
+            children.forEach { child ->
+                val childNode = UiTreeNode(child)
+                node.children.add(childNode)
+                if (child.isDirectory()) {
+                    childNode.expandedState.value = Closed
+                }
             }
         }
     }

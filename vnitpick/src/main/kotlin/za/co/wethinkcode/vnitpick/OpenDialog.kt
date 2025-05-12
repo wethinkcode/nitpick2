@@ -24,7 +24,7 @@ import kotlin.io.path.name
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OpenDialog(model: OpenModel, onOpen: (ProjectModel) -> Unit) {
+fun OpenDialog(model: OpenModel, onOpen: () -> Unit) {
     val properties = DialogProperties(
         usePlatformDefaultWidth = false,
         dismissOnBackPress = false,
@@ -53,14 +53,14 @@ fun OpenDialog(model: OpenModel, onOpen: (ProjectModel) -> Unit) {
                         PathNode(item)
                     }
                 }
-                Controls(model)
+                Controls(model, onOpen)
             }
         }
     }
 }
 
 @Composable
-fun Controls(model: OpenModel) {
+fun Controls(model: OpenModel, onOpen: () -> Unit) {
     Column {
         Spacer(Modifier.height(1.dp).fillMaxWidth().background(Color.Black))
         Row(
@@ -73,7 +73,7 @@ fun Controls(model: OpenModel) {
             ) {
                 Text("Cancel")
             }
-            Button({}, Modifier.padding(horizontal = 8.dp)) {
+            Button({ onOpen() }, Modifier.padding(horizontal = 8.dp)) {
                 Text("Open")
             }
         }

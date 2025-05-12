@@ -1,6 +1,8 @@
 package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.*
+import java.nio.file.Path
+import kotlin.io.path.exists
 
 class ProjectsModel {
     val projects = mutableStateListOf<ProjectModel>()
@@ -37,6 +39,13 @@ class ProjectsModel {
         if (currentProjectIndex.value > index) {
             select(currentProjectIndex.value - 1)
         } else select(currentProjectIndex.value)
+    }
+
+    fun open() {
+        val path = Path.of(openModel.filename.value.text)
+        if (!path.exists()) return
+        add(ProjectModel(path))
+        openModel.isOpening.value = false
     }
 
     fun nextProject() {

@@ -8,39 +8,73 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import za.co.wethinkcode.vnitpick.tree.UiTreeNode
 import za.co.wethinkcode.vnitpick.tree.UiTreeView
 import java.nio.file.Path
 import kotlin.io.path.name
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OpenDialog(model: OpenModel, onDismissRequest: () -> Unit) {
-    Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(800.dp)
-                .width(600.dp)
-                .padding(16.dp),
-            shape = androidx.compose.ui.graphics.RectangleShape,
-        ) {
-            Column {
-                Dropdown()
-                UiTreeView(
-                    model.root,
-                    model::expand,
-                    model::select
-                ) { item ->
-                    PathNode(item)
+fun OpenDialog(model: OpenModel) {
+    val properties = DialogProperties(
+        usePlatformDefaultWidth = false,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        usePlatformInsets = true
+    )
+    if (model.isOpening.value) {
+        Dialog(onDismissRequest = { }, properties) {
+            Column(
+                Modifier.padding(16.dp)
+                    .size(600.dp, 800.dp)
+                    .background(Color.White)
+                    .border(2.dp, Color.Black, RectangleShape)
+                    .padding(32.dp, 16.dp),
+            ) {
+                MruCombo(model)
+                Column(
+                    modifier = Modifier.weight(0.5F)
+                ) {
+
+                    UiTreeView(
+                        model.root,
+                        model::expand,
+                        model::select
+                    ) { item ->
+                        PathNode(item)
+                    }
                 }
+                Controls(model)
+            }
+        }
+    }
+}
+
+@Composable
+fun Controls(model: OpenModel) {
+    Column {
+        Spacer(Modifier.height(1.dp).fillMaxWidth().background(Color.Black))
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Spacer(Modifier.weight(1f))
+            Button(
+                { model.isOpening.value = false },
+                Modifier.padding(horizontal = 8.dp)
+            ) {
+                Text("Cancel")
+            }
+            Button({}, Modifier.padding(horizontal = 8.dp)) {
+                Text("Open")
             }
         }
     }
@@ -59,35 +93,36 @@ fun PathNode(node: UiTreeNode<Path>) {
 }
 
 @Composable
-fun Dropdown() {
-    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
+fun MruCombo(model: OpenModel) {
     val expanded = remember { mutableStateOf(false) }
-    val selectedOptionText = remember { mutableStateOf(options[0]) }
-    var textState by remember { mutableStateOf(TextFieldValue(options[0])) }
 
     Box(
         contentAlignment = Alignment.CenterStart,
         modifier = Modifier
-            .size(250.dp, 32.dp)
+            .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(4.dp))
-            .clickable { expanded.value = !expanded.value },
     ) {
-        BasicTextField(value = textState, onValueChange = {
-            textState = it
-        })
+        BasicTextField(
+            value = model.filename.value,
+            onValueChange = {
+                model.filename.value = it
+            },
+            Modifier.fillMaxWidth()
+        )
         Icon(
             Icons.Filled.ArrowDropDown, "contentDescription",
             Modifier.align(Alignment.CenterEnd)
+                .clickable { expanded.value = !expanded.value },
         )
         DropdownMenu(
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false }
         ) {
-            options.forEach { selectionOption ->
+            model.mruOptions.forEach { selectionOption ->
                 DropdownMenuItem(
                     onClick = {
-                        selectedOptionText.value = selectionOption
+                        model.filename.value = TextFieldValue(selectionOption)
                         expanded.value = false
                     }
                 ) {

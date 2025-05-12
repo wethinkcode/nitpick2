@@ -53,9 +53,6 @@ fun ProjectsBar(model: ProjectsModel) {
             Modifier.size(DEFAULT_ICON_SIZE)
                 .clickable { model.nextProject() }
         )
-        if (model.isOpening.value) {
-            OpenDialog(OpenModel())
-            { model.isOpening.value = false }
-        }
+        OpenDialog(model.openModel)
     }
 }

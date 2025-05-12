@@ -6,7 +6,7 @@ class ProjectsModel {
     val projects = mutableStateListOf<ProjectModel>()
     val currentProjectIndex = mutableIntStateOf(-1)
     val currentProject = mutableStateOf<ProjectModel?>(null)
-    val isOpening = mutableStateOf(false);
+    val openModel = OpenModel()
 
     fun add(project: ProjectModel) {
         projects.add(project)

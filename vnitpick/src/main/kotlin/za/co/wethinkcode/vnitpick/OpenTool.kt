@@ -22,6 +22,6 @@ fun OpenTool(model: ProjectsModel) {
 }
 
 fun open(model: ProjectsModel) {
-    model.isOpening.value = true
+    model.openModel.isOpening.value = true
 }
 

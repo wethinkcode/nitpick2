@@ -16,12 +16,8 @@ fun OpenTool(model: ProjectsModel) {
         "Open Project",
         Modifier.size(DEFAULT_ICON_SIZE)
             .clickable {
-                open(model)
+                model.openModel.isOpening.value = true
             }
     )
-}
-
-fun open(model: ProjectsModel) {
-    model.openModel.isOpening.value = true
 }
 

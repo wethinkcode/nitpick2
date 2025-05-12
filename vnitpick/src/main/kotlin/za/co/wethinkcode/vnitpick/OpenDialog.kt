@@ -24,7 +24,7 @@ import kotlin.io.path.name
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OpenDialog(model: OpenModel) {
+fun OpenDialog(model: OpenModel, onOpen: (ProjectModel) -> Unit) {
     val properties = DialogProperties(
         usePlatformDefaultWidth = false,
         dismissOnBackPress = false,

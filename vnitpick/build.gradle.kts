@@ -35,6 +35,7 @@ dependencies {
     implementation("dev.hydraulic.conveyor:conveyor-control:1.1")
     implementation("za.co.wethinkcode:flow:1.0.4")
     implementation(project(":core"))
+    testImplementation(files("../core/build/classes/kotlin/test"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
 }

@@ -1,4 +1,4 @@
-package za.co.wethinkcode.vnitpick
+package za.co.wethinkcode.vnitpick.projects
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +28,7 @@ import za.co.wethinkcode.vnitpick.Styles.DEFAULT_ICON_SIZE
 import kotlin.io.path.name
 
 @Composable
-fun ProjectTabs(model: ProjectsModel) {
+fun ProjectsTabBar(model: ProjectsModel) {
     if (model.projects.isNotEmpty()) {
         var tab by remember { model.currentProjectIndex }
         ScrollableTabRow(

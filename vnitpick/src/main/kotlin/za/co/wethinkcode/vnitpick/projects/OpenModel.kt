@@ -1,4 +1,4 @@
-package za.co.wethinkcode.vnitpick
+package za.co.wethinkcode.vnitpick.projects
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue

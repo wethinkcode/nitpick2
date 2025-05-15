@@ -1,4 +1,4 @@
-package za.co.wethinkcode.vnitpick
+package za.co.wethinkcode.vnitpick.flow
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf

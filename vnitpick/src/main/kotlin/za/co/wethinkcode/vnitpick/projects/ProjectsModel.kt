@@ -1,6 +1,7 @@
-package za.co.wethinkcode.vnitpick
+package za.co.wethinkcode.vnitpick.projects
 
 import androidx.compose.runtime.*
+import za.co.wethinkcode.vnitpick.ProjectModel
 import java.nio.file.Path
 import kotlin.io.path.exists
 

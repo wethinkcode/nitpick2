@@ -2,6 +2,7 @@ package za.co.wethinkcode.vnitpick
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import za.co.wethinkcode.vnitpick.projects.ProjectsModel
 import kotlin.io.path.Path
 
 class ProjectsModelTest {

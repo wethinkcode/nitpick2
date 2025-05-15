@@ -1,4 +1,4 @@
-package za.co.wethinkcode.vnitpick
+package za.co.wethinkcode.vnitpick.projects
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*

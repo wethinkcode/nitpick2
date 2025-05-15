@@ -1,6 +1,7 @@
 package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateOf
+import za.co.wethinkcode.vnitpick.flow.FlowModel
 import java.nio.file.Path
 
 class ProjectPage(

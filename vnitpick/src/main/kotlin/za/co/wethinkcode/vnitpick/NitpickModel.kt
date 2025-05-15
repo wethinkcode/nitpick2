@@ -2,6 +2,7 @@ package za.co.wethinkcode.vnitpick
 
 import androidx.compose.runtime.mutableStateOf
 import dev.hydraulic.conveyor.control.SoftwareUpdateController
+import za.co.wethinkcode.vnitpick.projects.ProjectsModel
 
 class NitpickModel {
     val title = mutableStateOf("Starting Title")

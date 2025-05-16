@@ -46,6 +46,7 @@ class ProjectsModel {
         val path = Path.of(openModel.filename.value.text)
         if (!path.exists()) return
         add(ProjectModel(path))
+        openModel.mru.add(path)
         openModel.isOpening.value = false
     }
 

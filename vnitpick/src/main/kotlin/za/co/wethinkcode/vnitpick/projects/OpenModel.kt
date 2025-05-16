@@ -11,7 +11,8 @@ import kotlin.io.path.*
 class OpenModel {
     val root = UiTreeNode(Path.of("/"))
     val selected = mutableStateOf(root)
-    val mruOptions = listOf<String>()
+    val mru = Mru()
+    val mruOptions get() = mru.strings()
     val filename = mutableStateOf(TextFieldValue(""))
     val isOpening = mutableStateOf(false)
 

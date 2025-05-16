@@ -5,7 +5,7 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
 
-class Mru(val from: Path = Path.of("~/.lms"), val keep: Int = 10) {
+class Mru(val from: Path = homePath(), val keep: Int = 10) {
 
     private val paths = mutableListOf<Path>()
 
@@ -48,8 +48,17 @@ class Mru(val from: Path = Path.of("~/.lms"), val keep: Int = 10) {
         }
     }
 
+    fun strings(): List<String> {
+        return items.map { it.toString() }
+    }
+
     companion object {
         const val MRU_FILE = "mru.txt"
+
+        fun homePath(): Path {
+            val property = System.getProperty("user.home")
+            return Path.of(property).resolve(".lms")
+        }
     }
 
 }

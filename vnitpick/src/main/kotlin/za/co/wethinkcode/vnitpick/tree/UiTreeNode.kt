@@ -12,5 +12,6 @@ data class UiTreeNode<ITEM>(val item: ITEM) {
         (0 until indent).forEach { print("  ") }
         for (child in children) child.dump(indent + 1)
     }
+
 }
 

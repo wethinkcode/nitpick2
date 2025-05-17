@@ -56,8 +56,7 @@ class Mru(val from: Path = homePath(), val keep: Int = 10) {
         const val MRU_FILE = "mru.txt"
 
         fun homePath(): Path {
-            val property = System.getProperty("user.home")
-            return Path.of(property).resolve(".lms")
+            return Path.of(System.getProperty("user.home"))
         }
     }
 

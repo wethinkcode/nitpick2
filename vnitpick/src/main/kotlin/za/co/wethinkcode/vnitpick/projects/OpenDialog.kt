@@ -123,6 +123,7 @@ fun MruCombo(model: OpenModel) {
                 DropdownMenuItem(
                     onClick = {
                         model.filename.value = TextFieldValue(selectionOption)
+                        model.openTo(Path.of(model.filename.value.text))
                         expanded.value = false
                     }
                 ) {

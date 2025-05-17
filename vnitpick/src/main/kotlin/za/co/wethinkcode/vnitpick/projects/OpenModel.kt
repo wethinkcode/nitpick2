@@ -39,6 +39,34 @@ class OpenModel {
         }
     }
 
+    fun openTo(target: Path) {
+        openTo(root, target)
+    }
+
+    fun Path.isAncestorOf(target: Path): Boolean {
+        if (root != target.root) return false
+        val size = this.nameCount
+        for (i in 0 until size) {
+            if (getName(i) != target.getName(i)) return false
+        }
+        return true
+    }
+
+    fun openTo(parent: UiTreeNode<Path>, target: Path) {
+        for (candidate in parent.children) {
+            if (candidate.item == target) {
+                select(candidate)
+                return
+            }
+            if (candidate.item.isAncestorOf(target)) {
+                refreshChildren(candidate)
+                expand(candidate)
+                select(candidate)
+                openTo(candidate, target)
+            }
+        }
+    }
+
     fun refreshChildren(node: UiTreeNode<Path>) {
         val path = node.item
         if (path.isDirectory()) {

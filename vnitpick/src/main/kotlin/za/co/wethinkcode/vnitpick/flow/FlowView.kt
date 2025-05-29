@@ -56,7 +56,7 @@ fun FlowGraph(model: FlowModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
-                Modifier.width((20 * model.width.value).dp).height((20 * model.height.value).dp)
+                Modifier.width((CELL_SIZE * model.width.value).dp).height((CELL_SIZE * model.height.value).dp)
                     .background(color = Color.LightGray)
             ) {
                 model.shapes.forEach {
@@ -107,7 +107,7 @@ fun Base64Error() {
 @Composable
 fun TestBlock(shape: TestShape) {
     if (shape.detail.type == RunType.test) {
-        LazyColumn(Modifier.fillMaxWidth().padding(0.dp, 20.dp)) {
+        LazyColumn(Modifier.fillMaxWidth().padding(0.dp, CELL_SIZE.dp)) {
             items(shape.tests) { test ->
                 val textColor = determineTestText(test)
                 val textBackground = determineTestColor(test)
@@ -164,9 +164,9 @@ fun CommitBlock(shape: FlowShape) {
 
 private val flowCommitShape = GenericShape { size, _ ->
     moveTo(0f, size.height)
-    lineTo(0f, size.height - 20f)
-    lineTo(size.width - 20f, size.height - 20f)
-    lineTo(size.width - 20f, 0f)
+    lineTo(0f, size.height - CELL_SIZE.toFloat())
+    lineTo(size.width - CELL_SIZE.toFloat(), size.height - CELL_SIZE.toFloat())
+    lineTo(size.width - CELL_SIZE.toFloat(), 0f)
     lineTo(size.width, 0f)
     lineTo(size.width, size.height)
 }
@@ -174,10 +174,10 @@ private val flowCommitShape = GenericShape { size, _ ->
 
 @Composable
 fun FlowCommit(shape: CommitShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
-    val offsetX = shape.x * 20
-    val offsetY = (totalHeight - shape.height) * 20
-    val width = shape.width * 20
-    val height = shape.height * 20
+    val offsetX = shape.x * CELL_SIZE
+    val offsetY = (totalHeight - shape.height) * CELL_SIZE
+    val width = shape.width * CELL_SIZE
+    val height = shape.height * CELL_SIZE
     val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
     val clip = flowCommitShape
     FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
@@ -185,10 +185,10 @@ fun FlowCommit(shape: CommitShape, totalHeight: Int, onEnter: (Boolean) -> Unit,
 
 @Composable
 fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
-    val offsetX = shape.x * 20
-    val offsetY = (totalHeight - (shape.height + 1)) * 20
-    val width = shape.width * 20
-    val height = shape.height * 20
+    val offsetX = shape.x * CELL_SIZE
+    val offsetY = (totalHeight - (shape.height + 1)) * CELL_SIZE
+    val width = shape.width * CELL_SIZE
+    val height = shape.height * CELL_SIZE
     val background = Color.Gray
     val clip = RectangleShape
     FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
@@ -196,10 +196,10 @@ fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onCli
 
 @Composable
 fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
-    val offsetX = shape.x * 20
-    val offsetY = (totalHeight - ((shape.y + 1))) * 20
-    val width = 20
-    val height = 20
+    val offsetX = shape.x * CELL_SIZE
+    val offsetY = (totalHeight - ((shape.y + 1))) * CELL_SIZE
+    val width = CELL_SIZE
+    val height = CELL_SIZE
     val background = determineTestColor(shape.result)
     val clip = RectangleShape
     FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
@@ -262,3 +262,4 @@ val FAILED_BACKGROUND = Color(255, 0, 0)
 val DISABLED_BACKGROUND = Color(255, 255, 0)
 val ABORT_BACKGROUND = Color(255, 255, 255)
 val UNRUN_BACKGROUND = Color(128, 128, 128)
+val CELL_SIZE = 12

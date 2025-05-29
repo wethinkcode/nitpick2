@@ -20,8 +20,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
     operator fun get(index: Int): FlowDetail = this.toList()[index]
 
     fun owns(run: FlowDetail): Boolean {
-        return (run.timestamp < detail.timestamp
-                && (run.email.startsWith(detail.email) || detail.email.startsWith(run.email)))
+        return run.timestamp < detail.timestamp
     }
 
     fun layoutToShapes(

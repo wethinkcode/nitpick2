@@ -3,13 +3,16 @@
 package za.co.wethinkcode.vnitpick.flow
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
@@ -19,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 import za.co.wethinkcode.core.flow.*
 import za.co.wethinkcode.vnitpick.AdviceBox
-import za.co.wethinkcode.vnitpick.PanAndZoom
 import za.co.wethinkcode.vnitpick.Styles.DEFAULT_FONT_SIZE
 import za.co.wethinkcode.vnitpick.Styles.LARGE_FONT_SIZE
 
@@ -49,36 +51,64 @@ fun FlowPage(model: FlowModel) {
 
 @Composable
 fun FlowGraph(model: FlowModel) {
-    PanAndZoom {
-        Column(
-            Modifier.fillMaxSize().background(Color.White),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                Modifier.width((CELL_SIZE * model.width.value).dp).height((CELL_SIZE * model.height.value).dp)
-                    .background(color = Color.LightGray)
-            ) {
-                model.shapes.forEach {
-                    when (it) {
-                        is CommitShape -> FlowCommit(
-                            it,
-                            model.height.value,
-                            { flag -> model.hover(it, flag) }) {
-                            model.flowClick(it)
+    var scale by remember { mutableStateOf(1f) }
+    var rotation by remember { mutableStateOf(0f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        scale *= zoomChange
+        rotation += rotationChange
+        offset += offsetChange
+    }
+    Box(
+        Modifier
+            .width((CELL_SIZE * model.width.value).dp)
+            .height((CELL_SIZE * model.height.value).dp)
+            .background(color = Color.LightGray)
+            .border(3.dp, Color.Green)
+            .clip(RectangleShape)
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = rotation,
+                translationX = offset.x,
+                translationY = offset.y
+            )
+            // add transformable to listen to multitouch transformation events
+            // after offset
+            .transformable(state = state)
+            .pointerInput(PointerEventType.Scroll) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val direction = event.changes.first().scrollDelta.y
+                        if (direction == 1.0f) {
+                            scale = scale * 0.9f
                         }
-
-                        is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
-                            model.flowClick(it)
-                        }
-
-                        is TestShape -> FlowTest(
-                            it,
-                            model.height.value,
-                            { flag -> model.hover(it, flag) }) {
-                            model.flowClick(it)
+                        if (direction == -1.0f) {
+                            scale = scale * 1.1f
                         }
                     }
+                }
+            }
+    ) {
+        model.shapes.forEach {
+            when (it) {
+                is CommitShape -> FlowCommit(
+                    it,
+                    model.height.value,
+                    { flag -> model.hover(it, flag) }) {
+                    model.flowClick(it)
+                }
+
+                is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
+                    model.flowClick(it)
+                }
+
+                is TestShape -> FlowTest(
+                    it,
+                    model.height.value,
+                    { flag -> model.hover(it, flag) }) {
+                    model.flowClick(it)
                 }
             }
         }

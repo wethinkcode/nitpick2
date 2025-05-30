@@ -39,7 +39,9 @@ fun FlowPage(model: FlowModel) {
                 Row(Modifier.fillMaxWidth()) {
                     Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
                 }
-                FlowGraph(model)
+                Row(Modifier.clip(RectangleShape)) {
+                    FlowGraph(model)
+                }
             }
             Spacer(Modifier.fillMaxHeight().width(1.dp))
             Column(Modifier.fillMaxWidth().fillMaxHeight().background(Color.LightGray)) {
@@ -65,6 +67,7 @@ fun FlowGraph(model: FlowModel) {
             .height((CELL_SIZE * model.height.value).dp)
             .background(color = Color.LightGray)
             .border(3.dp, Color.Green)
+            .transformable(state = state)
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = scale,
@@ -74,7 +77,6 @@ fun FlowGraph(model: FlowModel) {
             )
             // add transformable to listen to multitouch transformation events
             // after offset
-            .transformable(state = state)
             .pointerInput(PointerEventType.Scroll) {
                 awaitPointerEventScope {
                     while (true) {
@@ -90,14 +92,15 @@ fun FlowGraph(model: FlowModel) {
                 }
             }
     ) {
-        model.shapes.forEach {
+        model.shapes.dropLast(220).forEach {
             when (it) {
-                is CommitShape -> FlowCommit(
-                    it,
-                    model.height.value,
-                    { flag -> model.hover(it, flag) }) {
-                    model.flowClick(it)
-                }
+                is CommitShape -> Unit
+//                FlowCommit(
+//                    it,
+//                    model.height.value,
+//                    { flag -> model.hover(it, flag) }) {
+//                    model.flowClick(it)
+//                }
 
                 is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
                     model.flowClick(it)

@@ -68,13 +68,7 @@ fun FlowGraph(model: FlowModel) {
             .background(color = Color.LightGray)
             .border(3.dp, Color.Green)
             .transformable(state = state)
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotation,
-                translationX = offset.x,
-                translationY = offset.y
-            )
+
             // add transformable to listen to multitouch transformation events
             // after offset
             .pointerInput(PointerEventType.Scroll) {
@@ -91,6 +85,13 @@ fun FlowGraph(model: FlowModel) {
                     }
                 }
             }
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = rotation,
+                translationX = offset.x,
+                translationY = offset.y
+            )
     ) {
         model.shapes.dropLast(220).forEach {
             when (it) {
@@ -221,6 +222,8 @@ fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onCli
     val offsetY = (totalHeight - (shape.height + 1)) * CELL_SIZE
     val width = shape.width * CELL_SIZE
     val height = shape.height * CELL_SIZE
+    val bottom = offsetY + height
+    println("B: $bottom")
     val background = Color.Gray
     val clip = RectangleShape
     FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)

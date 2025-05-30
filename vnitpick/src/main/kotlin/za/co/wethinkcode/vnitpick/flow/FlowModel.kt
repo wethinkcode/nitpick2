@@ -59,13 +59,6 @@ class FlowModel(path: Path) {
         commits.layoutToShapes(shapes)
         width.value = commits.width
         height.value = commits.height
-        println("commits: ${commits.size}")
-        for (commit in commits) {
-            println("Commit: ${commit.detail.timestamp}")
-            for (detail in commit) {
-                println("\t${detail.timestamp} ${detail.type} ${detail.email}")
-            }
-        }
     }
 
     fun flowClick(shape: FlowShape) {

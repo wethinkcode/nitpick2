@@ -48,7 +48,6 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
             val detail = FlowDetail("main", RunType.commit, timestamp, name, email)
             val commit = Commit(detail)
             if (timestamp < earliest || shortMessage.startsWith("Adding flow")) break;
-            println("Adding: $shortMessage")
             add(commit)
         }
         walk.close()

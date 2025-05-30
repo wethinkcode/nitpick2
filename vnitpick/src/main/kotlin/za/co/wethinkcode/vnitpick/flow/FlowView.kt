@@ -35,7 +35,7 @@ fun FlowPage(model: FlowModel) {
         )
     } else {
         Row(Modifier.fillMaxWidth()) {
-            Column(Modifier.fillMaxWidth(.75f).fillMaxHeight()) {
+            Column(Modifier.fillMaxWidth(.75f).fillMaxHeight().clip(RectangleShape)) {
                 Row(Modifier.fillMaxWidth()) {
                     Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
                 }
@@ -65,7 +65,6 @@ fun FlowGraph(model: FlowModel) {
             .height((CELL_SIZE * model.height.value).dp)
             .background(color = Color.LightGray)
             .border(3.dp, Color.Green)
-            .clip(RectangleShape)
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = scale,

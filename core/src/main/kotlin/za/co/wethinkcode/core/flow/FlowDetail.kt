@@ -26,11 +26,14 @@ data class FlowDetail(
     fun layoutOneRun(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        collatedTests: CollatedTests
+        collatedTests: CollatedTests,
+        newShapes: MutableList<NewShape>
     ): FlowPoint {
         return when (type) {
-            RunType.run -> layoutRun(previousUpperRight, shapes)
-            RunType.test -> layoutTest(previousUpperRight, shapes, collatedTests)
+            RunType.run -> layoutRun(previousUpperRight, shapes, newShapes)
+            RunType.test -> layoutTest(previousUpperRight, shapes, collatedTests, newShapes)
+            RunType.run -> layoutRun(previousUpperRight, shapes, newShapes)
+            RunType.test -> layoutTest(previousUpperRight, shapes, collatedTests, newShapes)
             RunType.base64 -> layoutError(previousUpperRight, shapes)
             else -> layoutUnknown(previousUpperRight, shapes)
         }
@@ -53,26 +56,41 @@ data class FlowDetail(
     }
 
     private fun layoutRun(
-        previousUpperRight: FlowPoint,
-        shapes: MutableList<FlowShape>
+        lastUpperRight: FlowPoint,
+        shapes: MutableList<FlowShape>,
+        newShapes: MutableList<NewShape>
     ): FlowPoint {
-        shapes.add(BarShape(this, previousUpperRight))
-        return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
+        //       shapes.add(BarShape(this, lastUpperRight))
+        val height = Math.max(1, lastUpperRight.y)
+        for (y in 1..height) {
+            val shape = NewShape(FlowPoint(lastUpperRight.x, y), this, "Run: $timestamp")
+            newShapes.add(shape)
+        }
+        return FlowPoint(lastUpperRight.x + 1, lastUpperRight.y)
     }
 
     private fun layoutTest(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        collatedTests: CollatedTests
+        collatedTests: CollatedTests,
+        newShapes: MutableList<NewShape>
     ): FlowPoint {
         collatedTests.begin()
         collatedTests.add(passes, fails, disables, aborts)
         var y = 1
         val testList = collatedTests.toList().reversed()
         for (result in collatedTests.toList()) {
-            shapes.add(
-                TestShape(this, previousUpperRight.x, y, result, testList)
+//            shapes.add(
+//                TestShape(this, previousUpperRight.x, y, result, testList)
+//            )
+            val newShape = NewShape(
+                FlowPoint(previousUpperRight.x, y),
+                this,
+                "$type $timestamp",
+                testList,
+                result
             )
+            newShapes.add(newShape)
             y += 1
         }
         return FlowPoint(previousUpperRight.x + 1, y - 1)

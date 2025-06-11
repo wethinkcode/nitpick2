@@ -25,10 +25,10 @@ class Commits : MutableSet<Commit> by sortedSetOf(CommitComparator()) {
 
     operator fun get(index: Int): Commit = this.toList()[index]
 
-    fun layoutToShapes(shapes: MutableList<FlowShape>) {
+    fun layoutToShapes(shapes: MutableList<FlowShape>, newShapes: MutableList<NewShape>) {
         var previousUpperRight = FlowPoint(0, 0)
         forEach { commit ->
-            previousUpperRight = commit.layoutToShapes(previousUpperRight, shapes, collatedTests)
+            previousUpperRight = commit.layoutToShapes(previousUpperRight, shapes, collatedTests, newShapes)
         }
     }
 

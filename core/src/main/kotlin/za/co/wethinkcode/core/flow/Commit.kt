@@ -24,26 +24,37 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
     }
 
     fun layoutToShapes(
-        previousUpperRight: FlowPoint,
+        lastUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        collatedTests: CollatedTests
+        collatedTests: CollatedTests,
+        newShapes: MutableList<NewShape>
     ): FlowPoint {
-        val upperRightFromRuns = layoutAllRuns(previousUpperRight, shapes, collatedTests)
+        val upperRightFromRuns = layoutAllRuns(lastUpperRight, shapes, collatedTests, newShapes)
         val shape = CommitShape(
             this,
-            FlowPoint(previousUpperRight.x, upperRightFromRuns.y)
+            FlowPoint(lastUpperRight.x, upperRightFromRuns.y)
         )
-        shapes.add(shape)
+        // shapes.add(shape)
+        val height = Math.max(1, upperRightFromRuns.y)
+        for (y in 1..height) {
+            val shape = NewShape(FlowPoint(upperRightFromRuns.x, y), detail, "Commit: ${detail.timestamp}")
+            newShapes.add(shape)
+        }
+        for (x in lastUpperRight.x..upperRightFromRuns.x) {
+            val shape = NewShape(FlowPoint(x, 0), detail, "Commit: ${detail.timestamp}")
+            newShapes.add(shape)
+        }
         return FlowPoint(upperRightFromRuns.x + 1, upperRightFromRuns.y)
     }
 
     private fun layoutAllRuns(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>,
-        collatedTests: CollatedTests
+        collatedTests: CollatedTests,
+        newShapes: MutableList<NewShape>
     ): FlowPoint {
         var currentUpperRight = previousUpperRight
-        forEach { run -> currentUpperRight = run.layoutOneRun(currentUpperRight, shapes, collatedTests) }
+        forEach { run -> currentUpperRight = run.layoutOneRun(currentUpperRight, shapes, collatedTests, newShapes) }
         return currentUpperRight
     }
 }

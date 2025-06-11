@@ -18,7 +18,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 import za.co.wethinkcode.core.flow.*
@@ -69,7 +68,13 @@ fun FlowGraph(model: FlowModel) {
             .background(color = Color.LightGray)
             .border(3.dp, Color.Green)
             .transformable(state = state)
-
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = rotation,
+                translationX = offset.x,
+                translationY = offset.y
+            )
             // add transformable to listen to multitouch transformation events
             // after offset
             .pointerInput(PointerEventType.Scroll) {
@@ -86,37 +91,52 @@ fun FlowGraph(model: FlowModel) {
                     }
                 }
             }
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotation,
-                translationX = offset.x,
-                translationY = offset.y
-            )
     ) {
-        model.shapes.dropLast(220).forEach {
+        model.shapes.forEach {
             when (it) {
-                is CommitShape -> Unit
-//                FlowCommit(
-//                    it,
-//                    model.height.value,
-//                    { flag -> model.hover(it, flag) }) {
-//                    model.flowClick(it)
-//                }
+                is CommitShape -> FlowCommit(
+                    it,
+                    model.height.value,
+                    { flag -> model.hover(it, flag) }) {
+                    model.flowClick(it)
+                }
 
                 is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
                     model.flowClick(it)
                 }
 
-                is TestShape -> Unit
-//                    FlowTest(
-//                    it,
-//                    model.height.value,
-//                    { flag -> model.hover(it, flag) }) {
-//                    model.flowClick(it)
-//                }
+                is TestShape -> FlowTest(
+                    it,
+                    model.height.value,
+                    { flag -> model.hover(it, flag) }) {
+                    model.flowClick(it)
+                }
             }
         }
+        model.newShapes.forEach { newShape ->
+            val offsetX = newShape.at.x * CELL_SIZE
+            val offsetY = (model.height.value - ((newShape.at.y + 1))) * CELL_SIZE
+            val background = backgroundFromShape(newShape)
+            FlowBox(
+                offsetX,
+                offsetY,
+                RectangleShape,
+                CELL_SIZE,
+                CELL_SIZE,
+                { flag -> model.hover(newShape, flag) },
+                background = background,
+                onClick = { model.flowClick(newShape) }
+            )
+        }
+    }
+}
+
+fun backgroundFromShape(shape: NewShape): Color {
+    return when (shape.detail.type) {
+        RunType.commit -> COMMIT_BACKGROUND
+        RunType.run -> RUN_BACKGROUND
+        RunType.test -> determineTestColor(shape.test)
+        else -> Color.Yellow
     }
 }
 
@@ -207,16 +227,16 @@ private val flowCommitShape = GenericShape { size, _ ->
 }
 
 
-//@Composable
-//fun FlowCommit(shape: CommitShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
-//    val offsetX = shape.x * CELL_SIZE
-//    val offsetY = (totalHeight - shape.height) * CELL_SIZE
-//    val width = shape.width * CELL_SIZE
-//    val height = shape.height * CELL_SIZE
-//    val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
-//    val clip = flowCommitShape
-//    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
-//}
+@Composable
+fun FlowCommit(shape: CommitShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
+    val offsetX = shape.x * CELL_SIZE
+    val offsetY = (totalHeight - shape.height) * CELL_SIZE
+    val width = shape.width * CELL_SIZE
+    val height = shape.height * CELL_SIZE
+    val background = if (shape.detail.type == RunType.local) LOCAL_BACKGROUND else COMMIT_BACKGROUND
+    val clip = flowCommitShape
+    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
+}
 
 @Composable
 fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
@@ -226,23 +246,22 @@ fun FlowBar(shape: BarShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onCli
     val height = shape.height * CELL_SIZE
     val background = Color.Gray
     val clip = RectangleShape
-    val id = "Original $height at offset $offsetY"
-    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background, id)
+    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
 }
 
-//@Composable
-//fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
-//    val offsetX = shape.x * CELL_SIZE
-//    val offsetY = (totalHeight - ((shape.y + 1))) * CELL_SIZE
-//    val width = CELL_SIZE
-//    val height = CELL_SIZE
-//    val background = determineTestColor(shape.result)
-//    val clip = RectangleShape
-//    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
-//}
+@Composable
+fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onClick: () -> Unit) {
+    val offsetX = shape.x * CELL_SIZE
+    val offsetY = (totalHeight - ((shape.y + 1))) * CELL_SIZE
+    val width = CELL_SIZE
+    val height = CELL_SIZE
+    val background = determineTestColor(shape.result)
+    val clip = RectangleShape
+    FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
+}
 
 @Composable
-fun FlowItem(
+fun FlowBox(
     offsetX: Int,
     offsetY: Int,
     clip: Shape,
@@ -250,13 +269,11 @@ fun FlowItem(
     height: Int,
     onEnter: (Boolean) -> Unit,
     onClick: () -> Unit,
-    background: Color,
-    id: String
+    background: Color
 ) {
-    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp)
+    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp).clip(clip)
         .width(width.dp)
         .height(height.dp)
-        .onSizeChanged { size -> println("$id $size") }
         .pointerInput(PointerEventType.Enter) {
             awaitPointerEventScope {
                 while (true) {
@@ -275,7 +292,45 @@ fun FlowItem(
         }
         .clickable { onClick() }
         .background(background)
-        .border(1.dp, Color.Blue))
+//        .border(1.dp, Color.Black, shape = clip)
+    )
+}
+
+
+@Composable
+fun FlowItem(
+    offsetX: Int,
+    offsetY: Int,
+    clip: Shape,
+    width: Int,
+    height: Int,
+    onEnter: (Boolean) -> Unit,
+    onClick: () -> Unit,
+    background: Color
+) {
+    Box(modifier = Modifier.offset(offsetX.dp, offsetY.dp).clip(clip)
+        .width(width.dp)
+        .height(height.dp)
+        .pointerInput(PointerEventType.Enter) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    onEnter(true)
+                }
+            }
+        }
+        .pointerInput(PointerEventType.Exit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    onEnter(false)
+                }
+            }
+        }
+        .clickable { onClick() }
+        .background(background)
+//        .border(1.dp, Color.Black, shape = clip)
+    )
 }
 
 
@@ -295,10 +350,11 @@ fun FlowTip(offsetX: Int, offsetY: Int, isEll: Boolean, tip: String, content: @C
 
 val COMMIT_BACKGROUND = Color(0xDA, 0x70, 0xD6)
 val LOCAL_BACKGROUND = Color(0xFF, 0x7F, 0x50)
+val RUN_BACKGROUND = Color(0x45, 0x4f, 0x4f)
 
 val PASSED_BACKGROUND = Color(0, 255, 0)
 val FAILED_BACKGROUND = Color(255, 0, 0)
 val DISABLED_BACKGROUND = Color(255, 255, 0)
 val ABORT_BACKGROUND = Color(255, 255, 255)
 val UNRUN_BACKGROUND = Color(128, 128, 128)
-val CELL_SIZE = 11
+val CELL_SIZE = 12

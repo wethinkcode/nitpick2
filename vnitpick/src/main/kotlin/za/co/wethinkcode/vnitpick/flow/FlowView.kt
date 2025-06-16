@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.dp
@@ -79,24 +80,53 @@ fun FlowGraph(model: FlowModel) {
                 translate(offset.x, offset.y)
             }
         ) {
-            drawLine(
-                color = Color.Black,
-                start = Offset(0f, 0f),
-                end = Offset(500f, 0f),
-            )
-            drawRect(
-                topLeft = Offset(20f, 0f),
-                color = Color.Magenta,
-                size = Size(20f, 1000f)
-            )
-            drawRect(
-                topLeft = Offset(40f, 700f),
-                color = Color.Blue,
-                size = Size(20f, 100f)
-            )
+            for (shape in model.shapes) {
+                when (shape) {
+                    is BarShape -> drawBar(shape, model.height.value)
+                    is TestShape -> drawTest(shape, model.height.value)
+                    is CommitShape -> drawCommit(shape, model.height.value)
+                    else -> println(shape)
+                }
+            }
         }
     }
 }
+
+fun DrawScope.drawTest(shape: TestShape, totalHeight: Int) {
+    val topLeft = Offset(shape.x * CELL_SIZE.toFloat(), (totalHeight - (shape.y + 1)) * CELL_SIZE.toFloat())
+    val size = Size(CELL_SIZE.toFloat(), CELL_SIZE.toFloat())
+    drawRect(
+        determineTestColor(shape.result),
+        topLeft = topLeft,
+        size = size
+    )
+}
+
+fun DrawScope.drawCommit(shape: CommitShape, totalHeight: Int) {
+    val path = Path()
+    path.moveTo(shape.x * CELL_SIZE.toFloat(), totalHeight * CELL_SIZE.toFloat())
+    path.lineTo(shape.x * CELL_SIZE.toFloat(), (totalHeight - 1) * CELL_SIZE.toFloat())
+    path.lineTo((shape.x + shape.width - 1) * CELL_SIZE.toFloat(), (totalHeight - 1) * CELL_SIZE.toFloat())
+    path.lineTo((shape.x + shape.width - 1) * CELL_SIZE.toFloat(), (totalHeight - shape.height) * CELL_SIZE.toFloat())
+    path.lineTo((shape.x + shape.width) * CELL_SIZE.toFloat(), (totalHeight - shape.height) * CELL_SIZE.toFloat())
+    path.lineTo((shape.x + shape.width) * CELL_SIZE.toFloat(), totalHeight * CELL_SIZE.toFloat())
+    path.close()
+    drawPath(
+        path,
+        color = LOCAL_BACKGROUND
+    )
+}
+
+fun DrawScope.drawBar(shape: BarShape, totalHeight: Int) {
+    val topLeft = Offset(shape.x * CELL_SIZE.toFloat(), (totalHeight - (shape.height + 1)) * CELL_SIZE.toFloat())
+    val size = Size(CELL_SIZE.toFloat(), shape.height * CELL_SIZE.toFloat())
+    drawRect(
+        Color.Blue,
+        topLeft = topLeft,
+        size = size,
+    )
+}
+
 
 @Composable
 fun DetailView(shape: FlowShape?) {

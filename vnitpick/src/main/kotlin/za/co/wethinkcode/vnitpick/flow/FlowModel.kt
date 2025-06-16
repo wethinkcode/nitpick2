@@ -10,6 +10,7 @@ import za.co.wethinkcode.core.flow.*
 import za.co.wethinkcode.flow.FileHelpers.*
 import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.math.max
 
 class FlowModel(path: Path) {
 
@@ -22,6 +23,7 @@ class FlowModel(path: Path) {
     val isJltk = mutableStateOf(false)
     val hover = mutableStateOf("")
     val current = mutableStateOf<FlowShape?>(null)
+    val cellSize = mutableStateOf(20)
     val watchChannel = path.resolve(FLOW_FOLDER).toFile().asWatchChannel()
 
     init {
@@ -66,6 +68,16 @@ class FlowModel(path: Path) {
     }
 
     fun flowClick(shape: NewShape) {
+    }
+
+    fun zoomIn() {
+        val new = cellSize.value * .9f
+        cellSize.value = max(new.toInt(), 5)
+    }
+
+    fun zoomOut() {
+        val new = cellSize.value * 1.1f
+        cellSize.value = new.toInt()
     }
 
     fun hover(it: FlowShape, isHovered: Boolean) {

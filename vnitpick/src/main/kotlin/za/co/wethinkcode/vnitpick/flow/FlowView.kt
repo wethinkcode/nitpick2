@@ -3,8 +3,7 @@
 package za.co.wethinkcode.vnitpick.flow
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,15 +14,17 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 import za.co.wethinkcode.core.flow.*
 import za.co.wethinkcode.vnitpick.AdviceBox
 import za.co.wethinkcode.vnitpick.Styles.DEFAULT_FONT_SIZE
 import za.co.wethinkcode.vnitpick.Styles.LARGE_FONT_SIZE
+import kotlin.math.sign
 
 @Composable
 fun FlowPage(model: FlowModel) {
@@ -54,32 +55,25 @@ fun FlowPage(model: FlowModel) {
 @Composable
 fun FlowGraph(model: FlowModel) {
     var scale by remember { mutableStateOf(1f) }
-    var rotation by remember { mutableStateOf(0f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
-    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
-        scale *= zoomChange
-        rotation += rotationChange
-        offset += offsetChange
-    }
-    Box(
-        Modifier
-            .width((CELL_SIZE * model.width.value).dp)
-            .height((CELL_SIZE * model.height.value).dp)
-            .background(color = Color.LightGray)
-            .border(3.dp, Color.Green)
-            .transformable(state = state)
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotation,
-                translationX = offset.x,
-                translationY = offset.y
-            )
-            // add transformable to listen to multitouch transformation events
-            // after offset
-            .pointerInput(PointerEventType.Scroll) {
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray)
+            .onPointerEvent(PointerEventType.Scroll) {
+                val change = it.changes.first()
+                val delta = change.scrollDelta.y.toInt().sign
+                if (delta < 0) scale *= 0.9f
+                else scale *= 1.1f
+            }
+            .pointerInput(Unit) {
+                detectTransformGestures { centroid, pan, zoom, _ ->
+                    println(zoom)
+                    offset += (centroid - offset) * (1f - zoom) + pan
+                }
                 awaitPointerEventScope {
                     while (true) {
+                        println("*")
                         val event = awaitPointerEvent()
                         val direction = event.changes.first().scrollDelta.y
                         if (direction == 1.0f) {
@@ -92,40 +86,26 @@ fun FlowGraph(model: FlowModel) {
                 }
             }
     ) {
-        model.shapes.forEach {
-            when (it) {
-                is CommitShape -> FlowCommit(
-                    it,
-                    model.height.value,
-                    { flag -> model.hover(it, flag) }) {
-                    model.flowClick(it)
-                }
-
-                is BarShape -> FlowBar(it, model.height.value, { flag -> model.hover(it, flag) }) {
-                    model.flowClick(it)
-                }
-
-                is TestShape -> FlowTest(
-                    it,
-                    model.height.value,
-                    { flag -> model.hover(it, flag) }) {
-                    model.flowClick(it)
-                }
+        withTransform(
+            {
+                scale(scale, scale)
+                translate(offset.x, offset.y)
             }
-        }
-        model.newShapes.forEach { newShape ->
-            val offsetX = newShape.at.x * CELL_SIZE
-            val offsetY = (model.height.value - ((newShape.at.y + 1))) * CELL_SIZE
-            val background = backgroundFromShape(newShape)
-            FlowBox(
-                offsetX,
-                offsetY,
-                RectangleShape,
-                CELL_SIZE,
-                CELL_SIZE,
-                { flag -> model.hover(newShape, flag) },
-                background = background,
-                onClick = { model.flowClick(newShape) }
+        ) {
+            drawLine(
+                color = Color.Black,
+                start = Offset(0f, 0f),
+                end = Offset(500f, 0f),
+            )
+            drawRect(
+                topLeft = Offset(20f, 0f),
+                color = Color.Magenta,
+                size = Size(20f, 1000f)
+            )
+            drawRect(
+                topLeft = Offset(40f, 700f),
+                color = Color.Blue,
+                size = Size(20f, 100f)
             )
         }
     }

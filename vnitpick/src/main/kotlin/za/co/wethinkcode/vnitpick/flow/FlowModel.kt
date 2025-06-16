@@ -6,7 +6,8 @@ import dev.vishna.watchservice.KWatchEvent
 import dev.vishna.watchservice.asWatchChannel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
-import za.co.wethinkcode.core.flow.*
+import za.co.wethinkcode.core.flow.FlowDetailLoader
+import za.co.wethinkcode.core.flow.FlowShape
 import za.co.wethinkcode.flow.FileHelpers.*
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -19,7 +20,6 @@ class FlowModel(path: Path) {
     val width = mutableStateOf(0)
     val height = mutableStateOf(0)
     val shapes = mutableStateListOf<FlowShape>()
-    val newShapes = mutableStateListOf<NewShape>()
     val isJltk = mutableStateOf(false)
     val hover = mutableStateOf("")
     val current = mutableStateOf<FlowShape?>(null)
@@ -58,16 +58,9 @@ class FlowModel(path: Path) {
     fun load() {
         val commits = FlowDetailLoader().load(path.resolve(FLOW_FOLDER))
         shapes.clear()
-        commits.layoutToShapes(shapes, newShapes)
+        commits.layoutToShapes(shapes)
         width.value = commits.width
         height.value = commits.height
-    }
-
-    fun flowClick(shape: FlowShape) {
-        current.value = shape
-    }
-
-    fun flowClick(shape: NewShape) {
     }
 
     fun zoomIn() {
@@ -81,11 +74,6 @@ class FlowModel(path: Path) {
     }
 
     fun hover(it: FlowShape, isHovered: Boolean) {
-        if (isHovered) hover.value = it.tip
-        else hover.value = ""
-    }
-
-    fun hover(it: NewShape, isHovered: Boolean) {
         if (isHovered) hover.value = it.tip
         else hover.value = ""
     }

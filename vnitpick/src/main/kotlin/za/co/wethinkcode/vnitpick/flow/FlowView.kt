@@ -63,26 +63,13 @@ fun FlowGraph(model: FlowModel) {
             .onPointerEvent(PointerEventType.Scroll) {
                 val change = it.changes.first()
                 val delta = change.scrollDelta.y.toInt().sign
-                if (delta < 0) scale *= 0.9f
-                else scale *= 1.1f
+                if (delta < 0) scale *= 1.1f
+                else scale *= 0.9f
             }
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
                     println(zoom)
                     offset += (centroid - offset) * (1f - zoom) + pan
-                }
-                awaitPointerEventScope {
-                    while (true) {
-                        println("*")
-                        val event = awaitPointerEvent()
-                        val direction = event.changes.first().scrollDelta.y
-                        if (direction == 1.0f) {
-                            scale = scale * 0.9f
-                        }
-                        if (direction == -1.0f) {
-                            scale = scale * 1.1f
-                        }
-                    }
                 }
             }
     ) {
@@ -108,15 +95,6 @@ fun FlowGraph(model: FlowModel) {
                 size = Size(20f, 100f)
             )
         }
-    }
-}
-
-fun backgroundFromShape(shape: NewShape): Color {
-    return when (shape.detail.type) {
-        RunType.commit -> COMMIT_BACKGROUND
-        RunType.run -> RUN_BACKGROUND
-        RunType.test -> determineTestColor(shape.test)
-        else -> Color.Yellow
     }
 }
 

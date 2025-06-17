@@ -7,4 +7,8 @@ data class TestResult(
 ) {
     val className: String = name.substringBefore('.')
     val testName: String = name.substringAfter('.')
+
+    companion object {
+        final val NONE = TestResult("No.Test", TestStatus.unrun, false)
+    }
 }

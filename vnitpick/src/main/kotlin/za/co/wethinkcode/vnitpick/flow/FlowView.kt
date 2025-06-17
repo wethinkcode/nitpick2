@@ -22,6 +22,7 @@ import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProviderAtPosition
 import za.co.wethinkcode.core.flow.*
+import za.co.wethinkcode.core.flow.FlowShape.Companion.CELL_SIZE
 import za.co.wethinkcode.vnitpick.AdviceBox
 import za.co.wethinkcode.vnitpick.Styles.DEFAULT_FONT_SIZE
 import za.co.wethinkcode.vnitpick.Styles.LARGE_FONT_SIZE
@@ -92,17 +93,17 @@ fun FlowGraph(model: FlowModel) {
     }
 }
 
-fun DrawScope.drawTest(shape: TestShape, totalHeight: Int) {
-    val topLeft = Offset(shape.x * CELL_SIZE.toFloat(), (totalHeight - (shape.y + 1)) * CELL_SIZE.toFloat())
-    val size = Size(CELL_SIZE.toFloat(), CELL_SIZE.toFloat())
+fun DrawScope.drawTest(shape: FlowShape, totalHeight: Int) {
+    val topLeft = Offset(shape.fx, (totalHeight - (shape.y + 1)) * CELL_SIZE.toFloat())
+    val size = Size(shape.fwidth, shape.fheight)
     drawRect(
-        determineTestColor(shape.result),
+        backgroundFrom(shape),
         topLeft = topLeft,
         size = size
     )
 }
 
-fun DrawScope.drawCommit(shape: CommitShape, totalHeight: Int) {
+fun DrawScope.drawCommit(shape: FlowShape, totalHeight: Int) {
     val path = Path()
     path.moveTo(shape.x * CELL_SIZE.toFloat(), totalHeight * CELL_SIZE.toFloat())
     path.lineTo(shape.x * CELL_SIZE.toFloat(), (totalHeight - 1) * CELL_SIZE.toFloat())
@@ -113,18 +114,34 @@ fun DrawScope.drawCommit(shape: CommitShape, totalHeight: Int) {
     path.close()
     drawPath(
         path,
-        color = LOCAL_BACKGROUND
+        color = backgroundFrom(shape)
     )
 }
 
-fun DrawScope.drawBar(shape: BarShape, totalHeight: Int) {
+fun DrawScope.drawBar(shape: FlowShape, totalHeight: Int) {
     val topLeft = Offset(shape.x * CELL_SIZE.toFloat(), (totalHeight - (shape.height + 1)) * CELL_SIZE.toFloat())
     val size = Size(CELL_SIZE.toFloat(), shape.height * CELL_SIZE.toFloat())
     drawRect(
-        Color.Blue,
+        backgroundFrom(shape),
         topLeft = topLeft,
         size = size,
     )
+}
+
+fun backgroundFrom(shape: FlowShape): Color {
+    return when (shape.kind) {
+        FlowShape.Kind.base64 -> Color.Yellow
+        FlowShape.Kind.error -> Color.Yellow
+        FlowShape.Kind.unknown -> Color.Yellow
+        FlowShape.Kind.run -> Color.Gray
+        FlowShape.Kind.commit -> COMMIT_BACKGROUND
+        FlowShape.Kind.local -> LOCAL_BACKGROUND
+        FlowShape.Kind.failed -> Color.Red
+        FlowShape.Kind.passed -> Color.Green
+        FlowShape.Kind.disabled -> Color.Yellow
+        FlowShape.Kind.aborted -> Color.Yellow
+        FlowShape.Kind.unrun -> Color.Transparent
+    }
 }
 
 
@@ -243,7 +260,7 @@ fun FlowTest(shape: TestShape, totalHeight: Int, onEnter: (Boolean) -> Unit, onC
     val offsetY = (totalHeight - ((shape.y + 1))) * CELL_SIZE
     val width = CELL_SIZE
     val height = CELL_SIZE
-    val background = determineTestColor(shape.result)
+    val background = determineTestColor(shape.test)
     val clip = RectangleShape
     FlowItem(offsetX, offsetY, clip, width, height, onEnter, onClick, background)
 }
@@ -345,4 +362,3 @@ val FAILED_BACKGROUND = Color(255, 0, 0)
 val DISABLED_BACKGROUND = Color(255, 255, 0)
 val ABORT_BACKGROUND = Color(255, 255, 255)
 val UNRUN_BACKGROUND = Color(128, 128, 128)
-val CELL_SIZE = 12

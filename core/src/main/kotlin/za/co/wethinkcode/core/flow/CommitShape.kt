@@ -3,8 +3,9 @@ package za.co.wethinkcode.core.flow
 
 class CommitShape(val commit: Commit, lastUpperRight: FlowPoint) :
     FlowShape {
+    override val test: TestResult = TestResult.NONE
     override val detail = commit.detail
-
+    override val isCommit: Boolean = true
     override val x: Int = lastUpperRight.x
     override val y: Int = 0
     override val tip: String = "${detail.type.name}: ${detail.timestamp}"

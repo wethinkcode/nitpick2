@@ -8,6 +8,9 @@ class BarShape(
     override val x = lastUpperRight.x
     override val y = 1
     override val tip: String = "${detail.type.name}: ${detail.timestamp}"
+    override val isCommit: Boolean = false
+    override val test: TestResult = TestResult.NONE
+
 
     override val width = 1
     override val height = Math.max(1, lastUpperRight.y)

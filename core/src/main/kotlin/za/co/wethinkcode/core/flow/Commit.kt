@@ -15,7 +15,7 @@ class Commit(val detail: FlowDetail) : MutableSet<FlowDetail> by FlowDetailsByTi
         }
 
     val width: Int
-        get() = Math.max(size + 1, 2)
+        get() = Math.max(size + 1, 1)
 
     operator fun get(index: Int): FlowDetail = this.toList()[index]
 

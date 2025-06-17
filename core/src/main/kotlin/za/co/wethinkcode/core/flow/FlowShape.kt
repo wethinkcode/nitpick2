@@ -2,7 +2,26 @@ package za.co.wethinkcode.core.flow
 
 
 interface FlowShape {
+
+    enum class Kind {
+        base64,
+        error,
+        unknown,
+        run,
+        commit,
+        local,
+        failed,
+        passed,
+        disabled,
+        aborted,
+        unrun,
+    }
+
+    val kind: Kind
     val x: Int
+    val y: Int
+    val width: Int
+    val height: Int
     val detail: FlowDetail
     val tip: String
     val titleBlock: String

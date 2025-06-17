@@ -42,7 +42,7 @@ data class FlowDetail(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
     ): FlowPoint {
-        shapes.add(BarShape(this, previousUpperRight))
+        shapes.add(FlowShape.makeBarShape(this, previousUpperRight))
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
@@ -50,7 +50,7 @@ data class FlowDetail(
         previousUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
     ): FlowPoint {
-        shapes.add(BarShape(this, previousUpperRight))
+        shapes.add(FlowShape.makeBarShape(this, previousUpperRight))
         return FlowPoint(previousUpperRight.x + 1, previousUpperRight.y)
     }
 
@@ -58,7 +58,7 @@ data class FlowDetail(
         lastUpperRight: FlowPoint,
         shapes: MutableList<FlowShape>
     ): FlowPoint {
-        shapes.add(BarShape(this, lastUpperRight))
+        shapes.add(FlowShape.makeBarShape(this, lastUpperRight))
         val height = Math.max(1, lastUpperRight.y)
         return FlowPoint(lastUpperRight.x + 1, lastUpperRight.y)
     }
@@ -74,7 +74,7 @@ data class FlowDetail(
         val testList = collatedTests.toList().reversed()
         for (result in collatedTests.toList()) {
             shapes.add(
-                TestShape(this, previousUpperRight.x, y, result, testList)
+                FlowShape.makeTestShape(this, previousUpperRight.x, y, result, testList)
             )
             y += 1
         }

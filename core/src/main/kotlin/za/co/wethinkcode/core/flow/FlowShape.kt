@@ -49,5 +49,22 @@ interface FlowShape {
 
     companion object {
         val CELL_SIZE = 12
+
+        fun makeBarShape(
+            detail: FlowDetail,
+            lastUpperRight: FlowPoint
+        ): FlowShape {
+            return BarShape(detail, lastUpperRight)
+        }
+
+        fun makeTestShape(
+            detail: FlowDetail,
+            x: Int,
+            y: Int,
+            test: TestResult,
+            tests: List<TestResult>
+        ): FlowShape {
+            return TestShape(detail, x, y, test, tests)
+        }
     }
 }

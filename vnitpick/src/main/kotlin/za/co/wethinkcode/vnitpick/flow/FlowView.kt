@@ -83,8 +83,8 @@ fun FlowGraph(model: FlowModel) {
         ) {
             for (shape in model.shapes) {
                 when (shape) {
-                    is BarShape -> drawBar(shape, model.height.value)
-                    is TestShape -> drawTest(shape, model.height.value)
+                    is BarShape -> drawCommit(shape, model.height.value)
+                    is TestShape -> drawCommit(shape, model.height.value)
                     is CommitShape -> drawCommit(shape, model.height.value)
                     else -> println(shape)
                 }
@@ -104,13 +104,14 @@ fun DrawScope.drawTest(shape: FlowShape, totalHeight: Int) {
 }
 
 fun DrawScope.drawCommit(shape: FlowShape, totalHeight: Int) {
+    val t = totalHeight * CELL_SIZE.toFloat()
     val path = Path()
-    path.moveTo(shape.fx, totalHeight * CELL_SIZE.toFloat())
-    path.lineTo(shape.fx, (totalHeight - 1) * CELL_SIZE.toFloat())
-    path.lineTo(shape.finner, (totalHeight - 1) * CELL_SIZE.toFloat())
-    path.lineTo(shape.finner, (totalHeight - shape.height) * CELL_SIZE.toFloat())
-    path.lineTo(shape.fouter, (totalHeight - shape.height) * CELL_SIZE.toFloat())
-    path.lineTo(shape.fouter, totalHeight * CELL_SIZE.toFloat())
+    path.moveTo(shape.fx, t - shape.fbottom)
+    path.lineTo(shape.fx, t - shape.fmiddle)
+    path.lineTo(shape.finner, t - shape.fmiddle)
+    path.lineTo(shape.finner, t - shape.ftop)
+    path.lineTo(shape.fouter, t - shape.ftop)
+    path.lineTo(shape.fouter, t - shape.fbottom)
     path.close()
     drawPath(
         path,

@@ -105,12 +105,12 @@ fun DrawScope.drawTest(shape: FlowShape, totalHeight: Int) {
 
 fun DrawScope.drawCommit(shape: FlowShape, totalHeight: Int) {
     val path = Path()
-    path.moveTo(shape.x * CELL_SIZE.toFloat(), totalHeight * CELL_SIZE.toFloat())
-    path.lineTo(shape.x * CELL_SIZE.toFloat(), (totalHeight - 1) * CELL_SIZE.toFloat())
-    path.lineTo((shape.x + shape.width - 1) * CELL_SIZE.toFloat(), (totalHeight - 1) * CELL_SIZE.toFloat())
-    path.lineTo((shape.x + shape.width - 1) * CELL_SIZE.toFloat(), (totalHeight - shape.height) * CELL_SIZE.toFloat())
-    path.lineTo((shape.x + shape.width) * CELL_SIZE.toFloat(), (totalHeight - shape.height) * CELL_SIZE.toFloat())
-    path.lineTo((shape.x + shape.width) * CELL_SIZE.toFloat(), totalHeight * CELL_SIZE.toFloat())
+    path.moveTo(shape.fx, totalHeight * CELL_SIZE.toFloat())
+    path.lineTo(shape.fx, (totalHeight - 1) * CELL_SIZE.toFloat())
+    path.lineTo(shape.finner, (totalHeight - 1) * CELL_SIZE.toFloat())
+    path.lineTo(shape.finner, (totalHeight - shape.height) * CELL_SIZE.toFloat())
+    path.lineTo(shape.fouter, (totalHeight - shape.height) * CELL_SIZE.toFloat())
+    path.lineTo(shape.fouter, totalHeight * CELL_SIZE.toFloat())
     path.close()
     drawPath(
         path,

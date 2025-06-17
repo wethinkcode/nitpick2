@@ -17,6 +17,8 @@ interface FlowShape {
         unrun,
     }
 
+    val finner: Float get():Float = (x + width - 1) * CELL_SIZE.toFloat()
+    val fouter: Float get():Float = (x + width) * CELL_SIZE.toFloat()
     val fx: Float get():Float = (x * CELL_SIZE).toFloat()
     val fy: Float get() = (y * CELL_SIZE).toFloat()
     val fwidth: Float get():Float = (width * CELL_SIZE).toFloat()

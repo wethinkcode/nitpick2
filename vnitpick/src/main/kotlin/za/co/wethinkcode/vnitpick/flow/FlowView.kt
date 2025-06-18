@@ -67,8 +67,8 @@ fun FlowGraph(model: FlowModel) {
             }
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
+                    offset += pan / scale
                     println(zoom)
-                    offset += (centroid - offset) * (1f - zoom) + pan
                 }
             }
     ) {
@@ -78,7 +78,7 @@ fun FlowGraph(model: FlowModel) {
                 translate(offset.x, offset.y)
             }
         ) {
-            for (shape in model.shapes.dropLast(model.shapes.size - 70)) drawCommit(shape, model.height.value)
+            for (shape in model.shapes) drawCommit(shape, model.height.value)
         }
     }
 }

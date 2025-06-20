@@ -48,7 +48,7 @@ interface FlowShape {
         }
 
     companion object {
-        val CELL_SIZE = 12
+        val CELL_SIZE = 10
 
         fun makeBarShape(
             detail: FlowDetail,

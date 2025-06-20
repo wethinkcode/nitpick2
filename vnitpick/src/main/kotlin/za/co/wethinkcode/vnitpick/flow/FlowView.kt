@@ -39,7 +39,9 @@ fun FlowPage(model: FlowModel) {
                 Row(Modifier.fillMaxWidth()) {
                     Text(model.hover.value, fontSize = LARGE_FONT_SIZE, softWrap = false)
                 }
-                Row(Modifier.clip(RectangleShape)) {
+                Row(
+                    Modifier.clip(RectangleShape)
+                ) {
                     FlowGraph(model)
                 }
             }
@@ -53,8 +55,9 @@ fun FlowPage(model: FlowModel) {
 
 @Composable
 fun FlowGraph(model: FlowModel) {
-    var scale by remember { mutableStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
+    var scale by remember { mutableStateOf(2f) }
+    var offset by remember { mutableStateOf(Offset(0f, 0f)) }
+    var pivot by remember { mutableStateOf(Offset(0f, 0f)) }
     Canvas(
         modifier = Modifier
             .fillMaxSize()
@@ -65,19 +68,28 @@ fun FlowGraph(model: FlowModel) {
                 if (delta < 0) scale *= 1.1f
                 else scale *= 0.9f
             }
+            .onPointerEvent(PointerEventType.Move) {
+                val change = it.changes.first()
+                val mouse = change.position
+                val canvas = mouse - offset
+                val scalezels = canvas / scale
+                val cell = scalezels / CELL_SIZE.toFloat()
+                val inverseY = Offset(cell.x, model.height.value.toFloat() - cell.y)
+                println("$scale $mouse $canvas $scalezels $cell $inverseY")
+            }
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
-                    offset += pan / scale
-                    println(zoom)
+                    offset += pan
                 }
             }
     ) {
         withTransform(
             {
-                scale(scale, scale)
                 translate(offset.x, offset.y)
+                scale(scale, scale, pivot)
             }
         ) {
+            println("${model.shapes[0].fx} ${model.shapes[0].fy} ${model.shapes[0].ftop} ${model.shapes[0].fbottom}")
             for (shape in model.shapes) drawCommit(shape, model.height.value)
         }
     }
@@ -92,6 +104,8 @@ fun DrawScope.drawCommit(shape: FlowShape, totalHeight: Int) {
     path.lineTo(shape.finner, t - shape.ftop)
     path.lineTo(shape.fouter, t - shape.ftop)
     path.lineTo(shape.fouter, t - shape.fbottom)
+
+    println("(${shape.fx},${t - shape.fbottom}) (${shape.fouter}, ${t - shape.ftop})")
     path.close()
     drawPath(
         path,

@@ -2,6 +2,7 @@ package za.co.wethinkcode.vnitpick.flow
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.geometry.Offset
 import dev.vishna.watchservice.KWatchEvent
 import dev.vishna.watchservice.asWatchChannel
 import kotlinx.coroutines.*
@@ -11,7 +12,6 @@ import za.co.wethinkcode.core.flow.FlowShape
 import za.co.wethinkcode.flow.FileHelpers.*
 import java.nio.file.Path
 import kotlin.io.path.exists
-import kotlin.math.max
 
 class FlowModel(path: Path) {
 
@@ -25,6 +25,10 @@ class FlowModel(path: Path) {
     val current = mutableStateOf<FlowShape?>(null)
     val cellSize = mutableStateOf(20)
     val watchChannel = path.resolve(FLOW_FOLDER).toFile().asWatchChannel()
+
+    val scale = mutableStateOf(2f)
+    val offset = mutableStateOf(Offset(0f, 0f))
+    val pivot = mutableStateOf(Offset(0f, 0f))
 
     init {
         this.path = path
@@ -64,13 +68,11 @@ class FlowModel(path: Path) {
     }
 
     fun zoomIn() {
-        val new = cellSize.value * .9f
-        cellSize.value = max(new.toInt(), 5)
+        scale.value *= 1.1f
     }
 
     fun zoomOut() {
-        val new = cellSize.value * 1.1f
-        cellSize.value = new.toInt()
+        scale.value *= .9f
     }
 
     fun hover(it: FlowShape, isHovered: Boolean) {
@@ -80,6 +82,11 @@ class FlowModel(path: Path) {
 
     fun close() {
         watchChannel.close()
+    }
+
+    fun pan(pan: Offset) {
+        println("pan $this")
+        offset.value += pan
     }
 }
 

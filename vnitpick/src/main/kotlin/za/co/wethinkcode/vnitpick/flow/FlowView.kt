@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +42,9 @@ fun FlowPage(model: FlowModel) {
                 Row(
                     Modifier.clip(RectangleShape)
                 ) {
-                    FlowGraph(model)
+                    FlowGraph(model) { offset ->
+                        model.pan(offset)
+                    }
                 }
             }
             Spacer(Modifier.fillMaxHeight().width(1.dp))
@@ -54,42 +56,42 @@ fun FlowPage(model: FlowModel) {
 }
 
 @Composable
-fun FlowGraph(model: FlowModel) {
-    var scale by remember { mutableStateOf(2f) }
-    var offset by remember { mutableStateOf(Offset(0f, 0f)) }
-    var pivot by remember { mutableStateOf(Offset(0f, 0f)) }
+fun FlowGraph(model: FlowModel, onPan: (Offset) -> Unit) {
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.LightGray)
-            .onPointerEvent(PointerEventType.Scroll) {
-                val change = it.changes.first()
-                val delta = change.scrollDelta.y.toInt().sign
-                if (delta < 0) scale *= 1.1f
-                else scale *= 0.9f
-            }
-            .onPointerEvent(PointerEventType.Move) {
-                val change = it.changes.first()
-                val mouse = change.position
-                val canvas = mouse - offset
-                val scalezels = canvas / scale
-                val cell = scalezels / CELL_SIZE.toFloat()
-                val inverseY = Offset(cell.x, model.height.value.toFloat() - cell.y)
-                println("$scale $mouse $canvas $scalezels $cell $inverseY")
-            }
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
-                    offset += pan
+                    println("pan ${model}")
+                    model.pan(pan)
                 }
+            }
+            .onPointerEvent(PointerEventType.Scroll) {
+                println("zoom ${model}")
+                val change = it.changes.first()
+                val delta = change.scrollDelta.y.toInt().sign
+                if (delta < 0) model.zoomIn()
+                else model.zoomOut()
+            }
+            .onPointerEvent(PointerEventType.Move) {
+                println("move $model")
+                val change = it.changes.first()
+                val mouse = change.position
+                val canvas = mouse - model.offset.value
+                val scalezels = canvas / model.scale.value
+                val cell = scalezels / CELL_SIZE.toFloat()
+                val inverseY = Offset(cell.x, model.height.value.toFloat() - cell.y)
+//                println("$mouse $canvas $scalezels $cell $inverseY")
             }
     ) {
         withTransform(
             {
-                translate(offset.x, offset.y)
-                scale(scale, scale, pivot)
+                translate(model.offset.value.x, model.offset.value.y)
+                scale(model.scale.value, model.scale.value, model.pivot.value)
             }
         ) {
-            println("${model.shapes[0].fx} ${model.shapes[0].fy} ${model.shapes[0].ftop} ${model.shapes[0].fbottom}")
+            println("Draw. ${model}")
             for (shape in model.shapes) drawCommit(shape, model.height.value)
         }
     }
@@ -105,7 +107,7 @@ fun DrawScope.drawCommit(shape: FlowShape, totalHeight: Int) {
     path.lineTo(shape.fouter, t - shape.ftop)
     path.lineTo(shape.fouter, t - shape.fbottom)
 
-    println("(${shape.fx},${t - shape.fbottom}) (${shape.fouter}, ${t - shape.ftop})")
+//    println("(${shape.fx},${t - shape.fbottom}) (${shape.fouter}, ${t - shape.ftop})")
     path.close()
     drawPath(
         path,

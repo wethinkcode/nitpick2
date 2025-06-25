@@ -64,7 +64,7 @@ fun FlowGraph(model: FlowModel, onPan: (Offset) -> Unit) {
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
                     println("pan ${model}")
-                    model.pan(pan)
+                    onPan(pan)
                 }
             }
             .onPointerEvent(PointerEventType.Scroll) {
@@ -75,7 +75,7 @@ fun FlowGraph(model: FlowModel, onPan: (Offset) -> Unit) {
                 else model.zoomOut()
             }
             .onPointerEvent(PointerEventType.Move) {
-                println("move $model")
+                //println("move $model")
                 val change = it.changes.first()
                 val mouse = change.position
                 val canvas = mouse - model.offset.value

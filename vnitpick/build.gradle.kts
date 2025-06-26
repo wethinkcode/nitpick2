@@ -20,6 +20,7 @@ repositories {
 }
 
 tasks.test {
+    mustRunAfter(":core:compileTestKotlin")
     useJUnitPlatform()
 }
 

@@ -14,8 +14,8 @@ class CommitShapeTest {
         val lastUpperRight = FlowPoint(0, 0)
         val shape = CommitShape(commit, lastUpperRight)
         assertThat(shape.x).isEqualTo(0)
-        assertThat(shape.width).isEqualTo(2)
-        assertThat(shape.height).isEqualTo(1)
+        assertThat(shape.width).isEqualTo(1)
+        assertThat(shape.height).isEqualTo(2)
     }
 
     @Test
@@ -25,8 +25,8 @@ class CommitShapeTest {
         val lastUpperRight = FlowPoint(5, 0)
         val shape = CommitShape(commit, lastUpperRight)
         assertThat(shape.x).isEqualTo(5)
-        assertThat(shape.width).isEqualTo(2)
-        assertThat(shape.height).isEqualTo(1)
+        assertThat(shape.width).isEqualTo(1)
+        assertThat(shape.height).isEqualTo(2)
     }
 
     @Test
@@ -36,7 +36,7 @@ class CommitShapeTest {
         val lastUpperRight = FlowPoint(0, 5)
         val shape = CommitShape(commit, lastUpperRight)
         assertThat(shape.x).isEqualTo(0)
-        assertThat(shape.width).isEqualTo(2)
+        assertThat(shape.width).isEqualTo(1)
         assertThat(shape.height).isEqualTo(6)
     }
 
@@ -50,7 +50,7 @@ class CommitShapeTest {
         val shape = CommitShape(commit, lastUpperRight)
         assertThat(shape.x).isEqualTo(0)
         assertThat(shape.width).isEqualTo(2)
-        assertThat(shape.height).isEqualTo(1)
+        assertThat(shape.height).isEqualTo(2)
     }
 
     @Test

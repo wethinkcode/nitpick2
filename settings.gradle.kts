@@ -8,4 +8,4 @@ pluginManagement {
 }
 
 rootProject.name = "nitpick2"
-include("vnitpick", "jnitpick", "nitpick", "core", "server")
+include("jnitpick", "nitpick", "core", "server")

@@ -3,9 +3,6 @@ package za.co.wethinkcode.server
 import io.javalin.Javalin
 import io.javalin.http.staticfiles.Location
 
-class Server {
-}
-
 fun main() {
     val app = Javalin.create { config ->
         config.staticFiles.add { staticFiles ->

@@ -12,5 +12,8 @@ class Styles {
         val HEADER_TEXT_COLOR = Color.WHITE
 
         val DIVIDER_COLOR = Color.BLACK
+
+        val LARGE_FONT = Font.font("Arial", FontWeight.BOLD, 24.0)
+        val SMALL_FONT = Font.font("Arial", FontWeight.NORMAL, 18.0)
     }
 }

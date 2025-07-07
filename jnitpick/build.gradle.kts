@@ -29,6 +29,7 @@ javafx {
 dependencies {
     implementation("no.tornado:tornadofx:1.7.20")
     implementation("za.co.wethinkcode:flow:1.0.4")
+    implementation(project(":core"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
 }

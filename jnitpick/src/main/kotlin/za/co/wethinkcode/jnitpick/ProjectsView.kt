@@ -2,9 +2,8 @@ package za.co.wethinkcode.jnitpick
 
 import javafx.geometry.Pos
 import javafx.scene.control.Tab
+import javafx.scene.layout.*
 import javafx.scene.layout.AnchorPane.*
-import javafx.scene.layout.Background
-import javafx.scene.layout.Border
 import tornadofx.*
 
 class ProjectsView : View() {
@@ -37,6 +36,7 @@ class ProjectsView : View() {
     }
 
     fun open() {
+        OpenProjectView(model).openModal()
         tabs.tabs.add(Tab("new"))
         tabs.selectionModel.select(tabs.tabs.size - 1)
     }

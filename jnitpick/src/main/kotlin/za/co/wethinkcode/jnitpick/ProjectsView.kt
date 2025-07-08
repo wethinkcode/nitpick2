@@ -1,10 +1,19 @@
 package za.co.wethinkcode.jnitpick
 
 import javafx.geometry.Pos
-import javafx.scene.control.Tab
-import javafx.scene.layout.*
 import javafx.scene.layout.AnchorPane.*
+import javafx.scene.layout.Background
+import javafx.scene.layout.Border
+import javafx.stage.StageStyle
 import tornadofx.*
+
+class ProjectView(model: ProjectModel) : Fragment() {
+    override val root = stackpane {
+        minWidth = 500.0
+        minHeight = 500.0
+        label(model.name)
+    }
+}
 
 class ProjectsView : View() {
 
@@ -36,8 +45,15 @@ class ProjectsView : View() {
     }
 
     fun open() {
-        OpenProjectView(model).openModal()
-        tabs.tabs.add(Tab("new"))
-        tabs.selectionModel.select(tabs.tabs.size - 1)
+        val dialog = OpenProjectView(model)
+        dialog.openModal(stageStyle = StageStyle.UTILITY, block = true)
+        if (dialog.hasPath) {
+            val new = model.open(dialog.path)
+            with(tabs) {
+                tab(new.name) {
+                    content = ProjectView(new).root
+                }
+            }
+        }
     }
 }

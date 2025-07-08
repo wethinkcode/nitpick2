@@ -26,7 +26,7 @@ class OpenProjectModel {
         files.forEach {
             val drive = TreeItem(it)
             if (it.isDirectory()) {
-                drive.children.add(TreeItem<Path>(Path.of("Loading...")))
+                drive.children.add(TreeItem<Path>(Path.of("Loading")))
                 drive.expandedProperty().addListener { item, _, expanded ->
                     if (expanded) reload(drive)
                 }
@@ -42,7 +42,7 @@ class OpenProjectModel {
         files.forEach { candidate ->
             if (candidate.isDirectory()) {
                 val new = TreeItem(candidate.toPath())
-                new.children.add(TreeItem(Path.of("Loading...")))
+                new.children.add(TreeItem(Path.of("Loading")))
                 new.expandedProperty().addListener { item, _, expanded ->
                     if (expanded) reload(new)
                 }
@@ -54,7 +54,7 @@ class OpenProjectModel {
 
 class OpenProjectView(val model: ProjectsModel) : Fragment() {
     var hasPath: Boolean = false
-    var path: Path = Path.of("/")
+    var path: Path = Path.of("xyzy")
     val projectModel = OpenProjectModel()
     override val root = hbox {
         minWidth = 800.0
@@ -91,6 +91,12 @@ class OpenProjectView(val model: ProjectsModel) : Fragment() {
             minWidth = OPEN_PROJECT_HALF_WIDTH
             dialogHeader("Available Files")
             treeview(projectModel.root) {
+                cellFormat { path ->
+                    val filename = path.fileName
+                    if (filename != null) {
+                        text = filename.toString()
+                    } else text = path.toString()
+                }
                 vgrow = Priority.ALWAYS
                 isShowRoot = false
             }

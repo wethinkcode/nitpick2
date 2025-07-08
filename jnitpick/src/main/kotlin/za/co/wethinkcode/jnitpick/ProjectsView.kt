@@ -6,6 +6,7 @@ import javafx.scene.layout.Background
 import javafx.scene.layout.Border
 import javafx.stage.StageStyle
 import tornadofx.*
+import za.co.wethinkcode.jnitpick.Styles.Companion.LARGE_FONT
 
 class ProjectView(model: ProjectModel) : Fragment() {
     override val root = stackpane {
@@ -22,6 +23,7 @@ class ProjectsView : View() {
     val controls = hbox {
         alignment = Pos.CENTER_RIGHT
         button("+") {
+            font = LARGE_FONT
             background = Background.EMPTY
             border = Border.EMPTY
             action { open() }
@@ -33,6 +35,8 @@ class ProjectsView : View() {
 
     override val root = borderpane {
         center = anchorpane {
+            minWidth = 800.0
+            minHeight = 600.0
             this += tabs
             this += controls
             setTopAnchor(controls, 3.0);
@@ -53,6 +57,7 @@ class ProjectsView : View() {
                 tab(new.name) {
                     content = ProjectView(new).root
                 }
+                selectionModel.select(tabs.size - 1)
             }
         }
     }

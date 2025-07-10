@@ -70,8 +70,7 @@ class OpenProjectView(val model: ProjectsModel) : Fragment() {
                     dialogHeader("Recent Projects")
                     listview(model.mruPaths) {
                         selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-                            selected.value = newValue
-                            canOpen.set(newValue != null)
+                            select(newValue)
                         }
                         vgrow = Priority.ALWAYS
                         cellFormat { path ->
@@ -102,8 +101,8 @@ class OpenProjectView(val model: ProjectsModel) : Fragment() {
                     dialogHeader("Available Files")
                     treeview(projectModel.root) {
                         selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-                            selected.value = newValue.value
-                            canOpen.set(newValue != null)
+                            if (newValue == null) select(null)
+                            else select(newValue.value)
                         }
                         cellFormat { path ->
                             val filename = path.fileName
@@ -117,10 +116,15 @@ class OpenProjectView(val model: ProjectsModel) : Fragment() {
                 }
             }
             hbox {
+                padding = Insets(0.0, 16.0, 0.0, 16.0)
+                minHeight = 50.0
+                alignment = Pos.CENTER_RIGHT
                 button("Cancel") {
+                    padding = Insets(0.0, 32.0, 0.0, 32.0)
                     action { close() }
                 }
                 button("Open") {
+                    padding = Insets(0.0, 32.0, 0.0, 32.0)
                     enableWhen {
                         canOpen
                     }
@@ -140,6 +144,11 @@ class OpenProjectView(val model: ProjectsModel) : Fragment() {
                 textFill = HEADER_TEXT_COLOR
             }
         }
+    }
+
+    fun select(path: Path?) {
+        selected.value = path
+        if (path != null) canOpen.set(true)
     }
 
     fun prepareToOpen(toOpen: Path) {
